@@ -1,0 +1,9 @@
+prefix=/usr
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: service-adaptor library
+Description: service-adaptor library 1.0
+Version: $version
+Libs: -L${libdir} -lsal-common -lsal-client
+Cflags: -I${includedir}/service-adaptor

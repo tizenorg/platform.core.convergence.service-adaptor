@@ -1,0 +1,48 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+PROJECT(sal-common)
+
+SET(CMAKE_SKIP_BUILD_RPATH TRUE)
+
+IF("${CMAKE_BUILD_TYPE}" STREQUAL "")
+        SET(CMAKE_BUILD_TYPE "Debug")
+ENDIF("${CMAKE_BUILD_TYPE}" STREQUAL "")
+
+MESSAGE("")
+MESSAGE(">>> current directory: ${CMAKE_CURRENT_SOURCE_DIR}")
+MESSAGE(">>> Build type: ${CMAKE_BUILD_TYPE}")
+
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VISIBILITY} -fvisibility=hidden")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,--gc-sections")
+
+SET(COMMON-LIB "sal-common")
+SET(COMMON-SRCS
+        ${CMAKE_SOURCE_DIR}/common/sal_common.c
+        ${CMAKE_SOURCE_DIR}/common/ipc/sal_ipc.c
+)
+
+INCLUDE_DIRECTORIES(
+        ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/ipc
+)
+
+INCLUDE(FindPkgConfig)
+pkg_check_modules(common_pkgs REQUIRED dlog glib-2.0)
+
+FOREACH(flag ${common_pkgs_CFLAGS})
+        SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
+ENDFOREACH(flag)
+
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS}")
+#message(">>>[${COMMON-LIB}] extra_cflags ${EXTRA_CFLAGS}")
+#message(">>>[${COMMON-LIB}] common_pkgs_cflags ${common_pkgs_CFLAGS}")
+#message(">>>[${COMMON-LIB}] result ${CMAKE_C_FLAGS}")
+
+SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed")
+
+ADD_LIBRARY(${COMMON-LIB} SHARED ${COMMON-SRCS})
+TARGET_LINK_LIBRARIES(${COMMON-LIB} ${common_pkgs_LDFLAGS})
+SET_TARGET_PROPERTIES(${COMMON-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
+SET_TARGET_PROPERTIES(${COMMON-LIB} PROPERTIES VERSION ${VERSION})
+
+INSTALL(TARGETS ${COMMON-LIB} DESTINATION lib COMPONENT RuntimeLibraries)

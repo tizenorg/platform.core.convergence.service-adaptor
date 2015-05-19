@@ -1,0 +1,29 @@
+<manifest>
+	<define>
+		<domain name="service-adaptor" />
+		<provide>
+			<label name="service-adaptor::svc"/>
+		</provide>
+		<permit>
+			<smack permit="system::use_internet" type="w" />
+		</permit>
+		<request>
+			<smack request="system::use_internet" type="rw"/>
+			<smack request="system::media" type="rwxt"/>
+			<smack request="sys-assert::core" type="rwx"/>
+			<smack request="pkgmgr::info" type="rxw"/>
+			<smack request="pkgmgr::db" type="rxwl"/>
+			<smack request="pkgmgr::svc" type="rxw"/>
+			<smack request="ail::db" type="rxwl"/>
+			<smack request="system::vconf" type="rxw"/>
+			<smack request="system::vconf_inhouse" type="rxw"/>
+			<smack request="aul::launch" type="rxw"/>
+			<smack request="aul::terminate" type="rxw"/>
+		</request>
+	</define>
+	<assign>
+	</assign>
+	<request>
+		<domain name="service-adaptor" />
+	</request>
+</manifest>
