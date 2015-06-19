@@ -44,7 +44,7 @@ ADD_SUBDIRECTORY(test)
 ##########################################################
 
 CONFIGURE_FILE(service-adaptor.pc.in service-adaptor.pc @ONLY)
-INSTALL(FILES ${CMAKE_BINARY_DIR}/service-adaptor.pc DESTINATION lib/pkgconfig)
+INSTALL(FILES ${CMAKE_BINARY_DIR}/service-adaptor.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)
 
 # LICENSE file
 INSTALL(FILES ${CMAKE_SOURCE_DIR}/LICENSE.APLv2 DESTINATION /usr/share/license/service-adaptor)

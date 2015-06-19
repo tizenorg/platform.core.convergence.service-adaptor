@@ -49,6 +49,7 @@ export FFLAGS="$FFLAGS -DTIZEN_DEBUG_ENABLE"
 %endif
 
 cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+        -DLIB_INSTALL_DIR:PATH=%{_libdir}
 
 make %{?_smp_mflags}
 
