@@ -26,7 +26,6 @@
 
 #include "auth_adaptor.h"
 
-auth_adaptor_h sal_auth_create_handle();
 auth_adaptor_listener_h sal_auth_register_listener(auth_adaptor_h auth);
 
 #endif /* __TIZEN_CONVERGENCE_SAL_AUTH_H__ */

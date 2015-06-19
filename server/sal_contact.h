@@ -26,7 +26,6 @@
 
 #include "contact_adaptor.h"
 
-contact_adaptor_h sal_contact_create_handle();
 contact_adaptor_listener_h sal_contact_register_listener(contact_adaptor_h contact);
 
 #endif /* __TIZEN_CONVERGENCE_SAL_CONTACT_H__ */

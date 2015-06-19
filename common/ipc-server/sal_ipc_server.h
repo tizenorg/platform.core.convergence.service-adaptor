@@ -1,5 +1,5 @@
 /*
- * Service Adaptor
+ * Service Adaptor Server IPC
  *
  * Copyright (c) 2014 - 2015 Samsung Electronics Co., Ltd. All rights reserved.
  *
@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef __TIZEN_CONVERGENCE_SAL_IPC_H__
-#define __TIZEN_CONVERGENCE_SAL_IPC_H__
+#ifndef __TIZEN_CONVERGENCE_SAL_IPC_SERVER_H__
+#define __TIZEN_CONVERGENCE_SAL_IPC_SERVER_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -34,12 +34,14 @@ extern "C"
 #endif
 
 #include "service_adaptor_errors.h"
+#include "sal_ipc.h"
 
-API service_adaptor_error_e sal_ipc_init_server();
-API service_adaptor_error_e sal_ipc_deinit_server();
+service_adaptor_error_e sal_ipc_server_init();
+service_adaptor_error_e sal_ipc_server_deinit();
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TIZEN_CONVERGENCE_SAL_IPC_H__ */
+#endif /* __TIZEN_CONVERGENCE_SAL_IPC_SERVER_H__ */
+

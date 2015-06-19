@@ -1,18 +1,17 @@
 [Unit]
 Description=Service Adaptor daemon
-Requires=dbus.socket
-After=dlog_logger.service tizen-runtime.target
+Requires=tizen-runtime.target
+After=tizen-runtime.target
 
 [Service]
 User=system
 Group=system
 SmackProcessLabel=service-adaptor
 Type=dbus
-BusName=com.samsung.svcadaptor
-ExecStart=/usr/bin/service-adaptor
-Restart=none
-RestartSec=0
-KillMode=none
+BusName=org.tizen.serviceadaptor.client
+ExecStart=/usr/bin/service-adaptor-server
+Restart=always
+RestartSec=1
 
 [Install]
 WantedBy=multi-user.target

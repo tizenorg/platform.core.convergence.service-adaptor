@@ -1,5 +1,5 @@
 /*
- * Auth Adaptor
+ * Storage Adaptor
  *
  * Copyright (c) 2014 - 2015 Samsung Electronics Co., Ltd. All rights reserved.
  *
@@ -30,7 +30,11 @@ extern "C"
 #endif
 
 #include <stdio.h>
+#include <glib.h>
+
 #include "service_adaptor_errors.h"
+#include "cloud_service.h"
+//#include "posix_service.h"
 
 /**
  * @file storage_adaptor.h
@@ -49,24 +53,73 @@ extern "C"
  * @{
  */
 
+#define URI_STORAGE	"storage"
+#define URI_CLOUD	"storage/cloud"
+#define URI_POSIX	"storage/posix"
+
+/**
+ * @brief Describes infromation about Storage Spec
+ */
+typedef enum _storage_spec_e
+{
+	STORAGE_SPEC_CLOUD      = (1 << 0),
+	STORAGE_SPEC_POSIX      = (1 << 1),
+} storage_spec_e;
+
+/**
+ * @brief Describes infromation about Storage Plugin
+ */
+typedef struct _storage_plugin_s
+{
+	char *uri;
+	char *name;
+	char *package;
+
+	cloud_service_h cloud;
+//	posix_service_h posix;
+
+	GMutex mutex;
+	GCond cond;
+} storage_plugin_s;
+typedef struct _storage_plugin_s *storage_plugin_h;
+
+/**
+ * @brief Describes infromation about Storage Adaptor
+ */
 typedef struct _storage_adaptor_s
 {
-	int i;
+	GList *plugins;		// storage_plugin_h
+
+	GMutex mutex;
+	int start;
 } storage_adaptor_s;
 typedef struct _storage_adaptor_s *storage_adaptor_h;
 
+/**
+ * @brief Describes infromation about Storage Adaptor Listener
+ */
 typedef struct _storage_adaptor_listener_s
 {
-	int i;
+	void (*create_file_cb)(const char *uri, const char *path, void *user_data);
 } storage_adaptor_listener_s;
 typedef struct _storage_adaptor_listener_s *storage_adaptor_listener_h;
 
-API storage_adaptor_h storage_adaptor_create();
-API service_adaptor_error_e storage_adaptor_destroy(storage_adaptor_h storage);
-API service_adaptor_error_e storage_adaptor_start(storage_adaptor_h storage);
-API service_adaptor_error_e storage_adaptor_stop(storage_adaptor_h storage);
-API service_adaptor_error_e storage_adaptor_register_listener(storage_adaptor_h storage, storage_adaptor_listener_h listener);
-API service_adaptor_error_e storage_adaptor_unregister_listener(storage_adaptor_h storage, storage_adaptor_listener_h listener);
+storage_adaptor_h storage_adaptor_create();
+service_adaptor_error_e storage_adaptor_destroy(storage_adaptor_h storage);
+service_adaptor_error_e storage_adaptor_start(storage_adaptor_h storage);
+service_adaptor_error_e storage_adaptor_stop(storage_adaptor_h storage);
+service_adaptor_error_e storage_adaptor_register_listener(storage_adaptor_h storage, storage_adaptor_listener_h listener);
+service_adaptor_error_e storage_adaptor_unregister_listener(storage_adaptor_h storage, storage_adaptor_listener_h listener);
+service_adaptor_error_e storage_adaptor_create_plugin(const char *uri, const char *name, const char *package, storage_plugin_h *plugin);
+service_adaptor_error_e storage_adaptor_destroy_plugin(storage_plugin_h plugin);
+service_adaptor_error_e storage_adaptor_register_plugin_service(storage_plugin_h plugin, GHashTable *service);
+service_adaptor_error_e storage_adaptor_unregister_plugin_service(storage_plugin_h plugin);
+service_adaptor_error_e storage_adaptor_add_plugin(storage_adaptor_h storage, storage_plugin_h plugin);
+service_adaptor_error_e storage_adaptor_remove_plugin(storage_adaptor_h storage, storage_plugin_h plugin);
+storage_plugin_h storage_adaptor_get_plugin(storage_adaptor_h storage, const char *uri);
+char *storage_adaptor_get_uri(storage_adaptor_h storage, const char *package);
+service_adaptor_error_e storage_adaptor_ref_plugin(storage_adaptor_h storage, const char *uri);
+service_adaptor_error_e storage_adaptor_unref_plugin(storage_adaptor_h storage, const char *uri);
 
 /**
  * @}

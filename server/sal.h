@@ -24,13 +24,50 @@
 #ifndef __TIZEN_CONVERGENCE_SAL_H__
 #define __TIZEN_CONVERGENCE_SAL_H__
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_types.h"
-#include "service_adaptor_internal.h"
+#include <glib.h>
 
-service_adaptor_h sal_get_handle();
+#include "service_adaptor_errors.h"
+
+#include "auth_adaptor.h"
+#include "contact_adaptor.h"
+#include "storage_adaptor.h"
+#include "resource_adaptor.h"
+
+typedef struct _sal_s
+{
+	GList *svc_list;
+
+	auth_adaptor_h			auth;
+	contact_adaptor_h		contact;
+	storage_adaptor_h		storage;
+	resource_adaptor_h		resource;
+
+	auth_adaptor_listener_h		auth_listener;
+	contact_adaptor_listener_h	contact_listener;
+	storage_adaptor_listener_h	storage_listener;
+	resource_adaptor_listener_h	resource_listener;
+
+	GMutex mutex;
+	GCond cond;
+	int start;
+} sal_s;
+typedef struct _sal_s *sal_h;
+
+typedef struct _provider_user_data_s
+{
+	char *uri;
+	char *name;
+	char *package;
+} provider_user_data_s;
+typedef struct _provider_user_data_s *provider_user_data_h;
+
+sal_h sal_get_handle();
 char *sal_get_root_path();
-service_adaptor_error_e sal_connect(service_adaptor_h sal);
-service_adaptor_error_e sal_disconnect(service_adaptor_h sal);
+service_adaptor_error_e sal_adaptor_connect(const char *uri);
+service_adaptor_error_e sal_adaptor_disconnect(const char *uri);
+service_adaptor_error_e sal_adaptor_get_plugins(char ***plugins, int *plugins_size);
+service_adaptor_error_e sal_provider_connect(const char *uri, const char *name, const char *package);
+service_adaptor_error_e sal_provider_disconnect(const char *uri);
+char *sal_provider_get_uri(const char *package);
 
 #endif /* __TIZEN_CONVERGENCE_SAL_H__ */

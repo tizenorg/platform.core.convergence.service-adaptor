@@ -1,9 +1,6 @@
 <manifest>
 	<define>
 		<domain name="service-adaptor" />
-		<provide>
-			<label name="service-adaptor::svc"/>
-		</provide>
 		<permit>
 			<smack permit="system::use_internet" type="w" />
 		</permit>
@@ -22,6 +19,8 @@
 		</request>
 	</define>
 	<assign>
+		<filesystem path="/usr/lib/systemd/system/service-adaptor.service" label="_"/>
+		<filesystem path="/usr/lib/systemd/system/multi-user.target.wants/service-adaptor.service" label="_"/>
 	</assign>
 	<request>
 		<domain name="service-adaptor" />

@@ -26,7 +26,6 @@
 
 #include "storage_adaptor.h"
 
-storage_adaptor_h sal_storage_create_handle();
 storage_adaptor_listener_h sal_storage_register_listener(storage_adaptor_h storage);
 
 #endif /* __TIZEN_CONVERGENCE_SAL_STORAGE_H__ */

@@ -11,6 +11,8 @@ MESSAGE("")
 MESSAGE(">>> current directory: ${CMAKE_CURRENT_SOURCE_DIR}")
 MESSAGE(">>> Build type: ${CMAKE_BUILD_TYPE}")
 
+ADD_DEFINITIONS("-DSERVICE_ADAPTOR_DEBUGGING")
+
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VISIBILITY} -fvisibility=hidden")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,--gc-sections")
 
@@ -21,10 +23,11 @@ SET(TEST-SRCS
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/include
+        ${CMAKE_SOURCE_DIR}/client
 )
 
 INCLUDE(FindPkgConfig)
-pkg_check_modules(test_pkgs REQUIRED dlog glib-2.0)
+pkg_check_modules(test_pkgs REQUIRED dlog glib-2.0 capi-appfw-application)
 
 FOREACH(flag ${test_pkgs_CFLAGS})
         SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
@@ -39,5 +42,5 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS}")
 SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed -pie")
 
 ADD_EXECUTABLE(${TEST-EXE} ${TEST-SRCS})
-TARGET_LINK_LIBRARIES(${TEST-EXE} ${test_pkgs_LDFLAGS} sal-client)
+TARGET_LINK_LIBRARIES(${TEST-EXE} ${test_pkgs_LDFLAGS} service-adaptor)
 INSTALL(TARGETS ${TEST-EXE} DESTINATION bin)

@@ -38,13 +38,6 @@
 //* Public interface definition
 //******************************************************************************
 
-storage_adaptor_h sal_storage_create_handle()
-{
-	storage_adaptor_h storage_adaptor = storage_adaptor_create();
-
-	return storage_adaptor;
-}
-
 storage_adaptor_listener_h sal_storage_register_listener(storage_adaptor_h storage)
 {
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;

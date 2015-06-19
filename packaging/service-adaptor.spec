@@ -1,6 +1,6 @@
 Name:       service-adaptor
 Summary:    Service Adaptor Framework for Convergence
-Version:    0.0.1
+Version:    1.1.0
 Release:    1
 Group:      System/Libraries
 License:    Apache-2.0
@@ -14,6 +14,7 @@ BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(gobject-2.0)
 BuildRequires:  pkgconfig(gthread-2.0)
 BuildRequires:  pkgconfig(capi-base-common)
+BuildRequires:  pkgconfig(capi-appfw-application)
 BuildRequires:  pkgconfig(capi-appfw-app-manager)
 BuildRequires:  pkgconfig(capi-appfw-package-manager)
 BuildRequires:  pkgconfig(libsmack)
@@ -59,6 +60,10 @@ mkdir -p %{buildroot}%{_libdir}/systemd/system/multi-user.target.wants
 install -m 0644 %SOURCE1 %{buildroot}%{_libdir}/systemd/system/
 ln -sf ../service-adaptor.service %{buildroot}%{_libdir}/systemd/system/multi-user.target.wants/
 
+mkdir -p %{buildroot}/usr/lib/systemd/user/tizen-middleware.target.wants
+cp %SOURCE1 %{buildroot}/usr/lib/systemd/user/service-adaptor.service
+ln -s ../service-adaptor.service %{buildroot}/usr/lib/systemd/user/tizen-middleware.target.wants/
+
 mkdir -p %{buildroot}/usr/share/license
 cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor
 cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
@@ -70,17 +75,22 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 
 %files -n service-adaptor
 %manifest service-adaptor.manifest
-%defattr(-,system,system,-)
+#%defattr(-,system,system,-)
+%defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
-%{_bindir}/service-adaptor
+%{_bindir}/service-adaptor-server
 %{_bindir}/sal-test
+/usr/lib/systemd/user/service-adaptor.service
+/usr/lib/systemd/user/tizen-middleware.target.wants/service-adaptor.service
 %{_libdir}/systemd/system/service-adaptor.service
 %{_libdir}/systemd/system/multi-user.target.wants/service-adaptor.service
 /usr/share/license/%{name}
 
 %files -n service-adaptor-devel
-%defattr(-,system,system,-)
+#%defattr(-,system,system,-)
+%defattr(-,root,root,-)
 %{_libdir}/lib*.so
 %{_libdir}/pkgconfig/service-adaptor.pc
 %{_includedir}/service-adaptor/*.h
+%{_includedir}/service-provider/*.h
 /usr/share/license/%{name}-devel

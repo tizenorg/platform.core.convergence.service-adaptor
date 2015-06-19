@@ -30,8 +30,7 @@
 #include "auth_adaptor.h"
 #include "contact_adaptor.h"
 #include "storage_adaptor.h"
-
-#define FILE_PATH_LEN	256
+#include "resource_adaptor.h"
 
 typedef struct _service_adaptor_s
 {
@@ -40,16 +39,17 @@ typedef struct _service_adaptor_s
 	auth_adaptor_h                  auth;
 	contact_adaptor_h               contact;
 	storage_adaptor_h               storage;
+	resource_adaptor_h              resource;
 
 	auth_adaptor_listener_h         auth_listener;
 	contact_adaptor_listener_h      contact_listener;
 	storage_adaptor_listener_h      storage_listener;
+	resource_adaptor_listener_h      resource_listener;
 
 	GMutex mutex;
 	GCond cond;
 	int start;
 } service_adaptor_s;
 typedef struct _service_adaptor_s *service_adaptor_h;
-
 
 #endif /* __TIZEN_CONVERGENCE_SERVICE_ADAPTOR_TYPES_H__ */

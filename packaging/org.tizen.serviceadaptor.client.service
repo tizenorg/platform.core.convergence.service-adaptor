@@ -1,0 +1,6 @@
+[D-BUS Service]
+Name=org.tizen.serviceadaptor.client
+Exec=/bin/false
+SystemdService=service-adaptor.service
+User=system
+Group=system

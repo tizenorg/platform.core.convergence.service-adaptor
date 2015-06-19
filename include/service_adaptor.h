@@ -21,7 +21,10 @@
 #define __TIZEN_CONVERGENCE_SERVICE_ADAPTOR_H__
 
 #include <service_adaptor_errors.h>
-#include <service_adaptor_types.h>
-#include <service_adaptor_internal.h>
+
+#include "sal_service_adaptor.h"
+#include "sal_service_task.h"
+#include "sal_service_auth.h"
+#include "sal_service_storage.h"
 
 #endif /* __TIZEN_CONVERGENCE_SERVICE_ADAPTOR_H__ */

@@ -33,26 +33,24 @@
 //******************************************************************************
 //* Private interface definition
 //******************************************************************************
+void _sal_auth_login_cb(const char *uri, void *user_data)
+{
+}
 
 //******************************************************************************
 //* Public interface definition
 //******************************************************************************
 
-auth_adaptor_h sal_auth_create_handle()
-{
-	auth_adaptor_h auth_adaptor = auth_adaptor_create();
-
-	return auth_adaptor;
-}
-
 auth_adaptor_listener_h sal_auth_register_listener(auth_adaptor_h auth)
 {
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
+	SAL_FN_CALL;
 
 	auth_adaptor_listener_h listener =
 			(auth_adaptor_listener_h) g_malloc0(sizeof(auth_adaptor_listener_s));
 
-	ret = auth_adaptor_register_listener(auth, listener);
+	listener->login_cb = _sal_auth_login_cb;
+
+	int ret = auth_adaptor_register_listener(auth, listener);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret)
 	{
