@@ -43,7 +43,7 @@ ADD_SUBDIRECTORY(test)
 # Define Install Files
 ##########################################################
 
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/packaging/service-adaptor.service DESTINATION /usr/lib/systemd/user)
+INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/packaging/service-adaptor.service DESTINATION ${LIB_INSTALL_DIR}/systemd/user)
 INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/packaging/org.tizen.serviceadaptor.client.service DESTINATION /usr/share/dbus-1/system-services)
 
 CONFIGURE_FILE(service-adaptor.pc.in service-adaptor.pc @ONLY)
