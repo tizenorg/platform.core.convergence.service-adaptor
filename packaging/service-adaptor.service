@@ -1,17 +1,12 @@
 [Unit]
 Description=Service Adaptor daemon
-Requires=tizen-runtime.target
-After=tizen-runtime.target
 
 [Service]
-User=system
-Group=system
-SmackProcessLabel=service-adaptor
 Type=dbus
 BusName=org.tizen.serviceadaptor.client
 ExecStart=/usr/bin/service-adaptor-server
-Restart=always
-RestartSec=1
+Restart=none
+RestartSec=0
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

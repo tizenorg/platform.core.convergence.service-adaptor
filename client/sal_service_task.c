@@ -141,7 +141,7 @@ API int service_task_get_uri(service_task_h task, char **uri)
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == uri, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	*uri = strdup(task->uri);
+	*uri = g_strdup(task->uri);
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }

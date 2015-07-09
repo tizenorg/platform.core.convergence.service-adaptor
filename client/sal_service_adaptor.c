@@ -55,6 +55,7 @@ typedef struct _service_adaptor_s *service_adaptor_h;
 typedef struct _service_plugin_s
 {
 	char *uri;
+	GHashTable *property;
 } service_plugin_s;
 
 service_adaptor_h service_adaptor = NULL;
@@ -188,6 +189,7 @@ API int service_plugin_create(const char *uri, service_plugin_h *plugin)
 	service_plugin_h service_plugin = (service_plugin_h) g_malloc0(sizeof(service_plugin_s));
 
 	service_plugin->uri = strdup(uri);
+	service_plugin->property = g_hash_table_new(g_str_hash, g_str_equal);
 
 	*plugin = service_plugin;
 
@@ -217,6 +219,8 @@ API int service_plugin_add_property(service_plugin_h plugin, const char *key, co
 	RETV_IF(NULL == key, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == value, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
+	g_hash_table_insert(plugin->property, key, value);
+
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
@@ -225,6 +229,8 @@ API int service_plugin_remove_property(service_plugin_h plugin, const char *key)
 	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == key, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	g_hash_table_remove(plugin->property, key);
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -236,7 +242,23 @@ API int service_plugin_get_property(service_plugin_h plugin, const char *key, ch
 	RETV_IF(NULL == key, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == value, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	if (0 < g_hash_table_size(plugin->property))
+	{
+		GHashTableIter iter;
+		gpointer iter_key, iter_value;
+
+		g_hash_table_iter_init(&iter, plugin->property);
+		while (g_hash_table_iter_next(&iter, &iter_key, &iter_value))
+		{
+			if (strcmp(key, (char *) iter_key) == 0)
+			{
+				*value = g_strdup(iter_value);
+				return SERVICE_ADAPTOR_ERROR_NONE;
+			}
+		}
+	}
+
+	return SERVICE_ADAPTOR_ERROR_NO_DATA;
 }
 
 API int service_plugin_login(service_plugin_h plugin, service_plugin_login_cb callback, void *user_data)

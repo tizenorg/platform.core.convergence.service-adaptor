@@ -57,13 +57,12 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 %make_install
 
-mkdir -p %{buildroot}%{_libdir}/systemd/system/multi-user.target.wants
-install -m 0644 %SOURCE1 %{buildroot}%{_libdir}/systemd/system/
-ln -sf ../service-adaptor.service %{buildroot}%{_libdir}/systemd/system/multi-user.target.wants/
+mkdir -p %{buildroot}%{_libdir}/systemd/user/default.target.wants
+ln -s %{_libdir}/systemd/user/service-adaptor.service %{buildroot}%{_libdir}/systemd/user/default.target.wants/service-adaptor.service
 
-mkdir -p %{buildroot}/usr/lib/systemd/user/tizen-middleware.target.wants
-cp %SOURCE1 %{buildroot}/usr/lib/systemd/user/service-adaptor.service
-ln -s ../service-adaptor.service %{buildroot}/usr/lib/systemd/user/tizen-middleware.target.wants/
+mkdir -p %{buildroot}/etc/dbus-1/system.d
+ls -l
+install -m 0644 packaging/org.tizen.serviceadaptor.client.conf %{buildroot}/etc/dbus-1/system.d/org.tizen.serviceadaptor.client.conf
 
 mkdir -p %{buildroot}/usr/share/license
 cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor
@@ -76,19 +75,17 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 
 %files -n service-adaptor
 %manifest service-adaptor.manifest
-#%defattr(-,system,system,-)
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
-%{_bindir}/service-adaptor-server
-%{_bindir}/sal-test
-/usr/lib/systemd/user/service-adaptor.service
-/usr/lib/systemd/user/tizen-middleware.target.wants/service-adaptor.service
-%{_libdir}/systemd/system/service-adaptor.service
-%{_libdir}/systemd/system/multi-user.target.wants/service-adaptor.service
+%caps(cap_mac_admin,cap_chown,cap_dac_override,cap_lease,cap_setgid,cap_setuid=eip) %attr(755,root,root) %{_bindir}/service-adaptor-server
+%caps(cap_mac_admin,cap_chown,cap_dac_override,cap_lease,cap_setgid,cap_setuid=eip) %attr(755,root,root) %{_bindir}/sal-test
+%attr(644,root,root) %{_libdir}/systemd/user/service-adaptor.service
+%attr(644,root,root) %{_libdir}/systemd/user/default.target.wants/service-adaptor.service
+/usr/share/dbus-1/system-services/org.tizen.serviceadaptor.client.service
+/etc/dbus-1/system.d/org.tizen.serviceadaptor.client.conf
 /usr/share/license/%{name}
 
 %files -n service-adaptor-devel
-#%defattr(-,system,system,-)
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so
 %{_libdir}/pkgconfig/service-adaptor.pc

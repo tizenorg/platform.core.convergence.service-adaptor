@@ -78,8 +78,6 @@
 
         #define SAL_FN_CALL DBG(">>>>>>>> called")
         #define SAL_FN_END DBG("<<<<<<<< ended")
-//        #define SAL_FN_CALL INFO(">>>>>>>> called")
-//        #define SAL_FN_END INFO("<<<<<<<< ended")
 
         #define SAL_DBG(fmt, arg...) DBG(fmt, ##arg)
         #define SAL_WARN(fmt, arg...) WARN(fmt, ##arg)
@@ -151,7 +149,8 @@
 #define SAL_STRDUP(dst, ptr) do { \
 	if (ptr) \
 		dst = strdup(ptr); \
-	ptr = NULL; \
+	else \
+		dst = NULL; \
 } while(0)
 
 #define SAL_FREE(ptr) do { \

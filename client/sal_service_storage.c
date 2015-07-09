@@ -89,6 +89,14 @@ API int service_storage_cloud_file_create(service_plugin_h plugin, service_stora
 
 	service_storage_cloud_file_h cloud_file = (service_storage_cloud_file_h) g_malloc0(sizeof(service_storage_cloud_file_s));
 	cloud_file->plugin = plugin;
+	cloud_file->callback = NULL;
+	cloud_file->is_dir = false;
+	cloud_file->size = 0;
+	cloud_file->dir_path = NULL;
+	cloud_file->local_path = NULL;
+	cloud_file->cloud_path = NULL;
+	cloud_file->operation = NULL;
+	cloud_file->files = NULL;
 
 	*file = cloud_file;
 
@@ -100,18 +108,26 @@ API int service_storage_cloud_file_clone(service_storage_cloud_file_h src_file, 
 	SAL_FN_CALL;
 
 	RETV_IF(NULL == src_file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == dst_file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
 	service_storage_cloud_file_h cloud_file = (service_storage_cloud_file_h) g_malloc0(sizeof(service_storage_cloud_file_s));
 	cloud_file->plugin = src_file->plugin;
 	cloud_file->callback = src_file->callback;
 	cloud_file->is_dir = src_file->is_dir;
-	cloud_file->dir_path = strdup(src_file->dir_path);
-	cloud_file->local_path = strdup(src_file->local_path);
-	cloud_file->cloud_path = strdup(src_file->cloud_path);
 	cloud_file->size = src_file->size;
-	cloud_file->operation = strdup(src_file->operation);
+	cloud_file->dir_path = g_strdup(src_file->dir_path);
+	cloud_file->local_path = g_strdup(src_file->local_path);
+	cloud_file->cloud_path = g_strdup(src_file->cloud_path);
+	cloud_file->operation = g_strdup(src_file->operation);
 	// TODO: g_list_copy_deep()
-	cloud_file->files = g_list_copy(src_file->files);
+	if (NULL != src_file->files)
+	{
+		cloud_file->files = g_list_copy(src_file->files);
+	}
+	else
+	{
+		cloud_file->files = NULL;
+	}
 
 	*dst_file = cloud_file;
 
@@ -121,6 +137,8 @@ API int service_storage_cloud_file_clone(service_storage_cloud_file_h src_file, 
 API int service_storage_cloud_file_destroy(service_storage_cloud_file_h file)
 {
 	SAL_FN_CALL;
+
+	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
 	SAL_FREE(file->dir_path);
 	SAL_FREE(file->local_path);
@@ -175,7 +193,7 @@ API int service_storage_cloud_file_get_cloud_path(service_storage_cloud_file_h f
 	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == cloud_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	*cloud_path = strdup(file->cloud_path);
+	*cloud_path = g_strdup(file->cloud_path);
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -199,7 +217,7 @@ API int service_storage_cloud_file_get_local_path(service_storage_cloud_file_h f
 	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == local_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	*local_path = strdup(file->local_path);
+	*local_path = g_strdup(file->local_path);
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -209,7 +227,6 @@ API int service_storage_cloud_file_set_size(service_storage_cloud_file_h file, u
 	SAL_FN_CALL;
 
 	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(0 > size, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
 	file->size = size;
 
@@ -247,7 +264,7 @@ API int service_storage_cloud_file_get_operation(service_storage_cloud_file_h fi
 	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == operation, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	*operation = strdup(file->operation);
+	*operation = g_strdup(file->operation);
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -271,7 +288,7 @@ API int service_storage_cloud_file_foreach_file(service_storage_cloud_file_h fil
 	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	RETV_IF(false == file->is_dir, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(false == file->is_dir, SERVICE_ADAPTOR_ERROR_NO_DATA);
 
 	RETV_IF(0 == g_list_length(file->files), SERVICE_ADAPTOR_ERROR_NO_DATA);
 
