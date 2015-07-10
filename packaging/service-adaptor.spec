@@ -6,6 +6,7 @@ Group:      System/Libraries
 License:    Apache-2.0
 Source0:    %{name}-%{version}.tar.gz
 Source1:    service-adaptor.service
+Source2:    org.tizen.serviceadaptor.client.service
 
 BuildRequires:  cmake
 BuildRequires:  pkgconfig(dlog)
@@ -49,7 +50,9 @@ export FFLAGS="$FFLAGS -DTIZEN_DEBUG_ENABLE"
 %endif
 
 cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix} \
-        -DLIB_INSTALL_DIR:PATH=%{_libdir}
+        -DLIB_INSTALL_DIR:PATH=%{_libdir} \
+	-DTZ_SYS_USER_GROUP=%TZ_SYS_USER_GROUP \
+	-DTZ_SYS_DEFAULT_USER=%TZ_SYS_DEFAULT_USER
 
 make %{?_smp_mflags}
 
@@ -57,12 +60,12 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 %make_install
 
-mkdir -p %{buildroot}%{_libdir}/systemd/user/default.target.wants
-ln -s %{_libdir}/systemd/user/service-adaptor.service %{buildroot}%{_libdir}/systemd/user/default.target.wants/service-adaptor.service
+mkdir -p %{buildroot}%{_unitdir_user}/default.target.wants
+install -m 0644 %SOURCE1 %{buildroot}%{_unitdir_user}/service-adaptor.service
+ln -s ../service-adaptor.service %{buildroot}%{_unitdir_user}/default.target.wants/service-adaptor.service
 
-mkdir -p %{buildroot}/etc/dbus-1/system.d
-ls -l
-install -m 0644 packaging/org.tizen.serviceadaptor.client.conf %{buildroot}/etc/dbus-1/system.d/org.tizen.serviceadaptor.client.conf
+mkdir -p %{buildroot}%{_datadir}/dbus-1/system-services
+install -m 0644 %SOURCE2 %{buildroot}%{_datadir}/dbus-1/system-services/org.tizen.serviceadaptor.client.service
 
 mkdir -p %{buildroot}/usr/share/license
 cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor
@@ -77,12 +80,12 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 %manifest service-adaptor.manifest
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
-%caps(cap_mac_admin,cap_chown,cap_dac_override,cap_lease,cap_setgid,cap_setuid=eip) %attr(755,root,root) %{_bindir}/service-adaptor-server
-%caps(cap_mac_admin,cap_chown,cap_dac_override,cap_lease,cap_setgid,cap_setuid=eip) %attr(755,root,root) %{_bindir}/sal-test
-%attr(644,root,root) %{_libdir}/systemd/user/service-adaptor.service
-%attr(644,root,root) %{_libdir}/systemd/user/default.target.wants/service-adaptor.service
-/usr/share/dbus-1/system-services/org.tizen.serviceadaptor.client.service
-/etc/dbus-1/system.d/org.tizen.serviceadaptor.client.conf
+%{_bindir}/service-adaptor-server
+%{_bindir}/sal-test
+%{_unitdir_user}/service-adaptor.service
+%{_unitdir_user}/default.target.wants/service-adaptor.service
+%{_datadir}/dbus-1/system-services/org.tizen.serviceadaptor.client.service
+%{_sysconfdir}/dbus-1/system.d/org.tizen.serviceadaptor.client.conf
 /usr/share/license/%{name}
 
 %files -n service-adaptor-devel
