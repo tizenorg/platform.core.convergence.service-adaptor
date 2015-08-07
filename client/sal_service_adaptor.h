@@ -45,6 +45,15 @@ typedef enum _service_plugin_type_e
 	SERVICE_PLUGIN_STORAGE  = (0x01 << 1),          /**< Storage service type flag */
 } service_plugin_type_e;
 
+/** 2.4
+ * @brief Type of service in plugin
+ */
+typedef enum _service_plugin_service_type_e
+{
+        SERVICE_PLUGIN_SERVICE_AUTH     = (0x01 << 0),          /**< Auth service type flag */
+        SERVICE_PLUGIN_SERVICE_STORAGE  = (0x01 << 1),          /**< Storage service type flag */
+} service_plugin_service_type_e;
+
 /**
  * @brief Definition for the service_plugin property: The application id be issued from service provider for 3rd party developer.
  * @since_tizen 2.4
@@ -71,6 +80,15 @@ typedef enum _service_plugin_type_e
  * @see service_plugin_get_property()
  */
 #define SERVICE_PLUGIN_PROPERTY_USER_ID		"http://tizen.org/service-adaptor/plugin/property/user_id"
+
+/** 2.4
+* @brief The handle for connection and managing plugin handle of Service Adaptor
+* @details The handle can be created by service_adaptor_create()<br>
+*  When a handle is no longer needed, use service_adaptor_destroy()
+* @see #service_adaptor_create()
+* @see #service_adaptor_destroy()
+*/
+typedef struct _service_adaptor_s *service_adaptor_h;
 
 /**
  * @brief The handle for connection and managing handle of Service Plugin
@@ -117,6 +135,35 @@ typedef void (*service_plugin_login_cb)(int result,
                                          FUNCTION PROTOTYPES
 ==================================================================================================*/
 
+/** 2.4
+* @brief Create Service Adaptor
+* @since_tizen 2.4
+*
+* @param[out]   service_adaptor The Service Adaptor handle
+* @remarks      @a service_adaptor must be released memory using service_adaptor_destroy(), when a program no longer needs any function of Service Adaptor
+* @see          service_adaptor_destroy()
+* @return 0 on success, otherwise a negative error value
+* @retval #SERVICE_ADAPTOR_ERROR_NONE Successful
+* @retval #SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
+*/
+int service_adaptor_create(service_adaptor_h *service_adaptor);
+
+/** 2.4
+* @brief        Destroy Service Adaptor
+* @details      It must called after a program no longer needs any function of Service Adaptor
+* @since_tizen 2.4
+*
+* @param[in]    service_adaptor The handle of Service Adaptor
+* @see          service_adaptor_create()
+* @return 0 on success, otherwise a negative error value
+* @retval #SERVICE_ADAPTOR_ERROR_NONE Successful
+* @retval #SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
+* @pre  @a service_adaptor must be issued by service_adaptor_create()
+*/
+int service_adaptor_destroy(service_adaptor_h service_adaptor);
+
 /**
  * @brief Create Service Adaptor
  * @since_tizen	2.4
@@ -146,6 +193,25 @@ int service_adaptor_connect();
  */
 int service_adaptor_disconnect();
 
+/** 2.4
+* @brief Foreach the list of plugin
+* @details Iterate to all installed plugin
+* @since_tizen 2.4
+*
+* @param[in]    service_adaptor The handle of Service Adaptor
+* @param[in]    callback        The callback for foreach plugin
+* @param[in]    user_data       Passed data to callback
+* @return 0 on success, otherwise a negative error value
+* @retval #SERVICE_ADAPTOR_ERROR_NONE Successful
+* @retval #SERVICE_ADAPTOR_ERROR_NO_DATA There is no available plugins
+* @retval #SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
+* @pre  @a service_adaptor must be issued by service_adaptor_create()
+*/
+int service_adaptor_foreach_plugin(service_adaptor_h service_adaptor,
+                                                service_adaptor_plugin_cb callback,
+                                                void *user_data);
+
 /**
  * @brief Foreach the list of plugin
  * @details Iterate to all installed plugin
@@ -160,7 +226,7 @@ int service_adaptor_disconnect();
  * @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
  * @pre  @a service_adaptor must be issued by service_adaptor_create()
  */
-int service_adaptor_foreach_plugin(service_adaptor_plugin_cb callback,
+int service_adaptor_foreach_plugin2(service_adaptor_plugin_cb callback,
 		void *user_data);
 
 /**
@@ -206,6 +272,26 @@ int service_adaptor_add_plugin(service_adaptor_h adaptor_client, const char *plu
 int service_adaptor_remove_plugin(service_adaptor_h adaptor_client, const char *plugin_uri);
 int service_adaptor_get_auth(service_adaptor_h adaptor_client, const char *uri, service_auth_h *auth);
 */
+
+/** 2.4
+* @brief Create service plugin handle
+* @details Create plugin handle using @a plugin_uri
+* @since_tizen 2.4
+*
+* @param[in]    service_adaptor The handle of Service Adaptor
+* @param[in]    plugin_uri      The specfic string for use plugin, this values are set by plugin
+* @param[out]   plugin          The handle for use Plugin APIs
+* @remarks      @a plugin must be released memory using service_plugin_destroy() when you no longer needs plugin's API
+* @see          service_plugin_destroy()
+* @return 0 on success, otherwise a negative error value
+* @retval #SERVICE_ADAPTOR_ERROR_NONE Successful
+* @retval #SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
+* @pre  @a service_adaptor must be issued by service_adaptor_create()
+*/
+int service_adaptor_create_plugin(service_adaptor_h service_adaptor,
+                                                const char *plugin_uri,
+                                                service_plugin_h *plugin);
 
 /**
  * @brief Create service plugin handle
@@ -324,6 +410,32 @@ int service_plugin_get_property(service_plugin_h plugin,
  */
 int service_plugin_login(service_plugin_h plugin, service_plugin_login_cb callback, void *user_data);
 
+/** 2.4
+* @brief Requests start initalization for service plugin
+* @since_tizen 2.4
+*
+* @param[in]    plugin          The handle for use Plugin APIs
+* @param[in]    service_mask    The flag for use service plugins, this flag can be masked multiple enum (#service_plugin_service_type_e)
+* @remarks      @a service_mask must be input using 'bit or' operation with #service_plugin_service_type_e
+* @remarks      - for example,
+* @remarks      &nbsp;&nbsp;&nbsp;&nbsp;        <b>int</b> @a service_mask |= SERVIE_PLUGIN_SERVICE_AUTH;
+* @remarks      &nbsp;&nbsp;&nbsp;&nbsp;        @a service_mask |= SERVICE_PLUGIN_SERVICE_STORAGE;
+* @remarks      &nbsp;&nbsp;&nbsp;&nbsp;        <b>int</b> ret = service_plugin_start(@a m_plugin, @a service_mask);
+* @remarks      If a program needs to stop plugin manually, use #service_plugin_stop(). <br>But in #service_plugin_destroy(), automatically stop service plugin
+* @see          service_plugin_service_type_e
+* @see          service_plugin_stop()
+* @return 0 on success, otherwise a negative error value
+* @return If return value is #SERVICE_ADAPTOR_ERROR_NOT_AUTHORIZED, request authorization to signup application
+* @retval #SERVICE_ADAPTOR_ERROR_NONE Successful
+* @retval #SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER Invalid parameter
+* @retval #SERVICE_ADAPTOR_ERROR_NOT_AUTHORIZED Need authorization
+* @retval #SERVICE_ADAPTOR_ERROR_TIMED_OUT Timed out
+* @retval #SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE IPC failed with Service Adaptor Daemon
+* @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
+*/
+int service_plugin_start(service_plugin_h plugin,
+                                                int service_mask);
+
 /**
  * @brief Requests start initalization for service plugin
  * @since_tizen 2.4
@@ -346,7 +458,8 @@ int service_plugin_login(service_plugin_h plugin, service_plugin_login_cb callba
  * @retval #SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE IPC failed with Service Adaptor Daemon
  * @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
  */
-int service_plugin_start(service_plugin_h plugin);
+int service_plugin_start2(service_plugin_h plugin);
+
 /**
  * @brief Requests stop manually for service plugin
  * @since_tizen 2.4

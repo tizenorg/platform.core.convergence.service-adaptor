@@ -47,7 +47,7 @@ typedef struct _service_adaptor_s
 	GList *plugins;		/* char **plugins (uri) */
 	GList *started_plugins;	/* service_plugin_h **started_plugins */
 } service_adaptor_s;
-typedef struct _service_adaptor_s *service_adaptor_h;
+//typedef struct _service_adaptor_s *service_adaptor_h;
 
 /**
  * @brief Describes infromation about Plugin Handle
@@ -71,6 +71,22 @@ service_adaptor_h service_adaptor = NULL;
 //******************************************************************************
 //* Public interface definition
 //******************************************************************************
+
+API int service_adaptor_create(service_adaptor_h *service_adaptor)
+{
+	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	*service_adaptor = (service_adaptor_h) g_malloc0(sizeof(service_adaptor_s));
+
+	return service_adaptor_connect();
+}
+
+API int service_adaptor_destroy(service_adaptor_h service_adaptor)
+{
+	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return service_adaptor_disconnect();
+}
 
 API int service_adaptor_connect()
 {
@@ -135,7 +151,14 @@ API int service_adaptor_disconnect()
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-API int service_adaptor_foreach_plugin(service_adaptor_plugin_cb callback, void *user_data)
+API int service_adaptor_foreach_plugin(service_adaptor_h service_adaptor, service_adaptor_plugin_cb callback, void *user_data)
+{
+	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return service_adaptor_foreach_plugin2(callback, user_data);
+}
+
+API int service_adaptor_foreach_plugin2(service_adaptor_plugin_cb callback, void *user_data)
 {
 	SAL_FN_CALL;
 
@@ -173,6 +196,13 @@ API int service_adaptor_get_last_error_message(char **message)
 	RETV_IF(NULL == message, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_adaptor_create_plugin(service_adaptor_h service_adaptor, const char *plugin_uri, service_plugin_h *plugin)
+{
+	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return service_plugin_create(plugin_uri, plugin);
 }
 
 API int service_plugin_create(const char *uri, service_plugin_h *plugin)
@@ -219,7 +249,7 @@ API int service_plugin_add_property(service_plugin_h plugin, const char *key, co
 	RETV_IF(NULL == key, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == value, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	g_hash_table_insert(plugin->property, key, value);
+	g_hash_table_insert(plugin->property, g_strdup(key), g_strdup(value));
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -276,7 +306,14 @@ API int service_plugin_login(service_plugin_h plugin, service_plugin_login_cb ca
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-API int service_plugin_start(service_plugin_h plugin)
+API int service_plugin_start(service_plugin_h plugin, int service_mask)
+{
+	RETV_IF(0 <= service_mask, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return service_plugin_start2(plugin);
+}
+
+API int service_plugin_start2(service_plugin_h plugin)
 {
 	SAL_FN_CALL;
 

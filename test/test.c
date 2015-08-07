@@ -30,7 +30,7 @@ void _service_plugin_login_callback(int result, void *user_data)
 {
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
-	ret = service_plugin_start(service_plugin);
+	ret = service_plugin_start2(service_plugin);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret)
 	{
@@ -118,7 +118,7 @@ int main()
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
 	ret = service_adaptor_connect();
-	ret = service_adaptor_foreach_plugin(_service_adaptor_plugin_callback, NULL);
+	ret = service_adaptor_foreach_plugin2(_service_adaptor_plugin_callback, NULL);
 
 	loop = g_main_loop_new(NULL, FALSE);
 

@@ -328,3 +328,214 @@ API int service_storage_cloud_file_destroy_task(service_task_h task)
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
+
+//******************************************************************************
+//* 2.4 Public interface definition
+//******************************************************************************
+
+API int service_storage_get_file_list(service_plugin_h plugin,
+						const char *dir_path,
+						service_storage_file_list_cb callback,
+						void *user_data)
+{
+	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == dir_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_remove(service_plugin_h plugin,
+						const char *remove_path,
+						service_storage_result_cb callback,
+						void *user_data)
+{
+	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == remove_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_create_upload_task(service_plugin_h plugin,
+						const char *file_path,
+						const char *upload_path,
+						service_storage_task_h *task)
+{
+	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == file_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == upload_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_create_download_task(service_plugin_h plugin,
+						const char *storage_path,
+						const char *download_path,
+						service_storage_task_h *task)
+{
+	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == storage_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == download_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_create_download_thumbnail_task (service_plugin_h plugin,
+                                                const char *storage_path,
+                                                const char *download_path,
+                                                int thumbnail_size,
+                                                service_storage_task_h *task)
+{
+	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == storage_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == download_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(0 < thumbnail_size, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_destroy_task(service_storage_task_h task)
+{
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_start_task(service_storage_task_h task)
+{
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_cancel_task(service_storage_task_h task)
+{
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_set_task_progress_cb(service_storage_task_h task,
+						service_storage_task_progress_cb callback,
+						void *user_data)
+{
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_unset_task_progress_cb(service_storage_task_h task)
+{
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_set_task_state_changed_cb(service_storage_task_h task,
+						service_storage_task_state_cb callback,
+						void *user_data)
+{
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_unset_task_state_changed_cb(service_storage_task_h task)
+{
+	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_list_clone(service_storage_file_list_h src_list,
+						service_storage_file_list_h *dst_list)
+{
+	RETV_IF(NULL == src_list, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == dst_list, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_list_destroy(service_storage_file_list_h list)
+{
+	RETV_IF(NULL == list, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_list_get_length(service_storage_file_list_h list,
+						int *length)
+{
+	RETV_IF(NULL == list, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == length, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_list_foreach_file(service_storage_file_list_h list,
+						service_storage_file_cb callback,
+						void *user_data)
+{
+	RETV_IF(NULL == list, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_clone(service_storage_file_h src_file,
+						service_storage_file_h *dst_file)
+{
+	RETV_IF(NULL == src_file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == dst_file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_destroy(service_storage_file_h file)
+{
+	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_is_dir(service_storage_file_h file,
+						bool *is_dir)
+{
+	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == is_dir, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_get_size(service_storage_file_h file,
+						unsigned long long *size)
+{
+	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == size, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_get_logical_path(service_storage_file_h file,
+						char **path)
+{
+	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
+
+API int service_storage_file_get_physical_path(service_storage_file_h file,
+						char **path)
+{
+	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	return SERVICE_ADAPTOR_ERROR_NONE;
+}
