@@ -153,12 +153,14 @@ API int service_adaptor_disconnect()
 
 API int service_adaptor_foreach_plugin(service_adaptor_h service_adaptor, service_adaptor_plugin_cb callback, void *user_data)
 {
+	SAL_FN_CALL;
+
 	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	return service_adaptor_foreach_plugin2(callback, user_data);
+	return service_adaptor_foreach_service_plugin(callback, user_data);
 }
 
-API int service_adaptor_foreach_plugin2(service_adaptor_plugin_cb callback, void *user_data)
+API int service_adaptor_foreach_service_plugin(service_adaptor_plugin_cb callback, void *user_data)
 {
 	SAL_FN_CALL;
 
@@ -195,7 +197,7 @@ API int service_adaptor_get_last_error_message(char **message)
 	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == message, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SERVICE_ADAPTOR_ERROR_NO_DATA;
 }
 
 API int service_adaptor_create_plugin(service_adaptor_h service_adaptor, const char *plugin_uri, service_plugin_h *plugin)
@@ -308,12 +310,12 @@ API int service_plugin_login(service_plugin_h plugin, service_plugin_login_cb ca
 
 API int service_plugin_start(service_plugin_h plugin, int service_mask)
 {
-	RETV_IF(0 <= service_mask, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(0 >= service_mask, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	return service_plugin_start2(plugin);
+	return service_plugin_start_all(plugin);
 }
 
-API int service_plugin_start2(service_plugin_h plugin)
+API int service_plugin_start_all(service_plugin_h plugin)
 {
 	SAL_FN_CALL;
 

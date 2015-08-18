@@ -50,6 +50,11 @@ typedef struct _service_storage_cloud_file_s
 	GList *files;
 } service_storage_cloud_file_s;
 
+typedef struct _service_storage_task_s
+{
+        char *service_handle_name;
+}service_storage_task_t;
+
 /*==================================================================================================
                                          FUNCTION PROTOTYPES
 ==================================================================================================*/

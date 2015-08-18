@@ -41,6 +41,11 @@ typedef struct _service_task_s
 
 	service_auth_oauth1_h oauth1;
 	service_storage_cloud_file_h cloud_file;
+
+	// temp
+	service_storage_task_progress_cb storage_progress_callback;
+	service_storage_task_state_cb storage_state_callback;
+	void *user_data;
 } service_task_s;
 
 /*==================================================================================================

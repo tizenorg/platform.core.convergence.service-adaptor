@@ -367,6 +367,17 @@ API int service_storage_create_upload_task(service_plugin_h plugin,
 	RETV_IF(NULL == upload_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
+	service_storage_cloud_file_h file = NULL;
+	service_storage_cloud_file_create(plugin, &file);
+	service_storage_cloud_file_set_operation(file, SERVICE_STORAGE_CLOUD_UPLOAD_FILE_URI);
+	service_storage_cloud_file_set_cloud_path(file, upload_path);
+	service_storage_cloud_file_set_local_path(file, file_path);
+
+	service_task_h service_task = (service_task_h) g_malloc0(sizeof(service_task_s));
+	service_task->cloud_file = file;
+
+	*task = (service_storage_task_h) service_task;
+
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
@@ -380,6 +391,17 @@ API int service_storage_create_download_task(service_plugin_h plugin,
 	RETV_IF(NULL == download_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
+	service_storage_cloud_file_h file = NULL;
+	service_storage_cloud_file_create(plugin, &file);
+	service_storage_cloud_file_set_operation(file, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_URI);
+	service_storage_cloud_file_set_cloud_path(file, storage_path);
+	service_storage_cloud_file_set_local_path(file, download_path);
+
+	service_task_h service_task = (service_task_h) g_malloc0(sizeof(service_task_s));
+	service_task->cloud_file = file;
+
+	*task = (service_storage_task_h) service_task;
+
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
@@ -392,8 +414,19 @@ API int service_storage_create_download_thumbnail_task (service_plugin_h plugin,
 	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == storage_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == download_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(0 < thumbnail_size, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(0 > thumbnail_size, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	service_storage_cloud_file_h file = NULL;
+	service_storage_cloud_file_create(plugin, &file);
+	service_storage_cloud_file_set_operation(file, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_THUMBNAIL_URI);
+	service_storage_cloud_file_set_cloud_path(file, storage_path);
+	service_storage_cloud_file_set_local_path(file, download_path);
+
+	service_task_h service_task = (service_task_h) g_malloc0(sizeof(service_task_s));
+	service_task->cloud_file = file;
+
+	*task = (service_storage_task_h) service_task;
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -402,20 +435,21 @@ API int service_storage_destroy_task(service_storage_task_h task)
 {
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return service_storage_cloud_file_destroy_task((service_task_h) task);
 }
 
 API int service_storage_start_task(service_storage_task_h task)
 {
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return service_task_start((service_task_h) task);
 }
 
 API int service_storage_cancel_task(service_storage_task_h task)
 {
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
+//	return service_task_stop((service_task_h) task);
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
@@ -426,12 +460,20 @@ API int service_storage_set_task_progress_cb(service_storage_task_h task,
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
+	service_task_h service_task = (service_task_h) task;
+	service_task->storage_progress_callback = callback;
+	service_task->user_data = user_data;
+
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
 API int service_storage_unset_task_progress_cb(service_storage_task_h task)
 {
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	service_task_h service_task = (service_task_h) task;
+	service_task->storage_progress_callback = NULL;
+	service_task->user_data = NULL;
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -443,12 +485,20 @@ API int service_storage_set_task_state_changed_cb(service_storage_task_h task,
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
+	service_task_h service_task = (service_task_h) task;
+	service_task->storage_state_callback = callback;
+	service_task->user_data = user_data;
+
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
 API int service_storage_unset_task_state_changed_cb(service_storage_task_h task)
 {
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	service_task_h service_task = (service_task_h) task;
+	service_task->storage_state_callback = NULL;
+	service_task->user_data = NULL;
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }

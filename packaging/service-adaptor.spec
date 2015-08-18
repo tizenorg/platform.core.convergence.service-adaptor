@@ -1,6 +1,6 @@
 Name:       service-adaptor
 Summary:    Service Adaptor Framework for Convergence
-Version:    1.1.0
+Version:    1.1.2
 Release:    1
 Group:      System/Libraries
 License:    Apache-2.0

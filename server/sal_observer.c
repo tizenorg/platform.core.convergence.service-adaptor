@@ -52,6 +52,8 @@
  */
 static bool _sal_app_meta_cb(const char *key, const char *value, void *user_data)
 {
+	SAL_FN_CALL;
+
 	provider_user_data_h provider_user_data = (provider_user_data_h) user_data;
 
 	if ((NULL != key) && (NULL != value))
@@ -75,6 +77,8 @@ static bool _sal_app_meta_cb(const char *key, const char *value, void *user_data
  */
 static bool _sal_app_info_cb(package_info_app_component_type_e comp_type, const char *app_id, void *user_data)
 {
+	SAL_FN_CALL;
+
 	app_info_h app_info = NULL;
 	int ret = PACKAGE_MANAGER_ERROR_NONE;
 	char *package = (char *) user_data;
@@ -105,6 +109,8 @@ static void _sal_package_event_cb(const char *type,
                 package_manager_error_e error,
                 void *user_data)
 {
+	SAL_FN_CALL;
+
         if ((PACKAGE_MANAGER_EVENT_TYPE_INSTALL == event_type) && (PACKAGE_MANAGER_EVENT_STATE_COMPLETED == event_state))
         {
 		int ret = PACKAGE_MANAGER_ERROR_NONE;
@@ -147,6 +153,8 @@ static void _sal_package_event_cb(const char *type,
  */
 static bool _sal_package_info_cb(package_info_h package_info, void *user_data)
 {
+	SAL_FN_CALL;
+
 	int ret = PACKAGE_MANAGER_ERROR_NONE;
 
 	char *package = NULL;
@@ -170,6 +178,8 @@ static bool _sal_package_info_cb(package_info_h package_info, void *user_data)
  */
 service_adaptor_error_e sal_observer_start()
 {
+	SAL_FN_CALL;
+
 	int ret = 0;
 	package_manager_h package = NULL;
 
@@ -188,6 +198,8 @@ service_adaptor_error_e sal_observer_start()
  */
 service_adaptor_error_e sal_observer_register_existed_plugin()
 {
+	SAL_FN_CALL;
+
 	int ret = PACKAGE_MANAGER_ERROR_NONE;
 
 	ret = package_manager_foreach_package_info(_sal_package_info_cb, NULL);

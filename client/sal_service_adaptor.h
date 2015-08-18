@@ -226,7 +226,7 @@ int service_adaptor_foreach_plugin(service_adaptor_h service_adaptor,
  * @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
  * @pre  @a service_adaptor must be issued by service_adaptor_create()
  */
-int service_adaptor_foreach_plugin2(service_adaptor_plugin_cb callback,
+int service_adaptor_foreach_service_plugin(service_adaptor_plugin_cb callback,
 		void *user_data);
 
 /**
@@ -458,7 +458,7 @@ int service_plugin_start(service_plugin_h plugin,
  * @retval #SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE IPC failed with Service Adaptor Daemon
  * @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
  */
-int service_plugin_start2(service_plugin_h plugin);
+int service_plugin_start_all(service_plugin_h plugin);
 
 /**
  * @brief Requests stop manually for service plugin

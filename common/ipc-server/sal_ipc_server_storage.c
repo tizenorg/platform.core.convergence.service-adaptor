@@ -108,18 +108,26 @@ int _cloud_execute_operation(storage_plugin_h plugin, service_storage_cloud_file
 	}
 	else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_URI))
 	{
+		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
+
 		return ret;
 	}
 	else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_UPLOAD_FILE_URI))
 	{
+		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
+
 		return ret;
 	}
 	else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_THUMBNAIL_URI))
 	{
+		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
+
 		return ret;
 	}
 	else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_GET_FILE_LIST_URI))
 	{
+		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
+
 		return ret;
 	}
 

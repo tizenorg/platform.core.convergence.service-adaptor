@@ -65,7 +65,15 @@ static void _service_task_async_func(gpointer data, gpointer user_data)
 		return;
 	}
 
-	service_tasks = g_list_append(service_tasks, task);
+	// TODO: in IPC
+	if (NULL != task->storage_progress_callback)
+	{
+		task->storage_progress_callback(100, 100, task->user_data);
+	}
+	if (NULL != task->storage_state_callback)
+	{
+		task->storage_state_callback(SERVICE_STORAGE_TASK_COMPLETED, task->user_data);
+	}
 }
 
 //******************************************************************************
@@ -96,6 +104,8 @@ API int service_task_start(service_task_h task)
 	SAL_FN_CALL;
 
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	service_tasks = g_list_append(service_tasks, task);
 
 	g_thread_pool_push(thread_pool, (gpointer) task, NULL);
 
