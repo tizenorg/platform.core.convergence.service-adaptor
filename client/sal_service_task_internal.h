@@ -45,6 +45,8 @@ typedef struct _service_task_s
 	// temp
 	service_storage_task_progress_cb storage_progress_callback;
 	service_storage_task_state_cb storage_state_callback;
+	service_storage_result_cb storage_result_callback;
+	service_storage_file_list_cb storage_file_list_callback;
 	void *user_data;
 } service_task_s;
 

@@ -53,6 +53,9 @@ typedef struct _storage_provider_s
 {
 	// Cloud
 	service_adaptor_error_e (*cloud_remove_file)(const char *cloud_path);
+	service_adaptor_error_e (*cloud_download_file)(const char *cloud_path, const char *local_path);
+	service_adaptor_error_e (*cloud_upload_file)(const char *local_path, const char *cloud_path);
+	service_adaptor_error_e (*cloud_download_file_thumbnail)(const char *cloud_path, const char *local_path);
 
 	// Posix
 } storage_provider_s;

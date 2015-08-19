@@ -74,6 +74,18 @@ static void _service_task_async_func(gpointer data, gpointer user_data)
 	{
 		task->storage_state_callback(SERVICE_STORAGE_TASK_COMPLETED, task->user_data);
 	}
+	if (NULL != task->storage_result_callback)
+	{
+		task->storage_result_callback(SERVICE_ADAPTOR_ERROR_NONE, task->user_data);
+	}
+	if (NULL != task->storage_file_list_callback)
+	{
+		service_storage_cloud_file_h file_list = (service_storage_cloud_file_h) g_malloc0(sizeof(service_storage_cloud_file_s));
+		file_list->is_dir = false;
+		file_list->cloud_path = "/sample.txt";
+		file_list->size = 1;
+		task->storage_file_list_callback(SERVICE_ADAPTOR_ERROR_NONE, (service_storage_cloud_file_h) file_list, task->user_data);
+	}
 }
 
 //******************************************************************************
