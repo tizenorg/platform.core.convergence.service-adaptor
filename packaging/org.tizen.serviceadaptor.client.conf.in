@@ -4,7 +4,7 @@
 <busconfig>
     <policy group="users">
         <allow own="org.tizen.serviceadaptor.client"/>
-	<allow send_type="method_call"/>
+    	<allow send_destination="org.tizen.serviceadaptor.client"/>
     </policy>
     <policy at_console="true">
     	<allow send_destination="org.tizen.serviceadaptor.client"/>
