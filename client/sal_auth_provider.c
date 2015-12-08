@@ -55,15 +55,13 @@ API app_control_h auth_provider_message(auth_provider_h provider, const char *op
 
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
-	if (0 == strcmp(operation, OAUTH1_0_GET_ACCESS_TOKEN_URI))
-	{
+	if (0 == strcmp(operation, OAUTH1_0_GET_ACCESS_TOKEN_URI)) {
 		app_control_create(&reply);
 
 		char *access_token = NULL;
 		ret = provider->oauth1_get_access_token(&access_token);
 
-		if (SERVICE_ADAPTOR_ERROR_NONE != ret)
-		{
+		if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
 			SAL_ERR("oauth1_get_access_token() Fail (%d)", ret);
 			app_control_add_extra_data(reply, PLUGIN_RESULT_KEY, PLUGIN_RESULT_VALUE_FAILURE);
 			return reply;
@@ -85,23 +83,19 @@ API int auth_provider_add_extra_data(auth_provider_h provider, app_control_h rep
 
 	app_control_add_extra_data(reply, PLUGIN_KEY_AUTH, PLUGIN_VALUE_TRUE);
 
-	if (NULL != provider->oauth1_get_access_token)
-	{
+	if (NULL != provider->oauth1_get_access_token) {
 		app_control_add_extra_data(reply, OAUTH1_0_GET_ACCESS_TOKEN_URI, PLUGIN_VALUE_TRUE);
 	}
 
-	if (NULL != provider->oauth1_get_extra_data)
-	{
+	if (NULL != provider->oauth1_get_extra_data) {
 		app_control_add_extra_data(reply, OAUTH1_0_GET_EXTRA_DATA_URI, PLUGIN_VALUE_TRUE);
 	}
 
-	if (NULL != provider->oauth2_get_access_token)
-	{
+	if (NULL != provider->oauth2_get_access_token) {
 		app_control_add_extra_data(reply, OAUTH2_0_GET_ACCESS_TOKEN_URI, PLUGIN_VALUE_TRUE);
 	}
 
-	if (NULL != provider->oauth2_get_extra_data)
-	{
+	if (NULL != provider->oauth2_get_extra_data) {
 		app_control_add_extra_data(reply, OAUTH2_0_GET_EXTRA_DATA_URI, PLUGIN_VALUE_TRUE);
 	}
 

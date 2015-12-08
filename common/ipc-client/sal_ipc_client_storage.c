@@ -27,17 +27,17 @@
 #include "sal_service_storage.h"
 #include "sal_service_storage_internal.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 int _get_cloud_file(GVariant *reply_info, service_storage_cloud_file_h *file)
 {
@@ -64,8 +64,7 @@ int _get_cloud_file(GVariant *reply_info, service_storage_cloud_file_h *file)
 
 	gsize files_size = g_variant_n_children(info[idx]);
 
-	for (gsize i = 0; i < files_size; i++)
-	{
+	for (gsize i = 0; i < files_size; i++) {
 		GVariant *files_struct;
 		GVariant *files_entry_v = g_variant_get_child_value(info[idx], i);
 		files_struct = g_variant_get_child_value(files_entry_v, 0);
@@ -77,16 +76,16 @@ int _get_cloud_file(GVariant *reply_info, service_storage_cloud_file_h *file)
 
 	ipc_destroy_variant_info(info, info_size);
 
-	// TODO: reorder files because it is just serialized. it makes tree structure.
+	/* TODO: reorder files because it is just serialized. it makes tree structure. */
 
 	*file = cloud_file;
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API int ipc_service_storage_cloud_file(const char *uri, service_storage_cloud_file_h req_file, service_storage_cloud_file_h *res_file)
 {

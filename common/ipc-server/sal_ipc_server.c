@@ -27,9 +27,9 @@
 #include "sal_ipc_server_auth.h"
 #include "sal_ipc_server_storage.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
 /**
  * D-Bus server thread
@@ -115,8 +115,7 @@ static const gchar introspection_xml[] =
 /**
  * information for method call
  */
-typedef struct _method_call_s
-{
+typedef struct _method_call_s {
 	GDBusConnection *connection;
 	gchar *sender;
 	gchar *object_path;
@@ -128,13 +127,13 @@ typedef struct _method_call_s
 } method_call_s;
 typedef struct _method_call_s *method_call_h;
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 static void _method_call_async_func(gpointer data, gpointer user_data)
 {
@@ -146,8 +145,7 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 
 	SAL_INFO("Call %s", handle->method_name);
 
-	if (0 == strncmp(handle->method_name, DBUS_SERVICE_ADAPTOR, DBUS_NAME_LENGTH))
-	{
+	if (0 == strncmp(handle->method_name, DBUS_SERVICE_ADAPTOR, DBUS_NAME_LENGTH)) {
 		service_adaptor_method_call(handle->connection,
 				handle->sender,
 				handle->object_path,
@@ -156,9 +154,7 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 				handle->parameters,
 				handle->invocation,
 				handle->user_data);
-	}
-	else if (0 == strncmp(handle->method_name, DBUS_SERVICE_PLUGIN, DBUS_NAME_LENGTH))
-	{
+	} else if (0 == strncmp(handle->method_name, DBUS_SERVICE_PLUGIN, DBUS_NAME_LENGTH)) {
 		service_plugin_method_call(handle->connection,
 				handle->sender,
 				handle->object_path,
@@ -167,9 +163,7 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 				handle->parameters,
 				handle->invocation,
 				handle->user_data);
-	}
-	else if (0 == strncmp(handle->method_name, DBUS_SERVICE_AUTH, DBUS_NAME_LENGTH))
-	{
+	} else if (0 == strncmp(handle->method_name, DBUS_SERVICE_AUTH, DBUS_NAME_LENGTH)) {
 		service_auth_method_call(handle->connection,
 				handle->sender,
 				handle->object_path,
@@ -178,9 +172,7 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 				handle->parameters,
 				handle->invocation,
 				handle->user_data);
-	}
-	else if (0 == strncmp(handle->method_name, DBUS_SERVICE_STORAGE, DBUS_NAME_LENGTH))
-	{
+	} else if (0 == strncmp(handle->method_name, DBUS_SERVICE_STORAGE, DBUS_NAME_LENGTH)) {
 		service_storage_method_call(handle->connection,
 				handle->sender,
 				handle->object_path,
@@ -287,8 +279,7 @@ static gboolean _handle_set_property(GDBusConnection *connection,
 
 	gboolean ret = false;
 
-	if (NULL == *error)
-	{
+	if (NULL == *error) {
 		ret = true;
 	}
 
@@ -298,8 +289,7 @@ static gboolean _handle_set_property(GDBusConnection *connection,
 /**
  * D-Bus handlers vtable.
  */
-static const GDBusInterfaceVTable interface_vtable =
-{
+static const GDBusInterfaceVTable interface_vtable = {
 	_handle_method_call,
 	_handle_get_property,
 	_handle_set_property
@@ -364,15 +354,14 @@ static void _on_name_lost(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	if (NULL != dbus_connection)
-	{
+	if (NULL != dbus_connection) {
 		g_object_unref(dbus_connection);
 		dbus_connection = NULL;
 	}
 
 	SAL_INFO("Unexpected D-bus bus name lost");
 
-	// Send SIGINT to main thread to stop File Manager process and cleanly close Service Adaptor
+	/* Send SIGINT to main thread to stop File Manager process and cleanly close Service Adaptor */
 	kill(getpid(), SIGINT);
 }
 
@@ -398,8 +387,7 @@ service_adaptor_error_e _sal_ipc_server_start()
 			NULL,
 			NULL);
 
-	if (0 == owner_id)
-	{
+	if (0 == owner_id) {
 		g_dbus_node_info_unref(introspection_data);
 		introspection_data = NULL;
 
@@ -413,19 +401,16 @@ service_adaptor_error_e _sal_ipc_server_stop()
 {
 	SAL_FN_CALL;
 
-	if (NULL != thread_pool)
-	{
+	if (NULL != thread_pool) {
 		g_thread_pool_free(thread_pool, TRUE, TRUE);
 	}
 
-	if (0 != owner_id)
-	{
+	if (0 != owner_id) {
 		g_bus_unown_name(owner_id);
 		owner_id = 0;
 	}
 
-	if (NULL != introspection_data)
-	{
+	if (NULL != introspection_data) {
 		g_dbus_node_info_unref(introspection_data);
 		introspection_data = NULL;
 	}
@@ -451,8 +436,7 @@ static gpointer _dbus_server_thread_func(gpointer data)
 
 	ret = _sal_ipc_server_start();
 
-	if (SERVICE_ADAPTOR_ERROR_NONE == ret)
-	{
+	if (SERVICE_ADAPTOR_ERROR_NONE == ret) {
 		g_main_loop_run(dbus_server_loop);
 	}
 
@@ -467,9 +451,9 @@ static gpointer _dbus_server_thread_func(gpointer data)
 	return NULL;
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API service_adaptor_error_e sal_ipc_server_init()
 {
@@ -486,28 +470,23 @@ API service_adaptor_error_e sal_ipc_server_deinit()
 {
 	SAL_FN_CALL;
 
-	if (NULL != dbus_server_loop)
-	{
-		if (g_main_loop_is_running(dbus_server_loop))
-		{
+	if (NULL != dbus_server_loop) {
+		if (g_main_loop_is_running(dbus_server_loop)) {
 			g_main_loop_quit(dbus_server_loop);
 		}
 	}
 
-	if (NULL != dbus_server_thread)
-	{
+	if (NULL != dbus_server_thread) {
 		g_thread_join(dbus_server_thread);
 		dbus_server_thread = NULL;
 	}
 
-	if (NULL != dbus_server_loop)
-	{
+	if (NULL != dbus_server_loop) {
 		g_main_loop_unref(dbus_server_loop);
 		dbus_server_loop = NULL;
 	}
 
-	if (NULL != dbus_server_context)
-	{
+	if (NULL != dbus_server_context) {
 		g_main_context_pop_thread_default(dbus_server_context);
 		g_main_context_unref(dbus_server_context);
 		dbus_server_context = NULL;

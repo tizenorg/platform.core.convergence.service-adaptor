@@ -37,20 +37,20 @@
 #include "service_discovery.h"
 #include "service_federation.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 #define FILE_PATH_LEN	256
 
 static sal_h g_service_adaptor = NULL;
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 /**
  * @brief callback of app control
@@ -92,17 +92,13 @@ static void _provider_connect_cb(app_control_h request, app_control_h reply, app
 	gpointer iter_key, iter_value;
 
 	g_hash_table_iter_init(&iter, service);
-	while (g_hash_table_iter_next(&iter, &iter_key, &iter_value))
-	{
-		if (0 == strcmp(iter_key, PLUGIN_KEY_AUTH))
-		{
+	while (g_hash_table_iter_next(&iter, &iter_key, &iter_value)) {
+		if (0 == strcmp(iter_key, PLUGIN_KEY_AUTH)) {
 			auth_plugin_h plugin = NULL;
 			auth_adaptor_create_plugin(provider_user_data->uri, provider_user_data->name, provider_user_data->package, &plugin);
 			auth_adaptor_register_plugin_service(plugin, service);
 			auth_adaptor_add_plugin(sal->auth, plugin);
-		}
-		else if (0 == strcmp(iter_key, PLUGIN_KEY_STORAGE))
-		{
+		} else if (0 == strcmp(iter_key, PLUGIN_KEY_STORAGE)) {
 			storage_plugin_h plugin = NULL;
 			storage_adaptor_create_plugin(provider_user_data->uri, provider_user_data->name, provider_user_data->package, &plugin);
 			storage_adaptor_register_plugin_service(plugin, service);
@@ -136,7 +132,7 @@ static void _provider_disconnect_cb(app_control_h request, app_control_h reply, 
 	auth_adaptor_unregister_plugin_service(plugin);
 	auth_adaptor_destroy_plugin(plugin);
 
-	// TODO: destroy plugin of other adaptor
+	/* TODO: destroy plugin of other adaptor */
 
 	SAL_FN_END;
 }
@@ -241,39 +237,39 @@ static sal_h _sal_create()
 
 	sal_h sal = NULL;
 
-	// 1) create auth adaptor handle
+	/* 1) create auth adaptor handle */
 	auth_adaptor_h auth = auth_adaptor_create();
 	TRYM_IF(NULL == auth, "sal_auth_create_handle() Fail");
 
-	// 2) create contact adaptor handle
+	/* 2) create contact adaptor handle */
 	contact_adaptor_h contact = contact_adaptor_create();
 	TRYM_IF(NULL == contact, "sal_contact_create_handle() Fail");
 
-	// 3) create storage adaptor handle
+	/* 3) create storage adaptor handle */
 	storage_adaptor_h storage = storage_adaptor_create();
 	TRYM_IF(NULL == storage, "sal_storage_create_handle() Fail");
 
-	// 4) create resource adaptor handle
+	/* 4) create resource adaptor handle */
 	resource_adaptor_h resource = resource_adaptor_create();
 	TRYM_IF(NULL == resource, "sal_resource_create_handle() Fail");
 
-	// 5) register auth adaptor listener
+	/* 5) register auth adaptor listener */
 	auth_adaptor_listener_h auth_listener = sal_auth_register_listener(auth);
 	TRYM_IF(NULL == auth_listener, "sal_auth_register_listener() Fail");
 
-	// 6) register contact adaptor listener
+	/* 6) register contact adaptor listener */
 	contact_adaptor_listener_h contact_listener = sal_contact_register_listener(contact);
 	TRYM_IF(NULL == contact_listener, "sal_contact_register_listener() Fail");
 
-	// 7) register storage adaptor listener
+	/* 7) register storage adaptor listener */
 	storage_adaptor_listener_h storage_listener = sal_storage_register_listener(storage);
 	TRYM_IF(NULL == storage_listener, "sal_storage_register_listener() Fail");
 
-	// 8) register resource adaptor listener
+	/* 8) register resource adaptor listener */
 	resource_adaptor_listener_h resource_listener = sal_resource_register_listener(resource);
 	TRYM_IF(NULL == resource_listener, "sal_resource_register_listener() Fail");
 
-	// 9) create service adaptor
+	/* 9) create service adaptor */
 	sal = (sal_h) g_malloc0(sizeof(sal_s));
 	TRYM_IF(NULL == sal, "could not create service adaptor");
 
@@ -286,7 +282,7 @@ static sal_h _sal_create()
 	g_cond_init(&sal->cond);
 
 catch:
-	// TODO: free
+	/* TODO: free */
 
 	return sal;
 }
@@ -302,14 +298,13 @@ static void _sal_destroy(sal_h sal)
 
 	RET_IF(NULL == sal);
 
-        // 1) destroy service list
-        if (NULL != sal->svc_list)
-        {
-                g_list_free(sal->svc_list);
-                sal->svc_list = NULL;
-        }
+	/* 1) destroy service list */
+	if (NULL != sal->svc_list) {
+		g_list_free(sal->svc_list);
+		sal->svc_list = NULL;
+	}
 
-	// 2) free service adaptor handle
+	/* 2) free service adaptor handle */
 	SAL_FREE(sal);
 
 	SAL_FN_END;
@@ -325,34 +320,34 @@ static service_adaptor_error_e _sal_init()
 	SAL_FN_CALL;
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
-	// 1) create adaptor (memory allocation)
+	/* 1) create adaptor (memory allocation) */
 	sal_h sal = _sal_create();
 	RETVM_IF(NULL == sal, SERVICE_ADAPTOR_ERROR_INTERNAL, "_sal_create() Fail");
 
-	// 2) start adaptor (plugin loading)
+	/* 2) start adaptor (plugin loading) */
 	ret = _sal_start(sal);
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INTERNAL, "_sal_start() Fail(%d)", ret);
 
-	// 3) start adaptor (spec file creation)
+	/* 3) start adaptor (spec file creation) */
 	ret = _sal_create_spec_file(sal);
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INTERNAL, "_sal_create_spec_file() Fail(%d)", ret);
 
-	// 4) init dbus server
+	/* 4) init dbus server */
 	ret = sal_ipc_server_init();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE, "sal_ipc_server_init() Fail(%d)", ret);
 
-	// 5) assign to global service adaptor handle
+	/* 5) assign to global service adaptor handle */
 	g_service_adaptor = sal;
 
-	// 6) register callback for package event
+	/* 6) register callback for package event */
 	ret = sal_observer_start();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, ret, "sal_observer_start() Fail(%d)", ret);
 
-	// 7) create service discovery
+	/* 7) create service discovery */
 	ret = service_discovery_create();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, ret, "service_discovery_create() Fail(%d)", ret);
 
-	// 8) create service federation
+	/* 8) create service federation */
 	ret = service_federation_create();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, ret, "service_federation_create() Fail(%d)", ret);
 
@@ -375,8 +370,7 @@ static void _sal_deinit(sal_h sal)
 
 	_sal_destroy_spec_file(sal);
 
-        if (0 < sal->start)
-        {
+	if (0 < sal->start) {
 		_sal_stop(sal);
 	}
 
@@ -410,29 +404,29 @@ int main(int argc, char *argv[])
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 	GMainLoop *loop = NULL;
 
-#if !GLIB_CHECK_VERSION(2,32,0)
+#if !GLIB_CHECK_VERSION(2, 32, 0)
 	g_thread_init(NULL);
 #endif
-#if !GLIB_CHECK_VERSION(2,35,0)
+#if !GLIB_CHECK_VERSION(2, 35, 0)
 	g_type_init();
 #endif
 
 	ret = _sal_init();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, 0, "_sal_init() Fail(%d)", ret);
 
-	// mainloop of main thread
+	/* mainloop of main thread */
 	loop = g_main_loop_new(NULL, FALSE);
 
-	// installing signal handlers
+	/* installing signal handlers */
 	g_unix_signal_add_full(G_PRIORITY_HIGH, SIGINT,
-			_sigterm_callback, loop, NULL );
+			_sigterm_callback, loop, NULL);
 	g_unix_signal_add_full(G_PRIORITY_HIGH, SIGTERM,
-			_sigterm_callback, loop, NULL );
+			_sigterm_callback, loop, NULL);
 
-	// start application's main loop
+	/* start application's main loop */
 	g_main_loop_run(loop);
 
-	// cleanup after mainloop
+	/* cleanup after mainloop */
 	g_main_loop_unref(loop);
 
 	sal_h sal = sal_get_handle();
@@ -441,29 +435,29 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API sal_h sal_get_handle()
 {
 	SAL_FN_CALL;
 
-        return g_service_adaptor;
+	return g_service_adaptor;
 }
 
 API char *sal_get_root_path()
 {
 	SAL_FN_CALL;
 
-        char *root_path = NULL;
-        char tnfs_root_path[FILE_PATH_LEN] = {0,};
+	char *root_path = NULL;
+	char tnfs_root_path[FILE_PATH_LEN] = {0,};
 
-        // TODO: tmp -> need to use get_path APIs of TNFS
-        snprintf(tnfs_root_path, FILE_PATH_LEN, "%s", "/opt/storage/tnfs");
-        root_path = strdup(tnfs_root_path);
+	/* TODO: tmp -> need to use get_path APIs of TNFS */
+	snprintf(tnfs_root_path, FILE_PATH_LEN, "%s", "/opt/storage/tnfs");
+	root_path = strdup(tnfs_root_path);
 
-        return root_path;
+	return root_path;
 }
 
 API service_adaptor_error_e sal_adaptor_connect(const char *uri)
@@ -474,7 +468,7 @@ API service_adaptor_error_e sal_adaptor_connect(const char *uri)
 
 	SAL_INFO("uri: %s", uri);
 
-        return SERVICE_ADAPTOR_ERROR_NONE;
+	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
 API service_adaptor_error_e sal_adaptor_disconnect(const char *uri)
@@ -485,7 +479,7 @@ API service_adaptor_error_e sal_adaptor_disconnect(const char *uri)
 
 	SAL_INFO("uri: %s", uri);
 
-        return SERVICE_ADAPTOR_ERROR_NONE;
+	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
 API service_adaptor_error_e sal_adaptor_get_plugins(char ***plugins, int *plugins_size)
@@ -501,8 +495,7 @@ API service_adaptor_error_e sal_adaptor_get_plugins(char ***plugins, int *plugin
 	int i = 0;
 	char **uri = (char **) g_malloc0(sizeof(char *) * size);
 
-	for (GList *list = g_list_first(g_service_adaptor->auth->plugins); list != NULL; list = list->next)
-	{
+	for (GList *list = g_list_first(g_service_adaptor->auth->plugins); list != NULL; list = list->next) {
 		auth_plugin_h this = (auth_plugin_h) list->data;
 
 		uri[i] = strdup(this->uri);
@@ -537,7 +530,7 @@ API service_adaptor_error_e sal_provider_connect(const char *uri, const char *na
 
 	app_control_destroy(request);
 
-        return SERVICE_ADAPTOR_ERROR_NONE;
+	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
 API service_adaptor_error_e sal_provider_disconnect(const char *uri)
@@ -558,7 +551,7 @@ API service_adaptor_error_e sal_provider_disconnect(const char *uri)
 
 	app_control_destroy(request);
 
-        return SERVICE_ADAPTOR_ERROR_NONE;
+	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
 API char *sal_provider_get_uri(const char *package)
@@ -572,5 +565,5 @@ API char *sal_provider_get_uri(const char *package)
 
 	char *uri = auth_adaptor_get_uri(sal->auth, package);
 
-        return uri;
+	return uri;
 }

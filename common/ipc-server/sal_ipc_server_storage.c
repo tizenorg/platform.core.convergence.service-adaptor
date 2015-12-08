@@ -30,17 +30,17 @@
 #include "sal_service_storage.h"
 #include "sal_service_storage_internal.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 void _cloud_remove_file_cb(int result, cloud_file_h file, void *user_data)
 {
@@ -100,32 +100,23 @@ int _cloud_execute_operation(storage_plugin_h plugin, service_storage_cloud_file
 
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
-	if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_REMOVE_FILE_URI))
-	{
+	if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_REMOVE_FILE_URI)) {
 		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
 
 		return ret;
-	}
-	else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_URI))
-	{
+	} else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_URI)) {
 		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
 
 		return ret;
-	}
-	else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_UPLOAD_FILE_URI))
-	{
+	} else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_UPLOAD_FILE_URI)) {
 		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
 
 		return ret;
-	}
-	else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_THUMBNAIL_URI))
-	{
+	} else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_THUMBNAIL_URI)) {
 		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
 
 		return ret;
-	}
-	else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_GET_FILE_LIST_URI))
-	{
+	} else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_GET_FILE_LIST_URI)) {
 		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
 
 		return ret;
@@ -134,9 +125,9 @@ int _cloud_execute_operation(storage_plugin_h plugin, service_storage_cloud_file
 	return SERVICE_ADAPTOR_ERROR_INTERNAL;
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API void service_storage_method_call(GDBusConnection *connection,
 		const gchar *sender,
@@ -158,8 +149,7 @@ API void service_storage_method_call(GDBusConnection *connection,
 
 	GVariant *in_parameters = g_variant_get_child_value(parameters, 0);
 
-	if (0 == g_strcmp0(method_name, DBUS_SERVICE_STORAGE_CLOUD_FILE_METHOD))
-	{
+	if (0 == g_strcmp0(method_name, DBUS_SERVICE_STORAGE_CLOUD_FILE_METHOD)) {
 		int idx = 0;
 		int size = service_storage_cloud_file_req_s_type_length;
 		GVariant *req_info[size];

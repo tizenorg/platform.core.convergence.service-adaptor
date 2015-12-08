@@ -33,17 +33,17 @@
 #include "sal_service_storage_internal.h"
 #include "sal_ipc_client_storage.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 int service_storage_cloud_start(service_storage_cloud_file_h file)
 {
@@ -76,9 +76,9 @@ int service_storage_cloud_stop(service_storage_cloud_file_h file)
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API int service_storage_cloud_file_create(service_plugin_h plugin, service_storage_cloud_file_h *file)
 {
@@ -119,13 +119,10 @@ API int service_storage_cloud_file_clone(service_storage_cloud_file_h src_file, 
 	cloud_file->local_path = g_strdup(src_file->local_path);
 	cloud_file->cloud_path = g_strdup(src_file->cloud_path);
 	cloud_file->operation = g_strdup(src_file->operation);
-	// TODO: g_list_copy_deep()
-	if (NULL != src_file->files)
-	{
+	/* TODO: g_list_copy_deep() */
+	if (NULL != src_file->files) {
 		cloud_file->files = g_list_copy(src_file->files);
-	}
-	else
-	{
+	} else {
 		cloud_file->files = NULL;
 	}
 
@@ -292,8 +289,7 @@ API int service_storage_cloud_file_foreach_file(service_storage_cloud_file_h fil
 
 	RETV_IF(0 == g_list_length(file->files), SERVICE_ADAPTOR_ERROR_NO_DATA);
 
-	for (GList *list = g_list_first(file->files); list != NULL; list = list->next)
-	{
+	for (GList *list = g_list_first(file->files); list != NULL; list = list->next) {
 		service_storage_cloud_file_h file_data = (service_storage_cloud_file_h) list->data;
 
 		bool ret = callback(SERVICE_ADAPTOR_ERROR_NONE, file_data, user_data);
@@ -329,9 +325,9 @@ API int service_storage_cloud_file_destroy_task(service_task_h task)
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-//******************************************************************************
-//* 2.4 Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * 2.4 Public interface definition
+ ******************************************************************************/
 
 API int service_storage_get_file_list(service_plugin_h plugin,
 						const char *dir_path,
@@ -425,11 +421,11 @@ API int service_storage_create_download_task(service_plugin_h plugin,
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-API int service_storage_create_download_thumbnail_task (service_plugin_h plugin,
-                                                const char *storage_path,
-                                                const char *download_path,
-                                                int thumbnail_size,
-                                                service_storage_task_h *task)
+API int service_storage_create_download_thumbnail_task(service_plugin_h plugin,
+						const char *storage_path,
+						const char *download_path,
+						int thumbnail_size,
+						service_storage_task_h *task)
 {
 	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == storage_path, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
@@ -469,7 +465,7 @@ API int service_storage_cancel_task(service_storage_task_h task)
 {
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-//	return service_task_stop((service_task_h) task);
+/*	return service_task_stop((service_task_h) task); */
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 

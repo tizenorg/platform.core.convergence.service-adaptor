@@ -24,18 +24,17 @@
 #include "service_adaptor_internal.h"
 #include "sal_ipc.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
 /**
  * Service Adaptor D-Bus client thread data
  */
-typedef struct _dbus_client_thread_data_s
-{
-	GMutex connection_mutex;	// Mutex used to protect connection status data
-	GCond connection_cond;		// Conditional variable used to signal that connection was established
-	int connection_cond_signaled;	// Additional variable used to signal that connection was established
+typedef struct _dbus_client_thread_data_s {
+	GMutex connection_mutex;	/* Mutex used to protect connection status data */
+	GCond connection_cond;		/* Conditional variable used to signal that connection was established */
+	int connection_cond_signaled;	/* Additional variable used to signal that connection was established */
 } dbus_client_thread_data_s;
 typedef struct _dbus_client_thread_data_s *dbus_client_thread_data_h;
 
@@ -69,9 +68,9 @@ static GDBusConnection *connection = NULL;
  */
 static GDBusProxy *interface_proxy = NULL;
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
 static gpointer _dbus_client_thread_func(gpointer data);
 
@@ -94,9 +93,9 @@ static void _on_signal(GDBusProxy *proxy,
 		GVariant *parameters,
 		gpointer user_data);
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 /**
  * @brief D-Bus client thread function.
@@ -117,8 +116,7 @@ static gpointer _dbus_client_thread_func(gpointer data)
 
 	ret = _dbus_client_start(data);
 
-	if (SERVICE_ADAPTOR_ERROR_NONE == ret)
-	{
+	if (SERVICE_ADAPTOR_ERROR_NONE == ret) {
 		g_main_loop_run(dbus_client_loop);
 	}
 
@@ -153,8 +151,7 @@ static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thre
 
 	connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
 
-	if (NULL == connection)
-	{
+	if (NULL == connection) {
 		g_error_free(error);
 
 		return SERVICE_ADAPTOR_ERROR_INTERNAL;
@@ -169,8 +166,7 @@ static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thre
 			NULL,
 			&error);
 
-	if (NULL == interface_proxy)
-	{
+	if (NULL == interface_proxy) {
 		g_error_free(error);
 
 		g_object_unref(connection);
@@ -187,8 +183,7 @@ static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thre
 			thread_data,
 			NULL);
 
-	if (0 == watcher_id)
-	{
+	if (0 == watcher_id) {
 		g_object_unref(interface_proxy);
 		interface_proxy = NULL;
 
@@ -203,8 +198,7 @@ static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thre
 			G_CALLBACK(_on_signal),
 			NULL);
 
-	if (0 == res)
-	{
+	if (0 == res) {
 		g_object_unref(interface_proxy);
 		interface_proxy = NULL;
 
@@ -229,20 +223,17 @@ static service_adaptor_error_e _dbus_client_stop()
 {
 	SAL_FN_CALL;
 
-	if (NULL != interface_proxy)
-	{
+	if (NULL != interface_proxy) {
 		g_object_unref(interface_proxy);
 		interface_proxy = NULL;
 	}
 
-	if (NULL != connection)
-	{
+	if (NULL != connection) {
 		g_object_unref(connection);
 		connection = NULL;
 	}
 
-	if (0 != watcher_id)
-	{
+	if (0 != watcher_id) {
 		g_bus_unwatch_name(watcher_id);
 		watcher_id = 0;
 	}
@@ -268,8 +259,7 @@ static void _on_name_appeared(GDBusConnection *connection,
 
 	dbus_client_thread_data_h thread_data = (dbus_client_thread_data_h) user_data;
 
-	if (NULL != thread_data)
-	{
+	if (NULL != thread_data) {
 		g_mutex_lock(&thread_data->connection_mutex);
 		thread_data->connection_cond_signaled = 1;
 		g_cond_signal(&thread_data->connection_cond);
@@ -291,20 +281,17 @@ static void _on_name_vanished(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	if (NULL != interface_proxy)
-	{
+	if (NULL != interface_proxy) {
 		g_object_unref(interface_proxy);
 		interface_proxy = NULL;
 	}
 
-	if (NULL != connection)
-	{
+	if (NULL != connection) {
 		g_object_unref(connection);
 		connection = NULL;
 	}
 
-	if (0 != watcher_id)
-	{
+	if (0 != watcher_id) {
 		g_bus_unwatch_name(watcher_id);
 		watcher_id = 0;
 	}
@@ -328,9 +315,8 @@ static void _on_signal(GDBusProxy *proxy,
 {
 	SAL_FN_CALL;
 
-	if (0 == strncmp(signal_name, DBUS_SERVICE_ADAPTOR, DBUS_NAME_LENGTH))
-	{
-		// TODO:
+	if (0 == strncmp(signal_name, DBUS_SERVICE_ADAPTOR, DBUS_NAME_LENGTH)) {
+		/* TODO: */
 /*
 		on_service_signal(proxy,
 				sender_name,
@@ -341,9 +327,9 @@ static void _on_signal(GDBusProxy *proxy,
 	}
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API service_adaptor_error_e sal_ipc_client_get_interface(GDBusProxy **interface)
 {
@@ -358,10 +344,10 @@ API service_adaptor_error_e sal_ipc_client_init()
 {
 	SAL_FN_CALL;
 
-#if !GLIB_CHECK_VERSION(2,32,0)
+#if !GLIB_CHECK_VERSION(2, 32, 0)
 	g_thread_init(NULL);
 #endif
-#if !GLIB_CHECK_VERSION(2,35,0)
+#if !GLIB_CHECK_VERSION(2, 35, 0)
 	g_type_init();
 #endif
 
@@ -377,11 +363,9 @@ API service_adaptor_error_e sal_ipc_client_init()
 	dbus_client_thread = g_thread_new("Service Adaptor D-Bus Client", _dbus_client_thread_func, thread_data);
 
 	gint64 timeout = g_get_monotonic_time() + 5 * G_TIME_SPAN_SECOND;
-	g_mutex_lock(&thread_data->connection_mutex );
-	while (!thread_data->connection_cond_signaled)
-	{
-		if (!g_cond_wait_until(&thread_data->connection_cond, &thread_data->connection_mutex, timeout))
-		{
+	g_mutex_lock(&thread_data->connection_mutex);
+	while (!thread_data->connection_cond_signaled) {
+		if (!g_cond_wait_until(&thread_data->connection_cond, &thread_data->connection_mutex, timeout)) {
 			g_mutex_unlock(&thread_data->connection_mutex);
 			return SERVICE_ADAPTOR_ERROR_INTERNAL;
 		}
@@ -396,28 +380,23 @@ API service_adaptor_error_e sal_ipc_client_deinit()
 {
 	SAL_FN_CALL;
 
-	if (NULL != dbus_client_loop)
-	{
-		if (g_main_loop_is_running(dbus_client_loop))
-		{
+	if (NULL != dbus_client_loop) {
+		if (g_main_loop_is_running(dbus_client_loop)) {
 			g_main_loop_quit(dbus_client_loop);
 		}
 	}
 
-	if (NULL != dbus_client_thread)
-	{
+	if (NULL != dbus_client_thread) {
 		g_thread_join(dbus_client_thread);
 		dbus_client_thread = NULL;
 	}
 
-	if (NULL != dbus_client_loop)
-	{
+	if (NULL != dbus_client_loop) {
 		g_main_loop_unref(dbus_client_loop);
 		dbus_client_loop = NULL;
 	}
 
-	if (NULL != dbus_client_context)
-	{
+	if (NULL != dbus_client_context) {
 		g_main_context_pop_thread_default(dbus_client_context);
 		g_main_context_unref(dbus_client_context);
 		dbus_client_context = NULL;

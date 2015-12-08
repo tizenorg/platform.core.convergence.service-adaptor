@@ -33,53 +33,44 @@
 #include "sal_service_auth_internal.h"
 #include "sal_service_storage_internal.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
 GList *service_tasks = NULL;
 GThreadPool *thread_pool = NULL;
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 static void _service_task_async_func(gpointer data, gpointer user_data)
 {
 	service_task_h task = (service_task_h) data;
 
-	if (NULL != task->oauth1)
-	{
+	if (NULL != task->oauth1) {
 		service_auth_oauth1_start(task->oauth1);
-	}
-	else if (NULL != task->cloud_file)
-	{
+	} else if (NULL != task->cloud_file) {
 		service_storage_cloud_start(task->cloud_file);
-	}
-	else
-	{
+	} else {
 		return;
 	}
 
-	// TODO: in IPC
-	if (NULL != task->storage_progress_callback)
-	{
+	/* TODO: in IPC */
+	if (NULL != task->storage_progress_callback) {
 		task->storage_progress_callback(100, 100, task->user_data);
 	}
-	if (NULL != task->storage_state_callback)
-	{
+	if (NULL != task->storage_state_callback) {
 		task->storage_state_callback(SERVICE_STORAGE_TASK_COMPLETED, task->user_data);
 	}
-	if (NULL != task->storage_result_callback)
-	{
+	if (NULL != task->storage_result_callback) {
 		task->storage_result_callback(SERVICE_ADAPTOR_ERROR_NONE, task->user_data);
 	}
-	if (NULL != task->storage_file_list_callback)
-	{
+	if (NULL != task->storage_file_list_callback) {
 		service_storage_cloud_file_h file_list = (service_storage_cloud_file_h) g_malloc0(sizeof(service_storage_cloud_file_s));
 		file_list->is_dir = false;
 		file_list->cloud_path = "/sample.txt";
@@ -88,9 +79,9 @@ static void _service_task_async_func(gpointer data, gpointer user_data)
 	}
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API int service_task_connect()
 {
@@ -106,7 +97,7 @@ API int service_task_disconnect()
 {
 	SAL_FN_CALL;
 
-	// TODO: stop current stated task
+	/* TODO: stop current stated task */
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -130,12 +121,9 @@ API int service_task_stop(service_task_h task)
 
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	if (NULL != task->cloud_file)
-	{
+	if (NULL != task->cloud_file) {
 		service_storage_cloud_stop(task->cloud_file);
-	}
-	else
-	{
+	} else {
 		return SERVICE_ADAPTOR_ERROR_NO_DATA;
 	}
 

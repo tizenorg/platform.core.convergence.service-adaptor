@@ -45,7 +45,7 @@ API int service_provider_destroy(service_provider_h provider)
 {
 	SAL_FN_CALL;
 
-	// TODO: free internal value of provider
+	/* TODO: free internal value of provider */
 	SAL_FREE(provider);
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
@@ -112,13 +112,11 @@ API int service_provider_message(service_provider_h provider, app_control_h app_
 
 	app_control_h reply = NULL;
 
-	if (0 == strcmp(operation, PLUGIN_CONNECT_URI))
-	{
+	if (0 == strcmp(operation, PLUGIN_CONNECT_URI)) {
 		app_control_create(&reply);
 		ret = provider->connect();
 
-		if (SERVICE_ADAPTOR_ERROR_NONE != ret)
-		{
+		if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
 			SAL_ERR("connect() Fail (%d)", ret);
 			app_control_add_extra_data(reply, PLUGIN_RESULT_KEY, PLUGIN_RESULT_VALUE_FAILURE);
 			goto catch;
@@ -129,24 +127,19 @@ API int service_provider_message(service_provider_h provider, app_control_h app_
 		auth_provider_add_extra_data(provider->auth_provider, reply);
 		storage_provider_add_extra_data(provider->storage_provider, reply);
 
-		// TODO: another adaptor
-	}
-	else if (0 == strcmp(operation, PLUGIN_DISCONNECT_URI))
-	{
+		/* TODO: another adaptor */
+	} else if (0 == strcmp(operation, PLUGIN_DISCONNECT_URI)) {
 		app_control_create(&reply);
 		ret = provider->disconnect();
 
-		if (SERVICE_ADAPTOR_ERROR_NONE != ret)
-		{
+		if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
 			SAL_ERR("connect() Fail (%d)", ret);
 			app_control_add_extra_data(reply, PLUGIN_RESULT_KEY, PLUGIN_RESULT_VALUE_FAILURE);
 			goto catch;
 		}
 
 		app_control_add_extra_data(reply, PLUGIN_RESULT_KEY, PLUGIN_RESULT_VALUE_SUCCESS);
-	}
-	else
-	{
+	} else {
 		reply = auth_provider_message(provider->auth_provider, operation, app_control);
 		TRY_IF(NULL != reply, "auth_plugin_client_message() Finded");
 

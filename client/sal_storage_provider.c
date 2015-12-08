@@ -52,8 +52,7 @@ API app_control_h storage_provider_message(storage_provider_h provider, const ch
 
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
-	if (0 == strcmp(operation, CLOUD_REMOVE_FILE_URI))
-	{
+	if (0 == strcmp(operation, CLOUD_REMOVE_FILE_URI)) {
 		app_control_create(&reply);
 
 		char *cloud_path = NULL;
@@ -61,8 +60,7 @@ API app_control_h storage_provider_message(storage_provider_h provider, const ch
 
 		ret = provider->cloud_remove_file(cloud_path);
 
-		if (SERVICE_ADAPTOR_ERROR_NONE != ret)
-		{
+		if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
 			SAL_ERR("cloud_remove_file() Fail (%d)", ret);
 			app_control_add_extra_data(reply, PLUGIN_RESULT_KEY, PLUGIN_RESULT_VALUE_FAILURE);
 			return reply;
@@ -83,8 +81,7 @@ API int storage_provider_add_extra_data(storage_provider_h provider, app_control
 
 	app_control_add_extra_data(reply, PLUGIN_KEY_STORAGE, PLUGIN_VALUE_TRUE);
 
-	if (NULL != provider->cloud_remove_file)
-	{
+	if (NULL != provider->cloud_remove_file) {
 		app_control_add_extra_data(reply, CLOUD_REMOVE_FILE_URI, PLUGIN_VALUE_TRUE);
 	}
 

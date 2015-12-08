@@ -30,17 +30,17 @@
 #include "sal_service_auth.h"
 #include "sal_service_auth_internal.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 void _oauth1_get_access_token_cb(int result, oauth1_h oauth1, void *user_data)
 {
@@ -91,23 +91,20 @@ int _oauth1_execute_operation(auth_plugin_h plugin, service_auth_oauth1_h oauth1
 
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
-	if (0 == strcmp(oauth1->operation, SERVICE_AUTH_OAUTH1_0_GET_ACCESS_TOKEN_URI))
-	{
+	if (0 == strcmp(oauth1->operation, SERVICE_AUTH_OAUTH1_0_GET_ACCESS_TOKEN_URI)) {
 		ret = plugin->oauth1->oauth1_get_access_token(plugin, _oauth1_get_access_token_cb, reply);
 
 		return ret;
-	}
-	else if (0 == strcmp(oauth1->operation, SERVICE_AUTH_OAUTH1_0_GET_EXTRA_DATA_URI))
-	{
+	} else if (0 == strcmp(oauth1->operation, SERVICE_AUTH_OAUTH1_0_GET_EXTRA_DATA_URI)) {
 		return ret;
 	}
 
 	return SERVICE_ADAPTOR_ERROR_INTERNAL;
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API void service_auth_method_call(GDBusConnection *connection,
 		const gchar *sender,
@@ -129,8 +126,7 @@ API void service_auth_method_call(GDBusConnection *connection,
 
 	GVariant *in_parameters = g_variant_get_child_value(parameters, 0);
 
-	if (0 == g_strcmp0(method_name, DBUS_SERVICE_AUTH_OAUTH1_METHOD))
-	{
+	if (0 == g_strcmp0(method_name, DBUS_SERVICE_AUTH_OAUTH1_METHOD)) {
 		int idx = 0;
 		int size = service_auth_oauth1_req_s_type_length;
 		GVariant *req_info[size];

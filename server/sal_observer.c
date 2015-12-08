@@ -32,18 +32,18 @@
 #include "sal_observer.h"
 #include "auth_adaptor.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 #define SAL_PLUGIN_METADATA_KEY_ADAPTOR	"service-adaptor"
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 /**
  * @brief callback of app info
@@ -56,10 +56,8 @@ static bool _sal_app_meta_cb(const char *key, const char *value, void *user_data
 
 	provider_user_data_h provider_user_data = (provider_user_data_h) user_data;
 
-	if ((NULL != key) && (NULL != value))
-	{
-		if (0 == strncmp(SAL_PLUGIN_METADATA_KEY_ADAPTOR, key, strlen(SAL_PLUGIN_METADATA_KEY_ADAPTOR)))
-		{
+	if ((NULL != key) && (NULL != value)) {
+		if (0 == strncmp(SAL_PLUGIN_METADATA_KEY_ADAPTOR, key, strlen(SAL_PLUGIN_METADATA_KEY_ADAPTOR))) {
 			SAL_INFO("%s: %s", provider_user_data->uri, value);
 			int ret = sal_provider_connect(provider_user_data->uri, value, provider_user_data->package);
 
@@ -102,17 +100,16 @@ static bool _sal_app_info_cb(package_info_app_component_type_e comp_type, const 
  * @return      void.
  */
 static void _sal_package_event_cb(const char *type,
-                const char *package,
-                package_manager_event_type_e event_type,
-                package_manager_event_state_e event_state,
-                int progress,
-                package_manager_error_e error,
-                void *user_data)
+		const char *package,
+		package_manager_event_type_e event_type,
+		package_manager_event_state_e event_state,
+		int progress,
+		package_manager_error_e error,
+		void *user_data)
 {
 	SAL_FN_CALL;
 
-        if ((PACKAGE_MANAGER_EVENT_TYPE_INSTALL == event_type) && (PACKAGE_MANAGER_EVENT_STATE_COMPLETED == event_state))
-        {
+	if ((PACKAGE_MANAGER_EVENT_TYPE_INSTALL == event_type) && (PACKAGE_MANAGER_EVENT_STATE_COMPLETED == event_state)) {
 		int ret = PACKAGE_MANAGER_ERROR_NONE;
 		package_info_h p_info = NULL;
 
@@ -124,9 +121,7 @@ static void _sal_package_event_cb(const char *type,
 
 		ret = package_info_destroy(p_info);
 		RETM_IF(PACKAGE_MANAGER_ERROR_NONE != ret, "package_info_destroy() Fail(%d)", ret);
-	}
-        else if ((PACKAGE_MANAGER_EVENT_TYPE_UNINSTALL == event_type) && (PACKAGE_MANAGER_EVENT_STATE_COMPLETED == event_state))
-        {
+	} else if ((PACKAGE_MANAGER_EVENT_TYPE_UNINSTALL == event_type) && (PACKAGE_MANAGER_EVENT_STATE_COMPLETED == event_state)) {
 		sal_h sal = sal_get_handle();
 		RETM_IF(NULL == sal, "sal_get_handle() Fail");
 
@@ -142,7 +137,7 @@ static void _sal_package_event_cb(const char *type,
 		storage_adaptor_unregister_plugin_service(storage_plugin);
 		storage_adaptor_destroy_plugin(storage_plugin);
 
-		// TODO: destroy plugin of other adaptor
+		/* TODO: destroy plugin of other adaptor */
 	}
 }
 
@@ -167,9 +162,9 @@ static bool _sal_package_info_cb(package_info_h package_info, void *user_data)
 	return true;
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 /**
  * @brief start observer using package manager

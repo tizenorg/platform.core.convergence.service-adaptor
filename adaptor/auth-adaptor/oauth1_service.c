@@ -30,12 +30,11 @@
 #include "sal_service_provider.h"
 #include "sal_auth_provider.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
-typedef struct _app_control_user_data_s
-{
+typedef struct _app_control_user_data_s {
 	void *callback;
 	void *user_data;
 } app_control_user_data_s;
@@ -44,13 +43,13 @@ typedef struct _app_control_user_data_s *app_control_user_data_h;
 typedef int (*_get_access_token)(void *plugin, oauth1_cb callback, void *user_data);
 typedef int (*_get_extra_data)(void *plugin, const char *key, oauth1_cb callback, void *user_data);
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 /**
  * @brief callback of service plugin
@@ -75,11 +74,10 @@ static void _oauth1_get_access_token_cb(app_control_h request, app_control_h rep
 
 	RET_IF(NULL == callback);
 
-	// TODO: move this function for chaning result enum to general
+	/* TODO: move this function for chaning result enum to general */
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
-	if (0 == strcmp(PLUGIN_RESULT_VALUE_FAILURE, ret_str))
-	{
+	if (0 == strcmp(PLUGIN_RESULT_VALUE_FAILURE, ret_str)) {
 		ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
 	}
 
@@ -109,8 +107,7 @@ static int _oauth1_get_access_token(auth_plugin_h plugin, oauth1_cb callback, vo
 
 	int res = app_control_send_launch_request(request, _oauth1_get_access_token_cb, app_control_user_data);
 
-	if (APP_CONTROL_ERROR_NONE != res)
-	{
+	if (APP_CONTROL_ERROR_NONE != res) {
 		return SERVICE_ADAPTOR_ERROR_SYSTEM;
 	}
 
@@ -126,9 +123,9 @@ static int _oauth1_get_extra_data(auth_plugin_h plugin, const char *key, oauth1_
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API int oauth1_register_service(oauth1_service_h oauth1, GHashTable *service)
 {
@@ -141,15 +138,11 @@ API int oauth1_register_service(oauth1_service_h oauth1, GHashTable *service)
 	gpointer iter_key, iter_value;
 
 	g_hash_table_iter_init(&iter, service);
-	while (g_hash_table_iter_next(&iter, &iter_key, &iter_value))
-	{
-		if (0 == strcmp(iter_key, OAUTH1_0_GET_ACCESS_TOKEN_URI))
-		{
+	while (g_hash_table_iter_next(&iter, &iter_key, &iter_value)) {
+		if (0 == strcmp(iter_key, OAUTH1_0_GET_ACCESS_TOKEN_URI)) {
 			oauth1->oauth1_get_access_token = (_get_access_token) _oauth1_get_access_token;
 			ret = SERVICE_ADAPTOR_ERROR_NONE;
-		}
-		else if (0 == strcmp(iter_key, OAUTH1_0_GET_EXTRA_DATA_URI))
-		{
+		} else if (0 == strcmp(iter_key, OAUTH1_0_GET_EXTRA_DATA_URI)) {
 			oauth1->oauth1_get_extra_data = (_get_extra_data) _oauth1_get_extra_data;
 			ret = SERVICE_ADAPTOR_ERROR_NONE;
 		}

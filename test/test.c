@@ -32,8 +32,7 @@ void _service_plugin_login_callback(int result, void *user_data)
 
 	ret = service_plugin_start_all(service_plugin);
 
-	if (SERVICE_ADAPTOR_ERROR_NONE != ret)
-	{
+	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
 		printf("service_plugin_start Failed(%d)\n", ret);
 		return;
 	}
@@ -47,8 +46,7 @@ void _service_plugin_login_callback(int result, void *user_data)
 	service_task_h auth_task = NULL;
 	ret = service_auth_oauth1_create_task(oauth1, &auth_task);
 	ret = service_task_start(auth_task);
-	if (SERVICE_ADAPTOR_ERROR_NONE == ret)
-	{
+	if (SERVICE_ADAPTOR_ERROR_NONE == ret) {
 		printf("service_auth_oauth1_get_access_token() Request Successed\n");
 	}
 
@@ -62,16 +60,14 @@ void _service_plugin_login_callback(int result, void *user_data)
 	service_task_h task = NULL;
 	ret = service_storage_cloud_file_create_task(file, &task);
 	ret = service_task_start(task);
-	if (SERVICE_ADAPTOR_ERROR_NONE == ret)
-	{
+	if (SERVICE_ADAPTOR_ERROR_NONE == ret) {
 		printf("service_storage_cloud_remove_file() Request Successed: %s\n", cloud_path);
 	}
 }
 
 bool _service_adaptor_plugin_callback(const char *uri, int service_mask, void *user_data)
 {
-	if (0 != strcmp(uri, "org.tizen.service-plugin-sample"))
-	{
+	if (0 != strcmp(uri, "org.tizen.service-plugin-sample")) {
 		return true;
 	}
 
@@ -79,16 +75,14 @@ bool _service_adaptor_plugin_callback(const char *uri, int service_mask, void *u
 
 	ret = service_plugin_create(uri, &service_plugin);
 
-	if (SERVICE_ADAPTOR_ERROR_NONE != ret)
-	{
+	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
 		printf("service_plugin_create(%s) Failed(%d)\n", uri, ret);
 		return true;
 	}
 
 	ret = service_plugin_login(service_plugin, _service_plugin_login_callback, NULL);
 
-	if (SERVICE_ADAPTOR_ERROR_NONE != ret)
-	{
+	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
 		printf("service_plugin_login(%s) Failed(%d)\n", uri, ret);
 		return true;
 	}
@@ -107,10 +101,10 @@ int main()
 {
 	GMainLoop *loop = NULL;
 
-#if !GLIB_CHECK_VERSION(2,32,0)
+#if !GLIB_CHECK_VERSION(2, 32, 0)
 	g_thread_init(NULL);
 #endif
-#if !GLIB_CHECK_VERSION(2,35,0)
+#if !GLIB_CHECK_VERSION(2, 35, 0)
 	g_type_init();
 #endif
 
@@ -123,9 +117,9 @@ int main()
 	loop = g_main_loop_new(NULL, FALSE);
 
 	g_unix_signal_add_full(G_PRIORITY_HIGH, SIGINT,
-			_sigterm_callback, loop, NULL );
+			_sigterm_callback, loop, NULL);
 	g_unix_signal_add_full(G_PRIORITY_HIGH, SIGTERM,
-			_sigterm_callback, loop, NULL );
+			_sigterm_callback, loop, NULL);
 
 	g_main_loop_run(loop);
 

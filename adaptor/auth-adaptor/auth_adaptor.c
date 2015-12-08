@@ -23,25 +23,25 @@
 #include "auth_adaptor.h"
 #include "service_adaptor_internal.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 static void _auth_adaptor_free_plugin(auth_plugin_h plugin)
 {
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API auth_adaptor_h auth_adaptor_create()
 {
@@ -62,8 +62,7 @@ API service_adaptor_error_e auth_adaptor_destroy(auth_adaptor_h auth)
 
 	g_mutex_lock(&auth->mutex);
 
-	if (0 != auth->start)
-	{
+	if (0 != auth->start) {
 		auth_adaptor_stop(auth);
 	}
 
@@ -95,7 +94,7 @@ API service_adaptor_error_e auth_adaptor_stop(auth_adaptor_h auth)
 
 	RETV_IF(NULL == auth, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	// TODO: notify auth adaptor stop to each plugin
+	/* TODO: notify auth adaptor stop to each plugin */
 
 	g_mutex_lock(&auth->mutex);
 
@@ -113,7 +112,7 @@ API service_adaptor_error_e auth_adaptor_register_listener(auth_adaptor_h auth, 
 	RETV_IF(NULL == auth, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == listener, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	// TODO: register insert/ update/ delete callback for service-adaptor
+	/* TODO: register insert/ update/ delete callback for service-adaptor */
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -125,7 +124,7 @@ API service_adaptor_error_e auth_adaptor_unregister_listener(auth_adaptor_h auth
 	RETV_IF(NULL == auth, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == listener, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	// TODO: unregister insert/ update/ delete callback for service-adaptor
+	/* TODO: unregister insert/ update/ delete callback for service-adaptor */
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -176,8 +175,7 @@ API service_adaptor_error_e auth_adaptor_register_plugin_service(auth_plugin_h p
 	plugin->oauth1 = (oauth1_service_h) g_malloc0(sizeof(oauth1_service_s));
 	ret = oauth1_register_service(plugin->oauth1, service);
 
-	if (SERVICE_ADAPTOR_ERROR_NONE != ret)
-	{
+	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
 		SAL_INFO("could not find the function for oauth 1.0");
 		SAL_FREE(plugin->oauth1);
 	}
@@ -185,8 +183,7 @@ API service_adaptor_error_e auth_adaptor_register_plugin_service(auth_plugin_h p
 	plugin->oauth2 = (oauth2_service_h) g_malloc0(sizeof(oauth2_service_s));
 	ret = oauth2_register_service(plugin->oauth2, service);
 
-	if (SERVICE_ADAPTOR_ERROR_NONE != ret)
-	{
+	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
 		SAL_INFO("could not find the function for oauth 2.0");
 		SAL_FREE(plugin->oauth2);
 	}
@@ -200,14 +197,12 @@ API service_adaptor_error_e auth_adaptor_unregister_plugin_service(auth_plugin_h
 
 	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	if (NULL != plugin->oauth1)
-	{
+	if (NULL != plugin->oauth1) {
 		oauth1_unregister_service(plugin->oauth1);
 		SAL_FREE(plugin->oauth1);
 	}
 
-	if (NULL != plugin->oauth2)
-	{
+	if (NULL != plugin->oauth2) {
 		oauth2_unregister_service(plugin->oauth2);
 		SAL_FREE(plugin->oauth2);
 	}
@@ -262,12 +257,10 @@ API auth_plugin_h auth_adaptor_get_plugin(auth_adaptor_h auth, const char *uri)
 
 	auth_plugin_h plugin = NULL;
 
-	for (GList *list = g_list_first(auth->plugins); list != NULL; list = list->next)
-	{
+	for (GList *list = g_list_first(auth->plugins); list != NULL; list = list->next) {
 		auth_plugin_h this = (auth_plugin_h) list->data;
 
-		if (0 == strcmp(this->uri, uri))
-		{
+		if (0 == strcmp(this->uri, uri)) {
 			plugin = this;
 			break;
 		}
@@ -289,12 +282,10 @@ API char *auth_adaptor_get_uri(auth_adaptor_h auth, const char *package)
 
 	char *uri = NULL;
 
-	for (GList *list = g_list_first(auth->plugins); list != NULL; list = list->next)
-	{
+	for (GList *list = g_list_first(auth->plugins); list != NULL; list = list->next) {
 		auth_plugin_h this = (auth_plugin_h) list->data;
 
-		if (0 == strcmp(this->package, package))
-		{
+		if (0 == strcmp(this->package, package)) {
 			uri = this->uri;
 			break;
 		}
@@ -316,14 +307,12 @@ API service_adaptor_error_e auth_adaptor_ref_plugin(auth_adaptor_h auth, const c
 
 	int ret = SERVICE_ADAPTOR_ERROR_NO_DATA;
 
-	for (GList *list = g_list_first(auth->plugins); list != NULL; list = list->next)
-	{
+	for (GList *list = g_list_first(auth->plugins); list != NULL; list = list->next) {
 		auth_plugin_h this = (auth_plugin_h) list->data;
 
-		if (0 == strcmp(this->uri, uri))
-		{
+		if (0 == strcmp(this->uri, uri)) {
 			ret = SERVICE_ADAPTOR_ERROR_NONE;
-			// TODO: increase ref count
+			/* TODO: increase ref count */
 			break;
 		}
 	}
@@ -344,14 +333,12 @@ API service_adaptor_error_e auth_adaptor_unref_plugin(auth_adaptor_h auth, const
 
 	int ret = SERVICE_ADAPTOR_ERROR_NO_DATA;
 
-	for (GList *list = g_list_first(auth->plugins); list != NULL; list = list->next)
-	{
+	for (GList *list = g_list_first(auth->plugins); list != NULL; list = list->next) {
 		auth_plugin_h this = (auth_plugin_h) list->data;
 
-		if (0 == strcmp(this->uri, uri))
-		{
+		if (0 == strcmp(this->uri, uri)) {
 			ret = SERVICE_ADAPTOR_ERROR_NONE;
-			// TODO: decrease ref count
+			/* TODO: decrease ref count */
 			break;
 		}
 	}

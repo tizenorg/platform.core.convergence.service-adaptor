@@ -27,21 +27,21 @@
 #include "sal_ipc_server.h"
 #include "sal_ipc_server_core.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API void service_adaptor_method_call(GDBusConnection *connection,
 		const gchar *sender,
@@ -63,8 +63,7 @@ API void service_adaptor_method_call(GDBusConnection *connection,
 
 	GVariant *in_parameters = g_variant_get_child_value(parameters, 0);
 
-	if (0 == g_strcmp0(method_name, DBUS_SERVICE_ADAPTOR_CONNECT_METHOD))
-	{
+	if (0 == g_strcmp0(method_name, DBUS_SERVICE_ADAPTOR_CONNECT_METHOD)) {
 		int idx = 0;
 		int size = service_adaptor_connect_req_s_type_length;
 		GVariant *req_info[size];
@@ -84,8 +83,7 @@ API void service_adaptor_method_call(GDBusConnection *connection,
 
 		ipc_ret = sal_adaptor_get_plugins(&plugins, &plugins_size);
 
-		for (gsize i = 0; i < plugins_size; i++)
-		{
+		for (gsize i = 0; i < plugins_size; i++) {
 			ipc_insure_g_variant_builder_add_array_string(builder, plugins[i]);
 		}
 
@@ -94,9 +92,7 @@ API void service_adaptor_method_call(GDBusConnection *connection,
 
 		g_variant_builder_unref(builder);
 		ipc_destroy_variant_info(req_info, size);
-	}
-	else if (0 == g_strcmp0(method_name, DBUS_SERVICE_ADAPTOR_DISCONNECT_METHOD))
-	{
+	} else if (0 == g_strcmp0(method_name, DBUS_SERVICE_ADAPTOR_DISCONNECT_METHOD)) {
 		int idx = 0;
 		int size = service_adaptor_disconnect_s_type_length;
 		GVariant *req_info[size];
@@ -144,8 +140,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 	GVariant *in_parameters = g_variant_get_child_value(parameters, 0);
 
-	if (0 == g_strcmp0(method_name, DBUS_SERVICE_PLUGIN_CREATE_METHOD))
-	{
+	if (0 == g_strcmp0(method_name, DBUS_SERVICE_PLUGIN_CREATE_METHOD)) {
 		int idx = 0;
 		int size = service_plugin_create_s_type_length;
 		GVariant *req_info[size];
@@ -160,8 +155,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 		sal_h sal = sal_get_handle();
 
-		if (NULL != sal)
-		{
+		if (NULL != sal) {
 			ipc_ret = auth_adaptor_ref_plugin(sal->auth, uri);
 		}
 
@@ -169,9 +163,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 		ipc_data = g_variant_new(ipc_make_return_type(ipc_type), ipc_ret, SAL_IPC_STR(ipc_msg));
 
 		ipc_destroy_variant_info(req_info, size);
-	}
-	else if (0 == g_strcmp0(method_name, DBUS_SERVICE_PLUGIN_DESTROY_METHOD))
-	{
+	} else if (0 == g_strcmp0(method_name, DBUS_SERVICE_PLUGIN_DESTROY_METHOD)) {
 		int idx = 0;
 		int size = service_plugin_destroy_s_type_length;
 		GVariant *req_info[size];
@@ -186,8 +178,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 		sal_h sal = sal_get_handle();
 
-		if (NULL != sal)
-		{
+		if (NULL != sal) {
 			ipc_ret = auth_adaptor_unref_plugin(sal->auth, uri);
 		}
 
@@ -214,8 +205,7 @@ service_adaptor_internal_error_code_e dbus_service_adaptor_signal_callback(servi
 	GError* error = NULL;
 	GDBusConnection *dbus_connection = dbus_get_connection();
 
-	if (NULL != dbus_connection)
-	{
+	if (NULL != dbus_connection) {
 		GVariant *response = g_variant_new("(ts)", (uint64_t) signal_code, signal_msg);
 
 		g_dbus_connection_emit_signal(dbus_connection,
@@ -226,8 +216,7 @@ service_adaptor_internal_error_code_e dbus_service_adaptor_signal_callback(servi
 				response,
 				&error );
 
-		if (NULL != error)
-		{
+		if (NULL != error) {
 			service_adaptor_debug("Unable to send msg: %s", error->message);
 			return SERVICE_ADAPTOR_INTERNAL_ERROR_DBUS;
 		}

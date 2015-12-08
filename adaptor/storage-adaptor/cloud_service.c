@@ -34,12 +34,11 @@
 #include "sal_service_provider.h"
 #include "sal_storage_provider.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
-typedef struct _app_control_user_data_s
-{
+typedef struct _app_control_user_data_s {
 	cloud_file_h file;
 
 	void *callback;
@@ -49,13 +48,13 @@ typedef struct _app_control_user_data_s *app_control_user_data_h;
 
 typedef int (*_remove_file)(void *plugin, const char *cloud_path, cloud_file_cb callback, void *user_data);
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
 int _make_cloud_file_by_local(const char *local_path, cloud_file_h *file)
 {
@@ -75,8 +74,7 @@ int _make_cloud_file_by_local(const char *local_path, cloud_file_h *file)
 	cloud_file->cloud_path = NULL;
 	cloud_file->size = file_info.st_size;
 
-	if(S_ISDIR(file_info.st_mode))
-	{
+	if (S_ISDIR(file_info.st_mode)) {
 		cloud_file->is_dir = true;
 	}
 
@@ -119,11 +117,10 @@ static void _cloud_remove_file_cb(app_control_h request, app_control_h reply, ap
 
 	RET_IF(NULL == callback);
 
-	// TODO: move this function for chaning result enum to general
+	/* TODO: move this function for chaning result enum to general */
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
-	if (0 == strcmp(PLUGIN_RESULT_VALUE_FAILURE, ret_str))
-	{
+	if (0 == strcmp(PLUGIN_RESULT_VALUE_FAILURE, ret_str)) {
 		ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
 	}
 
@@ -158,17 +155,16 @@ static int _cloud_remove_file(storage_plugin_h plugin, const char *cloud_path, c
 
 	int res = app_control_send_launch_request(request, _cloud_remove_file_cb, app_control_user_data);
 
-	if (APP_CONTROL_ERROR_NONE != res)
-	{
+	if (APP_CONTROL_ERROR_NONE != res) {
 		return SERVICE_ADAPTOR_ERROR_SYSTEM;
 	}
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API int cloud_register_service(cloud_service_h cloud, GHashTable *service)
 {
@@ -181,10 +177,8 @@ API int cloud_register_service(cloud_service_h cloud, GHashTable *service)
 	gpointer iter_key, iter_value;
 
 	g_hash_table_iter_init(&iter, service);
-	while (g_hash_table_iter_next(&iter, &iter_key, &iter_value))
-	{
-		if (0 == strcmp(iter_key, CLOUD_REMOVE_FILE_URI))
-		{
+	while (g_hash_table_iter_next(&iter, &iter_key, &iter_value)) {
+		if (0 == strcmp(iter_key, CLOUD_REMOVE_FILE_URI)) {
 			cloud->cloud_remove_file = (_remove_file) _cloud_remove_file;
 			ret = SERVICE_ADAPTOR_ERROR_NONE;
 		}

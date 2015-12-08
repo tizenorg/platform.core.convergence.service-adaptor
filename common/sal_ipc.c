@@ -24,28 +24,27 @@
 #include "service_adaptor_internal.h"
 #include "sal_ipc.h"
 
-//******************************************************************************
-//* Global variables and defines
-//******************************************************************************
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface
-//******************************************************************************
+/******************************************************************************
+ * Private interface
+ ******************************************************************************/
 
-//******************************************************************************
-//* Private interface definition
-//******************************************************************************
+/******************************************************************************
+ * Private interface definition
+ ******************************************************************************/
 
-//******************************************************************************
-//* Public interface definition
-//******************************************************************************
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
 
 API char *ipc_insure_g_variant_dup_string(GVariant *string)
 {
 	char *ret = g_variant_dup_string(string, NULL);
 
-	if (0 == strcmp(ret, ""))
-	{
+	if (0 == strcmp(ret, "")) {
 		SAL_FREE(ret);
 	}
 
@@ -54,12 +53,9 @@ API char *ipc_insure_g_variant_dup_string(GVariant *string)
 
 API void ipc_insure_g_variant_builder_add_array_string(GVariantBuilder *builder, const char *str)
 {
-	if (NULL == str)
-	{
+	if (NULL == str) {
 		g_variant_builder_add(builder, "(s)", "");
-	}
-	else
-	{
+	} else {
 		g_variant_builder_add(builder, "(s)", str);
 	}
 }
@@ -71,38 +67,29 @@ API char *ipc_make_return_type(const char *type)
 
 API void ipc_create_error_msg(int code, char **ipc_msg)
 {
-	switch (code)
-	{
-		case SERVICE_ADAPTOR_ERROR_NONE:
-		{
-			*ipc_msg = NULL;
-			break;
-		}
-		case SERVICE_ADAPTOR_ERROR_INTERNAL:
-		{
-			*ipc_msg = strdup("SERVICE_ADAPTOR_ERROR_INTERNAL");
-			break;
-		}
-		default:
-		{
-			*ipc_msg = strdup("SERVICE_ADAPTOR_ERROR_UNKNOWN");
-			break;
-		}
+	switch (code) {
+	case SERVICE_ADAPTOR_ERROR_NONE:
+		*ipc_msg = NULL;
+		break;
+	case SERVICE_ADAPTOR_ERROR_INTERNAL:
+		*ipc_msg = strdup("SERVICE_ADAPTOR_ERROR_INTERNAL");
+		break;
+	default:
+		*ipc_msg = strdup("SERVICE_ADAPTOR_ERROR_UNKNOWN");
+		break;
 	}
 }
 
 API void ipc_create_variant_info(GVariant *parameters, int size, GVariant ***var_info)
 {
-	for (size_t i = 0; i < size; i++)
-	{
+	for (size_t i = 0; i < size; i++) {
 		*(var_info +i) = (GVariant **) g_variant_get_child_value(parameters, i);
 	}
 }
 
 API void ipc_destroy_variant_info(GVariant **var_info, int size)
 {
-	for (size_t i = 0; i < size; i++)
-	{
+	for (size_t i = 0; i < size; i++) {
 		g_variant_unref(var_info[i]);
 	}
 }
