@@ -22,7 +22,7 @@ ADD_DEFINITIONS("-D_SERVICE_ADAPTOR_IPC_CLIENT")
 # Define Service Adaptor CLIENT
 ##########################################################
 
-SET(ADAPTOR-CLIENT-LIB "service-adaptor")
+SET(ADAPTOR-CLIENT-LIB "service-adaptor-client")
 SET(ADAPTOR-CLIENT-SRCS
         ${CMAKE_SOURCE_DIR}/client/sal_service_adaptor.c
         ${CMAKE_SOURCE_DIR}/client/sal_service_task.c
@@ -59,7 +59,9 @@ SET_TARGET_PROPERTIES(${ADAPTOR-CLIENT-LIB} PROPERTIES VERSION ${VERSION})
 INSTALL(TARGETS ${ADAPTOR-CLIENT-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibraries)
 
 SET(SAL-ADAPTOR-CLIENT-HEADERS
-        ${CMAKE_SOURCE_DIR}/include/service_adaptor.h
+        ${CMAKE_SOURCE_DIR}/include/service_adaptor_client.h
+        ${CMAKE_SOURCE_DIR}/include/service_adaptor_client_plugin.h
+        ${CMAKE_SOURCE_DIR}/include/service_adaptor_client_storage.h
         ${CMAKE_SOURCE_DIR}/include/service_adaptor_types.h
         ${CMAKE_SOURCE_DIR}/include/service_adaptor_errors.h
         ${CMAKE_SOURCE_DIR}/include/service_adaptor_internal.h

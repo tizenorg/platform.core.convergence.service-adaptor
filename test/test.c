@@ -4,7 +4,7 @@
 #include <glib-object.h>
 #include <glib-unix.h>
 
-#include "service_adaptor.h"
+#include "service_adaptor_client.h"
 
 service_plugin_h service_plugin = NULL;
 

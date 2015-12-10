@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef __TIZEN_CONVERGENCE_SERVICE_ADAPTOR_H__
-#define __TIZEN_CONVERGENCE_SERVICE_ADAPTOR_H__
+#ifndef __TIZEN_CONVERGENCE_SERVICE_ADAPTOR_CLIENT_H__
+#define __TIZEN_CONVERGENCE_SERVICE_ADAPTOR_CLIENT_H__
 
 #include <service_adaptor_errors.h>
 
@@ -27,4 +27,7 @@
 #include "sal_service_auth.h"
 #include "sal_service_storage.h"
 
-#endif /* __TIZEN_CONVERGENCE_SERVICE_ADAPTOR_H__ */
+#include "service_adaptor_client_plugin.h"
+#include "service_adaptor_client_storage.h"
+
+#endif /* __TIZEN_CONVERGENCE_SERVICE_ADAPTOR_CLIENT_H__ */
