@@ -1,5 +1,5 @@
 /*
- * Service Adaptor Client Core IPC
+ * Service Adaptor Server IPC
  *
  * Copyright (c) 2014 - 2015 Samsung Electronics Co., Ltd. All rights reserved.
  *
@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef __TIZEN_CONVERGENCE_SAL_IPC_CLIENT_CORE_H__
-#define __TIZEN_CONVERGENCE_SAL_IPC_CLIENT_CORE_H__
+#ifndef __TIZEN_CONVERGENCE_SAL_IPC_PROVIDER_H__
+#define __TIZEN_CONVERGENCE_SAL_IPC_PROVIDER_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -35,17 +35,30 @@ extern "C"
 
 #include <glib.h>
 
-int ipc_service_adaptor_connect(int pid, const char *uri, GList **plugins);
+#include "sal_ipc_provider_types.h"
+#include "sal_ipc_provider_base.h"
+#include "sal_ipc_provider_storage.h"
 
-int ipc_service_adaptor_disconnect(int pid, const char *uri);
+typedef enum
+{
+	IPC_PROVIDER_CONNECTION_OPENED = 1,
+	IPC_PROVIDER_CONNECTION_CLOSED = 2,
+} ipc_provider_connection_state_e;
 
-int ipc_service_plugin_start(int pid, const char *uri, const char *plugin_uri, char **plugin_handle);
+typedef void (*ipc_provider_connection_cb)(ipc_provider_connection_state_e state, void *user_data);
 
-int ipc_service_plugin_stop(const char *plugin_handle);
+int sal_ipc_provider_init(ipc_provider_base_req_s *base_method,
+		ipc_provider_storage_req_s *storage_method,
+		ipc_provider_connection_cb callback,
+		void *user_data);
+
+int sal_ipc_provider_deinit(void);
+
+int sal_ipc_provider_emit_signal(const char *signal_name, GVariant *parameters);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TIZEN_CONVERGENCE_SAL_IPC_CLIENT_CORE_H__ */
+#endif /* __TIZEN_CONVERGENCE_SAL_IPC_PROVIDER_H__ */
 

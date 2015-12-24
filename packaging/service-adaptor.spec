@@ -14,15 +14,16 @@ BuildRequires:  pkgconfig(gio-2.0)
 BuildRequires:  pkgconfig(glib-2.0)
 BuildRequires:  pkgconfig(gobject-2.0)
 BuildRequires:  pkgconfig(gthread-2.0)
+BuildRequires:  pkgconfig(bundle)
 BuildRequires:  pkgconfig(capi-base-common)
 BuildRequires:  pkgconfig(capi-appfw-application)
 BuildRequires:  pkgconfig(capi-appfw-app-manager)
 BuildRequires:  pkgconfig(capi-appfw-package-manager)
 BuildRequires:  pkgconfig(libsmack)
-BuildRequires:  pkgconfig(service-discovery)
-BuildRequires:  pkgconfig(service-federation)
-BuildRequires:  service-discovery-devel
-BuildRequires:  service-federation-devel
+#BuildRequires:  pkgconfig(service-discovery)
+#BuildRequires:  pkgconfig(service-federation)
+#BuildRequires:  service-discovery-devel
+#BuildRequires:  service-federation-devel
 
 %description
 Service Adaptor Framework Library/Binary package
@@ -80,8 +81,8 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 %manifest service-adaptor.manifest
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
-%{_bindir}/service-adaptor-server
-%{_bindir}/sal-test
+#%{_bindir}/service-adaptor-server
+#%{_bindir}/sal-test
 %{_unitdir_user}/service-adaptor.service
 %{_unitdir_user}/default.target.wants/service-adaptor.service
 %{_datadir}/dbus-1/system-services/org.tizen.serviceadaptor.client.service
@@ -93,5 +94,5 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 %{_libdir}/lib*.so
 %{_libdir}/pkgconfig/service-adaptor.pc
 %{_includedir}/service-adaptor/*.h
-%{_includedir}/service-provider/*.h
+#%{_includedir}/service-provider/*.h
 /usr/share/license/%{name}-devel

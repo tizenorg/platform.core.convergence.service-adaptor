@@ -1,5 +1,5 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(sal-client)
+PROJECT(sal-api)
 
 SET(CMAKE_SKIP_BUILD_RPATH TRUE)
 
@@ -24,24 +24,24 @@ ADD_DEFINITIONS("-D_SERVICE_ADAPTOR_IPC_CLIENT")
 
 SET(ADAPTOR-CLIENT-LIB "service-adaptor-client")
 SET(ADAPTOR-CLIENT-SRCS
-        ${CMAKE_SOURCE_DIR}/client/sal_service_adaptor.c
-        ${CMAKE_SOURCE_DIR}/client/sal_service_task.c
-        ${CMAKE_SOURCE_DIR}/client/sal_service_auth.c
-        ${CMAKE_SOURCE_DIR}/client/sal_service_storage.c
+        ${CMAKE_SOURCE_DIR}/api/client/sal_service_adaptor.c
+#        ${CMAKE_SOURCE_DIR}/api/client/sal_service_task.c
+#        ${CMAKE_SOURCE_DIR}/api/client/sal_service_auth.c
+#        ${CMAKE_SOURCE_DIR}/api/client/sal_service_storage.c
 )
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/api/client
+        ${CMAKE_SOURCE_DIR}/common/base
         ${CMAKE_SOURCE_DIR}/common/ipc-client
-        ${CMAKE_SOURCE_DIR}/client
-        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor
-        ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor
-        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor
+#        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor
+#        ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor
+#        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor
 )
 
 INCLUDE(FindPkgConfig)
-pkg_check_modules(adaptor_client_pkgs REQUIRED dlog glib-2.0 capi-appfw-application)
+pkg_check_modules(adaptor_client_pkgs REQUIRED dlog glib-2.0 capi-appfw-application bundle)
 
 FOREACH(flag ${adaptor_client_pkgs_CFLAGS})
         SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
@@ -52,7 +52,7 @@ SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed")
 
 ADD_LIBRARY(${ADAPTOR-CLIENT-LIB} SHARED ${ADAPTOR-CLIENT-SRCS})
 
-TARGET_LINK_LIBRARIES(${ADAPTOR-CLIENT-LIB} ${adaptor_client_pkgs_LDFLAGS} sal-common-client)
+TARGET_LINK_LIBRARIES(${ADAPTOR-CLIENT-LIB} ${adaptor_client_pkgs_LDFLAGS} sal-common-base sal-common-client)
 SET_TARGET_PROPERTIES(${ADAPTOR-CLIENT-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
 SET_TARGET_PROPERTIES(${ADAPTOR-CLIENT-LIB} PROPERTIES VERSION ${VERSION})
 
@@ -61,19 +61,19 @@ INSTALL(TARGETS ${ADAPTOR-CLIENT-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT R
 SET(SAL-ADAPTOR-CLIENT-HEADERS
         ${CMAKE_SOURCE_DIR}/include/service_adaptor_client.h
         ${CMAKE_SOURCE_DIR}/include/service_adaptor_client_plugin.h
-        ${CMAKE_SOURCE_DIR}/include/service_adaptor_client_storage.h
-        ${CMAKE_SOURCE_DIR}/include/service_adaptor_types.h
-        ${CMAKE_SOURCE_DIR}/include/service_adaptor_errors.h
-        ${CMAKE_SOURCE_DIR}/include/service_adaptor_internal.h
-        ${CMAKE_SOURCE_DIR}/client/sal_service_adaptor.h
-        ${CMAKE_SOURCE_DIR}/client/sal_service_task.h
-        ${CMAKE_SOURCE_DIR}/client/sal_service_auth.h
-        ${CMAKE_SOURCE_DIR}/client/sal_service_storage.h
-        ${CMAKE_SOURCE_DIR}/common/sal_ipc.h
-        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client.h
-        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_core.h
-        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_auth.h
-        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_storage.h
+#        ${CMAKE_SOURCE_DIR}/include/service_adaptor_client_storage.h
+        ${CMAKE_SOURCE_DIR}/include/service_adaptor_type.h
+#        ${CMAKE_SOURCE_DIR}/include/service_adaptor_errors.h
+#        ${CMAKE_SOURCE_DIR}/include/service_adaptor_internal.h
+#        ${CMAKE_SOURCE_DIR}/client/sal_service_adaptor.h
+#        ${CMAKE_SOURCE_DIR}/client/sal_service_task.h
+#        ${CMAKE_SOURCE_DIR}/client/sal_service_auth.h
+#        ${CMAKE_SOURCE_DIR}/client/sal_service_storage.h
+#        ${CMAKE_SOURCE_DIR}/common/base/sal_ipc.h
+#        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client.h
+#        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_core.h
+#        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_auth.h
+#        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_storage.h
 )
 
 INSTALL(FILES ${SAL-ADAPTOR-CLIENT-HEADERS} DESTINATION include/service-adaptor)
@@ -84,17 +84,15 @@ INSTALL(FILES ${SAL-ADAPTOR-CLIENT-HEADERS} DESTINATION include/service-adaptor)
 
 SET(PLUGIN-CLIENT-LIB "service-provider")
 SET(PLUGIN-CLIENT-SRCS
-        ${CMAKE_SOURCE_DIR}/client/sal_service_provider.c
-        ${CMAKE_SOURCE_DIR}/client/sal_auth_provider.c
-        ${CMAKE_SOURCE_DIR}/client/sal_storage_provider.c
+        ${CMAKE_SOURCE_DIR}/api/provider/sal_service_provider.c
+        ${CMAKE_SOURCE_DIR}/api/provider/sal_storage_provider.c
 )
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/client
-        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor
-        ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor
-        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor
+        ${CMAKE_SOURCE_DIR}/api/provider
+        ${CMAKE_SOURCE_DIR}/common/base
+        ${CMAKE_SOURCE_DIR}/common/ipc-provider
 )
 
 INCLUDE(FindPkgConfig)
@@ -117,9 +115,8 @@ INSTALL(TARGETS ${PLUGIN-CLIENT-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT Ru
 
 SET(SAL-PLUGIN-CLIENT-HEADERS
         ${CMAKE_SOURCE_DIR}/include/service_provider.h
-        ${CMAKE_SOURCE_DIR}/client/sal_service_provider.h
-        ${CMAKE_SOURCE_DIR}/client/sal_auth_provider.h
-        ${CMAKE_SOURCE_DIR}/client/sal_storage_provider.h
+        ${CMAKE_SOURCE_DIR}/include/service_provider_types.h
+        ${CMAKE_SOURCE_DIR}/include/storage_provider.h
 )
 
 INSTALL(FILES ${SAL-PLUGIN-CLIENT-HEADERS} DESTINATION include/service-provider)

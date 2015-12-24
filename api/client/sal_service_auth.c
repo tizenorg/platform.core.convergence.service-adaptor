@@ -22,17 +22,17 @@
 #include <glib.h>
 
 #include <app.h>
-
+#include "sal_service_auth.h"
+/*
 #include "service_adaptor_errors.h"
 #include "service_adaptor_internal.h"
 #include "sal_service_adaptor.h"
 #include "sal_service_adaptor_internal.h"
 #include "sal_service_task.h"
 #include "sal_service_task_internal.h"
-#include "sal_service_auth.h"
 #include "sal_service_auth_internal.h"
 #include "sal_ipc_client_auth.h"
-
+*/
 /******************************************************************************
  * Global variables and defines
  ******************************************************************************/
@@ -44,7 +44,7 @@
 /******************************************************************************
  * Private interface definition
  ******************************************************************************/
-
+/*
 int service_auth_oauth1_start(service_auth_oauth1_h oauth1)
 {
 	SAL_FN_CALL;
@@ -77,11 +77,12 @@ int service_auth_oauth1_stop(service_auth_oauth1_h oauth1)
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
-
+*/
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
 
+/*
 API int service_auth_oauth1_create(service_plugin_h plugin, service_auth_oauth1_h *oauth1)
 {
 	SAL_FN_CALL;
@@ -226,3 +227,4 @@ API int service_auth_oauth1_destroy_task(service_task_h task)
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
+*/

@@ -21,24 +21,90 @@
 #include <string.h>
 #include <glib.h>
 
-#include <app.h>
+#include <app_control.h>
+#include <service_app.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
-#include "sal_service_provider.h"
+#include "service_adaptor_type.h"
+#include "service_provider.h"
 
-API int service_provider_create(service_provider_h *provider)
+USER_DATA_TYPEDEF(_ipc_state_data_t, 2);
+
+static void __ipc_connection_callback(ipc_provider_connection_state_e state, void *user_data)
 {
 	SAL_FN_CALL;
 
-	service_provider_h service_provider = (service_provider_h) g_malloc0(sizeof(service_provider_s));
+	USER_DATA_DEFINE(_ipc_state_data_t, _callback_data) = USER_DATA_TYPE(_ipc_state_data_t)user_data;
+	service_provider_channel_cb callback = (service_provider_channel_cb)USER_DATA_ELEMENT(_callback_data, 0);
+	void *_user_data = (void *)USER_DATA_ELEMENT(_callback_data, 1);
 
-	service_provider->connect = NULL;
-	service_provider->disconnect = NULL;
+	int ret = SERVICE_PROVIDER_RECOMMENDED_DEFAULT;
+	if (IPC_PROVIDER_CONNECTION_OPENED == state) {
+		ret = callback(SERVICE_PROVIDER_CHANNEL_OPENED, _user_data);
+		if (SERVICE_PROVIDER_APPLICATION_SHUTDOWN == ret) {
 
-	*provider = service_provider;
+			sal_info("Application termication");
+			service_app_exit();
+		} else { /* default (alive) */
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+		}
+	} else {
+		ret = callback(SERVICE_PROVIDER_CHANNEL_CLOSED, _user_data);
+		if (SERVICE_PROVIDER_APPLICATION_CONTINUE == ret) {
+
+		} else { /* default (shutdown) */
+
+			sal_info("Application termication");
+			service_app_exit();
+		}
+	}
+
+	SAL_FN_END;
+}
+
+
+
+API int service_provider_open_channel(app_control_h app_control,
+		service_provider_channel_cb callback,
+		void *user_data);
+{
+	SAL_FN_CALL;
+
+	RETV_IF(NULL == app_control, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+
+	int ret = 0;
+	char *_operation = NULL;
+	ret = app_control_get_operation(app_control, &_operation);
+
+	RETVM_IF(APP_CONTROL_ERROR_OUT_OF_MEMORY == ret, SERVICE_ADAPTOR_ERROR_OUT_OF_MEMORY, "Out of Memory");
+	RETVM_IF(NULL == _operation, SERVICE_ADAPTOR_ERROR_NO_DATA, "No operation data");
+
+	if (0 != g_strcmp0(APP_CONTROL_OPERATION_SERVICE_PROVIDER_CHANNEL, _operation)) {
+		sal_error("operation ID is not matched");
+		free(_operation);
+		return SERVICE_ADAPTOR_ERROR_NO_DATA;
+	}
+
+	USER_DATA_DEFINE(_ipc_state_data_t, _callback_data) = NULL;
+
+	USER_DATA_VAL(_callback_data) = USER_DATA_CREATE(_ipc_state_data_t, _callback_data);
+
+	if (NULL == USER_DATA_VAL(_callback_data)) {
+		SAL_ERROR("Out of memory");
+		free(_operation);
+		return SERVICE_ADAPTOR_ERROR_OUT_OF_MEMORY;
+	}
+
+	USER_DATA_ELEMENT(_callback_data, 0) = (user_data_t)callback;
+	USER_DATA_ELEMENT(_callback_data, 1) = (user_data_t)user_data;
+
+	ret = sal_ipc_provider_init(
+			__ipc_connection_callback,
+			USER_DATA_VAL(_callback_data));
+
+	free(_operation);
+
+	return sal_provider_return_ipc_ret(ret);
 }
 
 API int service_provider_destroy(service_provider_h provider)

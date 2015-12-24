@@ -32,11 +32,11 @@
 extern "C"
 {
 #endif
-
+/*
 #include "sal_service_storage.h"
 
 int ipc_service_storage_cloud_file(const char *uri, service_storage_cloud_file_h req_file, service_storage_cloud_file_h *res_file);
-
+*/
 #ifdef __cplusplus
 }
 #endif
