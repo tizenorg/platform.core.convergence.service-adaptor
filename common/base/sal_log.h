@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef __TIZEN_CONVERGENCE_SAL_INTERNAL_H__
-#define __TIZEN_CONVERGENCE_SAL_INTERNAL_H__
+#ifndef __TIZEN_CONVERGENCE_SAL_LOG_H__
+#define __TIZEN_CONVERGENCE_SAL_LOG_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -159,4 +159,6 @@
 	ptr = NULL; \
 } while(0)
 
-#endif /* __TIZEN_CONVERGENCE_SAL_INTERNAL_H__ */
+#define SAL_FOREACH_GLIST(iterator, list)	for (GList *iterator = g_list_first(list); iterator; iterator = g_list_next(iterator))
+
+#endif /* __TIZEN_CONVERGENCE_SAL_LOG_H__ */

@@ -28,7 +28,7 @@
 extern "C"
 {
 #endif
-
+/*
 #include "sal_service_adaptor.h"
 #include "sal_service_task.h"
 
@@ -42,11 +42,11 @@ typedef struct _service_auth_oauth1_s *service_auth_oauth1_h;
 
 typedef void (*service_auth_oauth1_cb)(int result, service_auth_oauth1_h oauth1, void *user_data);
 typedef void (*service_auth_oauth1_get_access_token_cb)(int result, const char *access_token, void *user_data);
-
+*/
 /*==================================================================================================
                                          FUNCTION PROTOTYPES
 ==================================================================================================*/
-
+/*
 int service_auth_oauth1_create(service_plugin_h plugin, service_auth_oauth1_h *oauth1);
 int service_auth_oauth1_clone(service_auth_oauth1_h src_oauth1, service_auth_oauth1_h *dst_oauth1);
 int service_auth_oauth1_destroy(service_auth_oauth1_h oauth1);
@@ -58,7 +58,7 @@ int service_auth_oauth1_set_operation(service_auth_oauth1_h oauth1, const char *
 int service_auth_oauth1_get_operation(service_auth_oauth1_h oauth1, char **operation);
 int service_auth_oauth1_create_task(service_auth_oauth1_h oauth1, service_task_h *task);
 int service_auth_oauth1_destroy_task(service_task_h task);
-
+*/
 #ifdef __cplusplus
 }
 #endif

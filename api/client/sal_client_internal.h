@@ -1,5 +1,5 @@
 /*
- * Service Task Internal
+ * Service Adaptor Client
  *
  * Copyright (c) 2014 - 2015 Samsung Electronics Co., Ltd. All rights reserved.
  *
@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef __SERVICE_TASK_INTERNAL_H__
-#define __SERVICE_TASK_INTERNAL_H__
+#ifndef __SAL_CLIENT_INTERNAL_H__
+#define __SAL_CLIENT_INTERNAL_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -29,36 +29,19 @@ extern "C"
 {
 #endif
 
-#include "sal_service_task.h"
-#include "sal_service_auth.h"
-#include "sal_service_storage.h"
-
-typedef struct _service_task_s
-{
-	char *uri;
-	service_task_progress_cb progress_callback;
-	service_task_state_changed_cb state_callback;
-
-	service_auth_oauth1_h oauth1;
-	service_storage_cloud_file_h cloud_file;
-
-	// temp
-	service_storage_task_progress_cb storage_progress_callback;
-	service_storage_task_state_cb storage_state_callback;
-	service_storage_result_cb storage_result_callback;
-	service_storage_file_list_cb storage_file_list_callback;
-	void *user_data;
-} service_task_s;
 
 /*==================================================================================================
                                          FUNCTION PROTOTYPES
 ==================================================================================================*/
 
-int service_task_connect();
-int service_task_disconnect();
+int sal_client_return_ipc_ret(int ipc_client_ret);
+
+/**
+ * @}
+ */
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __SERVICE_TASK_INTERNAL_H__ */
+#endif /* __SAL_CLIENT_INTERNAL_H__ */

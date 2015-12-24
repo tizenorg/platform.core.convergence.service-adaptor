@@ -36,6 +36,44 @@ extern "C"
 #include <glib.h>
 #include <gio/gio.h>
 
+#include "sal_ipc_server_types.h"
+
+typedef struct _ipc_server_base_req_s
+{
+	void (*connect_cb)(ipc_server_session_h session, int pid, const char *client_uri);
+
+	void (*disconnect_cb)(ipc_server_session_h session, int pid, const char *client_uri);
+
+	void (*plugin_start_cb)(ipc_server_session_h session,
+			int client_pid, const char *client_uri,
+			const char *plugin_uri, int service_mask); /* TODO: add property param */
+
+	void (*plugin_stop_cb)(ipc_server_session_h session,
+			const char *plugin_handle);
+
+} ipc_server_base_req_s;
+
+typedef struct _ipc_server_base_res_s
+{
+	void (*connect)(ipc_server_session_h session, GList *plugin_uris);
+
+	void (*disconnect)(ipc_server_session_h session);
+
+	void (*plugin_start)(ipc_server_session_h session, const char *plugin_handle);
+
+	void (*plugin_stop)(ipc_server_session_h session);
+
+	void (*fail)(ipc_server_session_h session, int result, int error_code, const char *message);
+} ipc_server_base_res_s;
+
+
+API int ipc_server_base_init(ipc_server_base_req_s *base_req);
+
+API gboolean sal_server_base_method_call(void *data);
+
+API ipc_server_base_res_s *ipc_server_get_base_res_handle(void);
+
+/*
 void service_adaptor_method_call(GDBusConnection *connection,
 		const gchar *sender,
 		const gchar *object_path,
@@ -53,7 +91,7 @@ void service_plugin_method_call(GDBusConnection *connection,
 		GVariant *parameters,
 		GDBusMethodInvocation *invocation,
 		gpointer user_data);
-
+*/
 #ifdef __cplusplus
 }
 #endif

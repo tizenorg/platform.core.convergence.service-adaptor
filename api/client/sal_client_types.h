@@ -1,5 +1,5 @@
 /*
- * Service Adaptor Client
+ * Service Auth Internal
  *
  * Copyright (c) 2014 - 2015 Samsung Electronics Co., Ltd. All rights reserved.
  *
@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef __SERVICE_ADAPTOR_CLIENT_INTERNAL_H__
-#define __SERVICE_ADAPTOR_CLIENT_INTERNAL_H__
+#ifndef __SAL_CLIENT_TYPES_H__
+#define __SAL_CLIENT_TYPES_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -29,20 +29,30 @@ extern "C"
 {
 #endif
 
-#include "sal_service_adaptor.h"
-
-/*==================================================================================================
-                                         FUNCTION PROTOTYPES
-==================================================================================================*/
-
-int service_plugin_get_uri(service_plugin_h plugin, char **uri);
+#include <glib.h>
 
 /**
- * @}
+ * @brief Describes infromation about Adaptor Handle
  */
+typedef struct _service_adaptor_s {
+	int pid;
+	char *uri;
+
+	GList *plugins;		/* char **plugins (uri) */
+	GList *started_plugins;	/* service_plugin_h **started_plugins */
+} service_adaptor_s;
+
+/**
+ * @brief Describes infromation about Plugin Handle
+ */
+typedef struct _service_plugin_s {
+	char *uri;
+	char *handle;
+	GHashTable *property;
+} service_plugin_s;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __SERVICE_ADAPTOR_CLIENT_INTERNAL_H__ */
+#endif /* __SAL_CLIENT_TYPES_H__ */
