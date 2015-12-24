@@ -32,7 +32,7 @@ SET(ADAPTOR-CLIENT-SRCS
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/base
         ${CMAKE_SOURCE_DIR}/common/ipc-client
         ${CMAKE_SOURCE_DIR}/client
         ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor
@@ -69,7 +69,7 @@ SET(SAL-ADAPTOR-CLIENT-HEADERS
         ${CMAKE_SOURCE_DIR}/client/sal_service_task.h
         ${CMAKE_SOURCE_DIR}/client/sal_service_auth.h
         ${CMAKE_SOURCE_DIR}/client/sal_service_storage.h
-        ${CMAKE_SOURCE_DIR}/common/sal_ipc.h
+        ${CMAKE_SOURCE_DIR}/common/base/sal_ipc.h
         ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client.h
         ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_core.h
         ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_auth.h

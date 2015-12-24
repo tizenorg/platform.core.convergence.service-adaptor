@@ -20,13 +20,18 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
+#include "sal_types.h"
+#include "sal_log.h"
 #include "sal_ipc.h"
 
 /******************************************************************************
  * Global variables and defines
  ******************************************************************************/
+#define ERROR_MESSAGE_MAX_LENGH		2048
+
+static __thread int last_error_code = 0;
+
+static __thread char last_error_message[ERROR_MESSAGE_MAX_LENGH] = {0, };
 
 /**
  * Service Adaptor D-Bus client thread data
@@ -74,9 +79,9 @@ static GDBusProxy *interface_proxy = NULL;
 
 static gpointer _dbus_client_thread_func(gpointer data);
 
-static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thread_data);
+static int _dbus_client_start(dbus_client_thread_data_h thread_data);
 
-static service_adaptor_error_e _dbus_client_stop();
+static int _dbus_client_stop();
 
 static void _on_name_appeared(GDBusConnection *connection,
 		const gchar *name,
@@ -116,7 +121,7 @@ static gpointer _dbus_client_thread_func(gpointer data)
 
 	ret = _dbus_client_start(data);
 
-	if (SERVICE_ADAPTOR_ERROR_NONE == ret) {
+	if (SAL_ERROR_NONE == ret) {
 		g_main_loop_run(dbus_client_loop);
 	}
 
@@ -140,21 +145,21 @@ static gpointer _dbus_client_thread_func(gpointer data)
  * @param thread_data Pointer to thread data used to signal that connection was successfully established.
  * @return 0 on success, error code when some structures could not be initialised.
  */
-static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thread_data)
+static int _dbus_client_start(dbus_client_thread_data_h thread_data)
 {
 	SAL_FN_CALL;
 
 	GError *error = NULL;
 
-	RETV_IF(NULL != connection, SERVICE_ADAPTOR_ERROR_INTERNAL);
-	RETV_IF(NULL != interface_proxy, SERVICE_ADAPTOR_ERROR_INTERNAL);
+	RETV_IF(NULL != connection, SAL_ERROR_INTERNAL);
+	RETV_IF(NULL != interface_proxy, SAL_ERROR_INTERNAL);
 
 	connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
 
 	if (NULL == connection) {
 		g_error_free(error);
 
-		return SERVICE_ADAPTOR_ERROR_INTERNAL;
+		return SAL_ERROR_INTERNAL;
 	}
 
 	interface_proxy = g_dbus_proxy_new_sync(connection,
@@ -172,7 +177,7 @@ static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thre
 		g_object_unref(connection);
 		connection = NULL;
 
-		return SERVICE_ADAPTOR_ERROR_INTERNAL;
+		return SAL_ERROR_INTERNAL;
 	}
 
 	watcher_id = g_bus_watch_name(G_BUS_TYPE_SYSTEM,
@@ -190,7 +195,7 @@ static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thre
 		g_object_unref(connection);
 		connection = NULL;
 
-		return SERVICE_ADAPTOR_ERROR_INTERNAL;
+		return SAL_ERROR_INTERNAL;
 	}
 
 	int res = g_signal_connect(interface_proxy,
@@ -208,10 +213,10 @@ static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thre
 		g_bus_unwatch_name(watcher_id);
 		watcher_id = 0;
 
-		return SERVICE_ADAPTOR_ERROR_INTERNAL;
+		return SAL_ERROR_INTERNAL;
 	}
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
 /**
@@ -219,7 +224,7 @@ static service_adaptor_error_e _dbus_client_start(dbus_client_thread_data_h thre
  *
  * Deinitialises Service Adaptor D-Bus client internal structures.
  */
-static service_adaptor_error_e _dbus_client_stop()
+static int _dbus_client_stop()
 {
 	SAL_FN_CALL;
 
@@ -238,7 +243,7 @@ static service_adaptor_error_e _dbus_client_stop()
 		watcher_id = 0;
 	}
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
 /**
@@ -331,16 +336,35 @@ static void _on_signal(GDBusProxy *proxy,
  * Public interface definition
  ******************************************************************************/
 
-API service_adaptor_error_e sal_ipc_client_get_interface(GDBusProxy **interface)
+API void sal_ipc_client_set_last_error(int error, const char *message)
+{
+	RET_IF(!error);
+	RET_IF(!message);
+
+	last_error_code = error;
+	snprintf(last_error_message, ERROR_MESSAGE_MAX_LENGH, message);
+}
+
+API int sal_ipc_client_get_last_error(void)
+{
+	return last_error_code;
+}
+
+API char *sal_ipc_client_get_last_message(void)
+{
+	return last_error_message;
+}
+
+API int sal_ipc_client_get_interface(GDBusProxy **interface)
 {
 	SAL_FN_CALL;
 
 	*interface = interface_proxy;
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
-API service_adaptor_error_e sal_ipc_client_init()
+API int sal_ipc_client_init()
 {
 	SAL_FN_CALL;
 
@@ -351,7 +375,7 @@ API service_adaptor_error_e sal_ipc_client_init()
 	g_type_init();
 #endif
 
-	RETVM_IF(NULL != dbus_client_thread, SERVICE_ADAPTOR_ERROR_INTERNAL, "D-Bus client thread is already running");
+	RETVM_IF(NULL != dbus_client_thread, SAL_ERROR_INTERNAL, "D-Bus client thread is already running");
 
 	dbus_client_thread_data_h thread_data =
 			(dbus_client_thread_data_h) malloc(sizeof(dbus_client_thread_data_s));
@@ -367,16 +391,16 @@ API service_adaptor_error_e sal_ipc_client_init()
 	while (!thread_data->connection_cond_signaled) {
 		if (!g_cond_wait_until(&thread_data->connection_cond, &thread_data->connection_mutex, timeout)) {
 			g_mutex_unlock(&thread_data->connection_mutex);
-			return SERVICE_ADAPTOR_ERROR_INTERNAL;
+			return SAL_ERROR_INTERNAL;
 		}
 	}
 
 	g_mutex_unlock(&thread_data->connection_mutex);
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
-API service_adaptor_error_e sal_ipc_client_deinit()
+API int sal_ipc_client_deinit()
 {
 	SAL_FN_CALL;
 
@@ -401,18 +425,18 @@ API service_adaptor_error_e sal_ipc_client_deinit()
 		g_main_context_unref(dbus_client_context);
 		dbus_client_context = NULL;
 	}
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
 API int sal_ipc_client_call_request(const char *request_method, GVariant *request_data, const char *reply_type, GVariant **reply_info)
 {
 	GError *error = NULL;
 	GVariant *reply = NULL;
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ret = SAL_ERROR_NONE;
 
 	GDBusProxy *interface_proxy = NULL;
 	ret = sal_ipc_client_get_interface(&interface_proxy);
-	RETV_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INTERNAL);
+	RETV_IF(SAL_ERROR_NONE != ret, SAL_ERROR_INTERNAL);
 
 	reply = g_dbus_proxy_call_sync(interface_proxy,
 			request_method,
@@ -422,11 +446,11 @@ API int sal_ipc_client_call_request(const char *request_method, GVariant *reques
 			NULL,
 			&error);
 
-	RETVM_IF(NULL == reply, SERVICE_ADAPTOR_ERROR_INTERNAL, "IPC Request Failed: %s", error->message);
-	RETV_IF(false == g_variant_is_of_type(reply, (GVariantType *) ipc_make_return_type(reply_type)), SERVICE_ADAPTOR_ERROR_INTERNAL);
+	RETVM_IF(NULL == reply, SAL_ERROR_INTERNAL, "IPC Request Failed: %s", error->message);
+	RETV_IF(false == g_variant_is_of_type(reply, (GVariantType *) SAL_IPC_RETURN_TYPE(reply_type), SAL_ERROR_INTERNAL);
 
 	*reply_info = reply;
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 

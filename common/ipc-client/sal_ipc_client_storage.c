@@ -20,8 +20,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
+#include "sal_types.h"
+#include "sal_log.h"
 #include "sal_ipc_client.h"
 #include "sal_ipc_client_storage.h"
 #include "sal_service_storage.h"
@@ -80,7 +80,7 @@ int _get_cloud_file(GVariant *reply_info, service_storage_cloud_file_h *file)
 
 	*file = cloud_file;
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
 /******************************************************************************
@@ -91,10 +91,10 @@ API int ipc_service_storage_cloud_file(const char *uri, service_storage_cloud_fi
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL == uri, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(NULL == req_file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == uri, SAL_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == req_file, SAL_ERROR_INVALID_PARAMETER);
 
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ret = SAL_ERROR_NONE;
 
 	char *request_method = DBUS_SERVICE_STORAGE_CLOUD_FILE_METHOD;
 	GVariant *request_data = g_variant_new("(" service_storage_cloud_file_req_s_type ")", uri, req_file->is_dir, SAL_IPC_STR(req_file->dir_path), SAL_IPC_STR(req_file->local_path), SAL_IPC_STR(req_file->cloud_path), req_file->size, SAL_IPC_STR(req_file->operation));
@@ -104,7 +104,7 @@ API int ipc_service_storage_cloud_file(const char *uri, service_storage_cloud_fi
 	GVariant *reply = NULL;
 
 	ret = sal_ipc_client_call_request(request_method, request_data, reply_type, &reply);
-	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, ret, "ipc_client_call_request() Failed(%d)", ret);
+	RETVM_IF(SAL_ERROR_NONE != ret, ret, "ipc_client_call_request() Failed(%d)", ret);
 
 	GVariant *reply_info[reply_size];
 	ipc_create_variant_info(reply, reply_size, (GVariant ***) &reply_info);
@@ -120,11 +120,11 @@ API int ipc_service_storage_cloud_file(const char *uri, service_storage_cloud_fi
 
 	g_variant_unref(reply);
 
-	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ipc_ret, SERVICE_ADAPTOR_ERROR_INTERNAL, "IPC Result Failed(%d): %s", ipc_ret, ipc_msg);
+	RETVM_IF(SAL_ERROR_NONE != ipc_ret, SAL_ERROR_INTERNAL, "IPC Result Failed(%d): %s", ipc_ret, ipc_msg);
 
 	*res_file = cloud_file;
 
 	SAL_FREE(ipc_msg);
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
