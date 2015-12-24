@@ -28,7 +28,7 @@
 extern "C"
 {
 #endif
-
+/*
 typedef enum _service_task_state_e
 {
 	SERVICE_TASK_IN_PROGRESS	= 1,
@@ -42,11 +42,11 @@ typedef struct _service_task_s *service_task_h;
 typedef void (*service_task_progress_cb)(service_task_h task, unsigned long long progress, unsigned long long total, void *user_data);
 
 typedef void (*service_task_state_changed_cb)(service_task_h task, service_task_state_e state, void *user_data);
-
+*/
 /*==================================================================================================
                                          FUNCTION PROTOTYPES
 ==================================================================================================*/
-
+/*
 int service_task_start(service_task_h task);
 int service_task_stop(service_task_h task);
 int service_task_set_uri(service_task_h task, const char *uri);
@@ -55,7 +55,7 @@ int service_task_set_progress_callback(service_task_h task, service_task_progres
 int service_task_unset_progress_callback(service_task_h task);
 int service_task_set_state_changed_callback(service_task_h task, service_task_state_changed_cb callback, void *user_data);
 int service_task_unset_state_changed_callback(service_task_h task);
-
+*/
 #ifdef __cplusplus
 }
 #endif

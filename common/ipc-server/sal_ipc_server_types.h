@@ -1,5 +1,5 @@
 /*
- * Service Adaptor Client Core IPC
+ * Service Adaptor Server IPC
  *
  * Copyright (c) 2014 - 2015 Samsung Electronics Co., Ltd. All rights reserved.
  *
@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef __TIZEN_CONVERGENCE_SAL_IPC_CLIENT_CORE_H__
-#define __TIZEN_CONVERGENCE_SAL_IPC_CLIENT_CORE_H__
+#ifndef __TIZEN_CONVERGENCE_SAL_IPC_SERVER_TYPES_H__
+#define __TIZEN_CONVERGENCE_SAL_IPC_SERVER_TYPES_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -35,17 +35,29 @@ extern "C"
 
 #include <glib.h>
 
-int ipc_service_adaptor_connect(int pid, const char *uri, GList **plugins);
+/**
+ * information for method call
+ */
+typedef struct _ipc_server_session_s {
+	GDBusConnection *connection;
+	gchar *sender;
+	gchar *object_path;
+	gchar *interface_name;
+	gchar *method_name;
+	GVariant *parameters;
+	GDBusMethodInvocation *invocation;
+	gpointer user_data;
+} ipc_server_session_s;
 
-int ipc_service_adaptor_disconnect(int pid, const char *uri);
+typedef struct _ipc_server_session_s *ipc_server_session_h;
 
-int ipc_service_plugin_start(int pid, const char *uri, const char *plugin_uri, char **plugin_handle);
+#define SAL_IPC_PAYLOAD_SKIP		0,0,""
 
-int ipc_service_plugin_stop(const char *plugin_handle);
+#define SAL_SIZE_OF_TAB(arr)	(int)(sizeof(arr) / sizeof(arr[0]))
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TIZEN_CONVERGENCE_SAL_IPC_CLIENT_CORE_H__ */
+#endif /* __TIZEN_CONVERGENCE_SAL_IPC_SERVER_TYPES_H__ */
 
