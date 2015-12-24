@@ -21,28 +21,264 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
+#include "sal_types.h"
+#include "sal_log.h"
 #include "sal.h"
-#include "sal_ipc_server.h"
 #include "sal_ipc_server_core.h"
 
-/******************************************************************************
- * Global variables and defines
- ******************************************************************************/
 
 /******************************************************************************
  * Private interface
  ******************************************************************************/
 
+static void __connect_cb(ipc_server_session_h session)
+
+static void __disconnect_cb(ipc_server_session_h session)
+
+static void __response_connect(ipc_server_session_h session, GList *plugin_uris);
+
+static void __response_disconnect(ipc_server_session_h session);
+
+
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
+
+struct _dbus_interface_map
+{
+	char *method_name;
+	void (*func)(void *data);
+};
+
+static struct _dbus_interface_map __interface_map[] = {
+		{DBUS_SERVICE_ADAPTOR_CONNECT_METHOD,		__connect_cb},
+		{DBUS_SERVICE_ADAPTOR_DISCONNECT_METHOD,	__disconnect_cb},
+		{DBUS_SERVICE_PLUGIN_START_METHOD,			__plugin_start_cb},
+		{DBUS_SERVICE_PLUGIN_STOP_METHOD,			__plugin_stop_cb},
+		NULL,
+	};
+
+static ipc_server_base_req_s req_callbacks = {0, };
+
+static ipc_server_base_res_s response_methods = {
+		__response_connect,
+		__response_disconnect,
+		__response_plugin_start,
+		__response_plugin_stop,
+	};
+
 /******************************************************************************
  * Private interface definition
  ******************************************************************************/
+
+/* request callbacks  */
+static void __connect_cb(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	sal_debug("gets parameters from gvriant");
+	int _client_pid = 0;
+	char *_client_uri = NULL;
+	g_variant_get_child(session->parameters, 0, service_adaptor_connect_req_s_type,
+			&_client_pid, &_client_uri);
+
+	sal_debug("invokes callback");
+	req_callbacks.connect_cb(session, _client_pid, _client_uri);
+
+	SAL_FREE(_client_uri);
+
+	SAL_FN_END;
+}
+
+static void __disconnect_cb(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	sal_debug("gets parameters from gvriant");
+	int _client_pid = 0;
+	char *_client_uri = NULL;
+	g_variant_get_child(session->parameters, 0, service_adaptor_disconnect_req_s_type,
+			&_client_pid, &_client_uri);
+
+	sal_debug("invokes callback");
+	req_callbacks.connect_cb(session, _client_pid, _client_uri);
+
+	SAL_FREE(_client_uri);
+	SAL_FN_END;
+}
+
+static void __plugin_start_cb(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	sal_debug("gets parameters from gvriant");
+	int _client_pid = 0;
+	char *_client_uri = NULL;
+	char *_plugin_uri = NULL;
+	int _service_mask = 7;
+	g_variant_get_child(session->parameters, 0, service_adaptor_connect_req_s_type,
+			&_client_pid, &_client_uri, &_plugin_uri);
+
+	sal_debug("invokes callback");
+	req_callbacks.plugin_start_cb(session, _client_pid, _client_uri,
+			_plugin_uri, _service_mask);
+	/* TODO support service_mask*/
+
+	SAL_FREE(_client_uri);
+	SAL_FREE(_plugin_uri);
+
+	SAL_FN_END;
+}
+
+static void __plugin_stop_cb(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	sal_debug("gets parameters from gvriant");
+	char *_plugin_handle = NULL;
+	g_variant_get_child(session->parameters, 0, service_adaptor_connect_req_s_type,
+			&_plugin_handle);
+
+	sal_debug("invokes callback");
+	req_callbacks.plugin_stop_cb(session, _plugin_handle);
+
+	SAL_FREE(_plugin_handle);
+
+	SAL_FN_END;
+}
+
+
+/* response functions  */
+static void __response_connect(ipc_server_session_h session, GList *plugin_uris)
+{
+	SAL_FN_CALL;
+
+	GVariantBuilder *plugins = g_variant_builder_new("a(s)");
+
+	SAL_FOREACH_GLIST(iterator, plugin_uris) {
+		sal_debug("plugin_uri : %s", (const char *)iterator->data);
+		ipc_insure_g_variant_builder_add_array_string(plugins, (const char *)iterator->data);
+	}
+
+	sal_debug("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_RETURN_TYPE(service_adaptor_connect_res_s_type),
+			builder, SAL_IPC_PAYLOAD_SKIP);
+
+	sal_debug("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_builder_unref(plugins);
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+static void __response_disconnect(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	sal_debug("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_SIMPLE_TYPE, SAL_IPC_PAYLOAD_SKIP);
+
+	sal_debug("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+static void __response_plugin_start(ipc_server_session_h session, const char *plugin_handle)
+{
+	SAL_FN_CALL;
+
+	sal_debug("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_RETURN_TYPE(service_plugin_start_res_s_type),
+			plugin_handle, SAL_IPC_PAYLOAD_SKIP);
+
+	sal_debug("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+static void __response_plugin_stop(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	sal_debug("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_SIMPLE_TYPE, SAL_IPC_PAYLOAD_SKIP);
+
+	sal_debug("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
 
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
 
+API int ipc_server_base_init(ipc_server_base_req_s *base_req)
+{
+	SAL_FN_CALL;
+
+	RETV_IF(NULL == base_req, SAL_ERROR_INTERNAL);
+	RETV_IF(NULL == base_req->connect_cb, SAL_ERROR_INTERNAL);
+	RETV_IF(NULL == base_req->disconnect_cb, SAL_ERROR_INTERNAL);
+	RETV_IF(NULL == base_req->plugin_start_cb, SAL_ERROR_INTERNAL);
+	RETV_IF(NULL == base_req->plugin_stop_cb, SAL_ERROR_INTERNAL);
+
+	req_callbacks.connect_cb		= base_req->connect_cb;
+	req_callbacks.disconnect_cb		= base_req->disconnect_cb;
+	req_callbacks.plugin_start_cb	= base_req->plugin_start_cb;
+	req_callbacks.plugin_stop_cb	= base_req->plugin_stop_cb;
+
+	SAL_FN_END;
+	return SAL_ERROR_NONE;
+}
+
+/* It will be invoked on working thread */
+API gboolean sal_server_base_method_call(void *data)
+{
+	SAL_FN_CALL;
+
+	ipc_server_session_h session = (ipc_server_session_h) data;
+	sal_info("===== method called : %s =====", session->method_name);
+
+	bool catched = false;
+	for (int i = 0; __interface_map[i]; i++) {
+		if (!strncmp(session->method_name, __interface_map[i].method_name,
+				strlen(__interface_map[i].method_name))) {
+			catched = true;
+			__interface_map[i].func(session);
+		}
+	}
+
+	if (false == catched) {
+		/* TODO add error handling */
+		sal_error("function does not matched (%s)", ipc_data->method_name);
+	}
+
+	SAL_FN_END;
+	return FALSE;
+}
+
+API ipc_server_base_res_s *ipc_server_get_base_res_handle(void)
+{
+	return &response_methods;
+}
+
+/*
 API void service_adaptor_method_call(GDBusConnection *connection,
 		const gchar *sender,
 		const gchar *object_path,
@@ -54,7 +290,7 @@ API void service_adaptor_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	char *ipc_type = NULL;
 	GVariant *ipc_data = NULL;
@@ -131,7 +367,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	char *ipc_type = NULL;
 	GVariant *ipc_data = NULL;
@@ -151,7 +387,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 		SAL_INFO("uri: %s", uri);
 
-		ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
+		ipc_ret = SAL_ERROR_INTERNAL;
 
 		sal_h sal = sal_get_handle();
 
@@ -174,7 +410,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 		SAL_INFO("uri: %s", uri);
 
-		ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
+		ipc_ret = SAL_ERROR_INTERNAL;
 
 		sal_h sal = sal_get_handle();
 
@@ -196,6 +432,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 	SAL_FN_END;
 }
+*/
 /*
 service_adaptor_internal_error_code_e dbus_service_adaptor_signal_callback(service_adaptor_internal_signal_code_e signal_code,
 						const char *signal_msg)

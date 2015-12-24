@@ -22,12 +22,12 @@ ADD_DEFINITIONS("-DSERVICE_ADAPTOR_DEBUGGING")
 
 SET(COMMON-BASE-LIB "sal-common-base")
 SET(COMMON-BASE-SRCS
-        ${CMAKE_SOURCE_DIR}/common/sal_ipc.c
+        ${CMAKE_SOURCE_DIR}/common/base/sal_ipc.c
 )
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/base
 )
 
 INCLUDE(FindPkgConfig)
@@ -69,7 +69,7 @@ INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor
         ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor
         ${CMAKE_SOURCE_DIR}/adaptor/resource-adaptor
-        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/base
         ${CMAKE_SOURCE_DIR}/common/ipc-server
         ${CMAKE_SOURCE_DIR}/server
 )
@@ -109,7 +109,7 @@ SET(COMMON-CLIENT-SRCS
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/base
         ${CMAKE_SOURCE_DIR}/common/ipc-client
         ${CMAKE_SOURCE_DIR}/client
 )
