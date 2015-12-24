@@ -21,8 +21,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
+#include "sal_types.h"
+#include "sal_log.h"
 #include "sal.h"
 #include "sal_ipc_server.h"
 #include "sal_ipc_server_auth.h"
@@ -48,7 +48,7 @@ void _oauth1_get_access_token_cb(int result, oauth1_h oauth1, void *user_data)
 
 	ipc_reply_data_h reply = (ipc_reply_data_h) user_data;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	GVariant *ipc_data = NULL;
 
@@ -78,18 +78,18 @@ int _get_oauth1(GVariant *reply_info, service_auth_oauth1_h *oauth1)
 
 	*oauth1 = auth_oauth1;
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
 int _oauth1_execute_operation(auth_plugin_h plugin, service_auth_oauth1_h oauth1, ipc_reply_data_h reply)
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(NULL == plugin->oauth1, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(NULL == oauth1, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == plugin, SAL_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == plugin->oauth1, SAL_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == oauth1, SAL_ERROR_INVALID_PARAMETER);
 
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ret = SAL_ERROR_NONE;
 
 	if (0 == strcmp(oauth1->operation, SERVICE_AUTH_OAUTH1_0_GET_ACCESS_TOKEN_URI)) {
 		ret = plugin->oauth1->oauth1_get_access_token(plugin, _oauth1_get_access_token_cb, reply);
@@ -99,7 +99,7 @@ int _oauth1_execute_operation(auth_plugin_h plugin, service_auth_oauth1_h oauth1
 		return ret;
 	}
 
-	return SERVICE_ADAPTOR_ERROR_INTERNAL;
+	return SAL_ERROR_INTERNAL;
 }
 
 /******************************************************************************
@@ -117,7 +117,7 @@ API void service_auth_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	char *ipc_type = NULL;
 	GVariant *ipc_data = NULL;
@@ -139,11 +139,11 @@ API void service_auth_method_call(GDBusConnection *connection,
 
 		SAL_INFO("uri: %s", uri);
 
-		ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
+		ipc_ret = SAL_ERROR_INTERNAL;
 		ipc_type = strdup(service_auth_oauth1_res_s_type);
 
 		sal_h sal = sal_get_handle();
-		TRYVM_IF(NULL == sal, ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL, "sal_get_handle() Failed");
+		TRYVM_IF(NULL == sal, ipc_ret = SAL_ERROR_INTERNAL, "sal_get_handle() Failed");
 
 		auth_plugin_h plugin = auth_adaptor_get_plugin(sal->auth, uri);
 
@@ -152,7 +152,7 @@ API void service_auth_method_call(GDBusConnection *connection,
 		reply->type = strdup(ipc_type);
 
 		ipc_ret = _oauth1_execute_operation(plugin, oauth1, reply);
-		TRY_IF(SERVICE_ADAPTOR_ERROR_NONE == ipc_ret, "oauth1_execute_operation() Request Successed");
+		TRY_IF(SAL_ERROR_NONE == ipc_ret, "oauth1_execute_operation() Request Successed");
 
 		ipc_create_error_msg(ipc_ret, &ipc_msg);
 		ipc_data = g_variant_new(ipc_make_return_type(ipc_type), SAL_IPC_STR(NULL), SAL_IPC_STR(NULL), ipc_ret, SAL_IPC_STR(ipc_msg));

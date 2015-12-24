@@ -21,8 +21,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
+#include "sal_types.h"
+#include "sal_log.h"
 #include "sal.h"
 #include "sal_ipc_server.h"
 #include "sal_ipc_server_core.h"
@@ -54,7 +54,7 @@ API void service_adaptor_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	char *ipc_type = NULL;
 	GVariant *ipc_data = NULL;
@@ -131,7 +131,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	char *ipc_type = NULL;
 	GVariant *ipc_data = NULL;
@@ -151,7 +151,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 		SAL_INFO("uri: %s", uri);
 
-		ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
+		ipc_ret = SAL_ERROR_INTERNAL;
 
 		sal_h sal = sal_get_handle();
 
@@ -174,7 +174,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 		SAL_INFO("uri: %s", uri);
 
-		ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
+		ipc_ret = SAL_ERROR_INTERNAL;
 
 		sal_h sal = sal_get_handle();
 

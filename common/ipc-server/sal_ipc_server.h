@@ -33,11 +33,10 @@ extern "C"
 {
 #endif
 
-#include "service_adaptor_errors.h"
 #include "sal_ipc.h"
 
-service_adaptor_error_e sal_ipc_server_init();
-service_adaptor_error_e sal_ipc_server_deinit();
+int sal_ipc_server_init();
+int sal_ipc_server_deinit();
 
 #ifdef __cplusplus
 }

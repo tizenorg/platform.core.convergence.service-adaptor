@@ -1,0 +1,29 @@
+*forder tree
+
+│
+├── api
+│   ├── client       : libservice-adaptor-client.so
+│   └── provider     : libservice-provider.so
+│
+├── server           : sal-server (executable)
+│
+├── client
+│   ├── ipc-client   : libsal-ipc-client.so
+│   └── ipc-server   : libsal-ipc-server.so
+│
+├── provider
+│   ├── ipc-adaptor  : libsal-ipc-adaptor.so
+│   └── ipc-provider : libsal-ipc-provider.so
+│
+└── common
+    └── base         : libsal-commom-base.so
+
+
+*dependency graph
+
+             client        server        provider
+             ↙ ↓           ↙ ↓ ↘            ↓ ↘
+   ipc-client     ipc-server    ipc-adaptor     ipc-provider
+       ↓              ↓              ↓               ↓
+                            base
+

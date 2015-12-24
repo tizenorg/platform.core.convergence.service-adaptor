@@ -20,8 +20,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
+#include "sal_types.h"
+#include "sal_log.h"
 #include "sal_ipc.h"
 #include "sal_ipc_server_core.h"
 #include "sal_ipc_server_auth.h"
@@ -365,18 +365,18 @@ static void _on_name_lost(GDBusConnection *connection,
 	kill(getpid(), SIGINT);
 }
 
-service_adaptor_error_e _sal_ipc_server_start()
+sal_error_e _sal_ipc_server_start()
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL != introspection_data, SERVICE_ADAPTOR_ERROR_INTERNAL);
-	RETV_IF(0 != owner_id, SERVICE_ADAPTOR_ERROR_INTERNAL);
+	RETV_IF(NULL != introspection_data, SAL_ERROR_INTERNAL);
+	RETV_IF(0 != owner_id, SAL_ERROR_INTERNAL);
 
 	introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
-	RETVM_IF(NULL == introspection_data, SERVICE_ADAPTOR_ERROR_INTERNAL, "g_dbus_node_info_new_for_xml() Failed");
+	RETVM_IF(NULL == introspection_data, SAL_ERROR_INTERNAL, "g_dbus_node_info_new_for_xml() Failed");
 
 	thread_pool = g_thread_pool_new(_method_call_async_func, NULL, -1, FALSE, NULL);
-	RETVM_IF(NULL == thread_pool, SERVICE_ADAPTOR_ERROR_SYSTEM, "g_thread_pool_new() Failed");
+	RETVM_IF(NULL == thread_pool, SAL_ERROR_SYSTEM, "g_thread_pool_new() Failed");
 
 	owner_id = g_bus_own_name(G_BUS_TYPE_SYSTEM,
 			SERVICE_ADAPTOR_BUS_NAME,
@@ -391,13 +391,13 @@ service_adaptor_error_e _sal_ipc_server_start()
 		g_dbus_node_info_unref(introspection_data);
 		introspection_data = NULL;
 
-		return SERVICE_ADAPTOR_ERROR_SYSTEM;
+		return SAL_ERROR_SYSTEM;
 	}
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
-service_adaptor_error_e _sal_ipc_server_stop()
+sal_error_e _sal_ipc_server_stop()
 {
 	SAL_FN_CALL;
 
@@ -415,7 +415,7 @@ service_adaptor_error_e _sal_ipc_server_stop()
 		introspection_data = NULL;
 	}
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 /**
  * @brief D-Bus server thread function.
@@ -436,7 +436,7 @@ static gpointer _dbus_server_thread_func(gpointer data)
 
 	ret = _sal_ipc_server_start();
 
-	if (SERVICE_ADAPTOR_ERROR_NONE == ret) {
+	if (SAL_ERROR_NONE == ret) {
 		g_main_loop_run(dbus_server_loop);
 	}
 
@@ -455,18 +455,18 @@ static gpointer _dbus_server_thread_func(gpointer data)
  * Public interface definition
  ******************************************************************************/
 
-API service_adaptor_error_e sal_ipc_server_init()
+API sal_error_e sal_ipc_server_init()
 {
 	SAL_FN_CALL;
 
-	RETVM_IF(NULL != dbus_server_thread, SERVICE_ADAPTOR_ERROR_INTERNAL, "IPC server thread is already running");
+	RETVM_IF(NULL != dbus_server_thread, SAL_ERROR_INTERNAL, "IPC server thread is already running");
 
 	dbus_server_thread = g_thread_new("IPC Server", _dbus_server_thread_func, NULL);
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
-API service_adaptor_error_e sal_ipc_server_deinit()
+API sal_error_e sal_ipc_server_deinit()
 {
 	SAL_FN_CALL;
 
@@ -492,5 +492,5 @@ API service_adaptor_error_e sal_ipc_server_deinit()
 		dbus_server_context = NULL;
 	}
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
