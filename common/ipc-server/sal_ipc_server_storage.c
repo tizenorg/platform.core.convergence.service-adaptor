@@ -21,114 +21,166 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
-#include "sal.h"
-#include "sal_ipc_server.h"
+#include "sal_types.h"
+#include "sal_log.h"
+#include "sal_ipc.h"
 #include "sal_ipc_server_storage.h"
+/*
 #include "storage_adaptor.h"
 #include "sal_service_storage.h"
 #include "sal_service_storage_internal.h"
-
-/******************************************************************************
- * Global variables and defines
- ******************************************************************************/
+*/
 
 /******************************************************************************
  * Private interface
  ******************************************************************************/
 
+/* request callback internal */
+static void __chunk_cb(ipc_server_session_h session);
+
+/* response function internal */
+static void __response_chunk(ipc_server_session_h session);
+
+static void __response_fail(ipc_server_session_h session, int result, int error_code, const char *message);
+
+/* response fail function internal */
+static void __simple_fail_cb(ipc_server_session_h session, int ret, int err, const char *message);
+
+
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
+
+struct _dbus_interface_map
+{
+	char *method_name;
+	void (*func)(ipc_server_session_h session);
+};
+
+static struct _dbus_interface_map __interface_map[] = {
+	};
+
+struct _dbus_fail_response_map
+{
+	char *method_name;
+	void (*func)(ipc_server_session_h session, int ret, int err, const char *message);
+};
+
+static struct _dbus_fail_response_map __fail_response_map[] = {
+		/*{DBUS_SERVICE_PLUGIN_STOP_METHOD,			__simple_fail_cb},*/
+	};
+
+static ipc_server_storage_req_s req_callbacks = {0, };
+
+static ipc_server_storage_res_s response_methods = {
+		__response_chunk,
+		__response_fail,
+	};
+
 /******************************************************************************
  * Private interface definition
  ******************************************************************************/
 
-void _cloud_remove_file_cb(int result, cloud_file_h file, void *user_data)
+/* request callbacks  */
+static void __chunk_cb(ipc_server_session_h session)
 {
 	SAL_FN_CALL;
-
-	ipc_reply_data_h reply = (ipc_reply_data_h) user_data;
-
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
-	char *ipc_msg = NULL;
-	GVariant *ipc_data = NULL;
-
-	GVariantBuilder *builder = g_variant_builder_new(G_VARIANT_TYPE(file_list_type));
-
-	ipc_create_error_msg(ipc_ret, &ipc_msg);
-	ipc_data = g_variant_new(ipc_make_return_type(reply->type), file->is_dir, SAL_IPC_STR(file->dir_path), SAL_IPC_STR(file->local_path), SAL_IPC_STR(file->cloud_path), file->size, SAL_IPC_STR(file->operation), builder, ipc_ret, SAL_IPC_STR(ipc_msg));
-	g_dbus_method_invocation_return_value(reply->invocation, ipc_data);
-
-	SAL_FREE(ipc_msg);
-	ipc_free_reply_data(reply);
-	g_variant_builder_unref(builder);
 
 	SAL_FN_END;
 }
 
-int _get_cloud_file(GVariant *reply_info, service_storage_cloud_file_h *file)
+/* response functions  */
+static void __response_chunk(ipc_server_session_h session)
 {
 	SAL_FN_CALL;
 
-	service_storage_cloud_file_h cloud_file = (service_storage_cloud_file_h) g_malloc0(sizeof(service_storage_cloud_file_s));
-
-	int info_size = service_storage_cloud_file_s_type_length;
-	GVariant *info[info_size];
-	ipc_create_variant_info(reply_info, info_size, (GVariant ***) &info);
-
-	int idx = 0;
-	cloud_file->is_dir = g_variant_get_boolean(info[idx++]);
-	cloud_file->dir_path = ipc_insure_g_variant_dup_string(info[idx++]);
-	cloud_file->local_path = ipc_insure_g_variant_dup_string(info[idx++]);
-	cloud_file->cloud_path = ipc_insure_g_variant_dup_string(info[idx++]);
-	cloud_file->size = g_variant_get_uint64(info[idx++]);
-	cloud_file->operation = ipc_insure_g_variant_dup_string(info[idx++]);
-
-	ipc_destroy_variant_info(info, info_size);
-
-	*file = cloud_file;
-
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	SAL_FN_END;
 }
 
-int _cloud_execute_operation(storage_plugin_h plugin, service_storage_cloud_file_h file, ipc_reply_data_h reply)
+static void __response_fail(ipc_server_session_h session, int result, int error_code, const char *message)
 {
 	SAL_FN_CALL;
-
-	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(NULL == plugin->cloud, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(NULL == file, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-
-	if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_REMOVE_FILE_URI)) {
-		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
-
-		return ret;
-	} else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_URI)) {
-		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
-
-		return ret;
-	} else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_UPLOAD_FILE_URI)) {
-		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
-
-		return ret;
-	} else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_DOWNLOAD_FILE_THUMBNAIL_URI)) {
-		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
-
-		return ret;
-	} else if (0 == strcmp(file->operation, SERVICE_STORAGE_CLOUD_GET_FILE_LIST_URI)) {
-		ret = plugin->cloud->cloud_remove_file(plugin, file->cloud_path, _cloud_remove_file_cb, reply);
-
-		return ret;
+/*
+	for (int i = 0; __fail_response_map[i]; i++) {
+		if (!strncmp(session->method_name, __fail_response_map[i].method_name,
+				strlen(__fail_response_map[i].method_name))) {
+			SAL_DBG("<%s> method return fail", session->method_name);
+			__fail_response_map[i].func(session, result, error_code, message);
+		}
 	}
+*/
+	/* TODO unref session->invocation or return error */
+	g_free(session);
 
-	return SERVICE_ADAPTOR_ERROR_INTERNAL;
+	SAL_FN_END;
 }
+
+static void __simple_fail_cb(ipc_server_session_h session, int ret, int err, const char *message)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_SIMPLE_TYPE,
+			ret, err, SAL_IPC_SAFE_STR(message));
+
+	SAL_DBG("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
 
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
 
+API int ipc_server_storage_init(ipc_server_storage_req_s *storage_req)
+{
+	SAL_FN_CALL;
+
+	RETV_IF(NULL == storage_req, SAL_ERROR_INTERNAL);
+	/*RET_IF(NULL == base_req->chunk_cb);*/
+
+	req_callbacks.chunk_cb	= storage_req->chunk_cb;
+
+	SAL_FN_END;
+	return SAL_ERROR_NONE;
+}
+
+API gboolean sal_server_storage_method_call(void *data)
+{
+	SAL_FN_CALL;
+
+	ipc_server_session_h session = (ipc_server_session_h) data;
+	SAL_INFO("===== method called : %s =====", session->method_name);
+/*
+	bool catched = false;
+	for (int i = 0; __interface_map[i]; i++) {
+		if (!strncmp(session->method_name, __interface_map[i].method_name,
+				strlen(__interface_map[i].method_name))) {
+			catched = true;
+			__interface_map[i].func(session);
+		}
+	}
+
+	if (false == catched) {
+		// TODO add error handling /
+		SAL_ERR("function does not matched (%s)", session->method_name);
+	}
+*/
+	SAL_FN_END;
+	return FALSE;
+}
+
+API ipc_server_storage_res_s *ipc_server_get_storage_res_handle(void)
+{
+	return &response_methods;
+}
+
+/*
 API void service_storage_method_call(GDBusConnection *connection,
 		const gchar *sender,
 		const gchar *object_path,
@@ -140,7 +192,7 @@ API void service_storage_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	char *ipc_type = NULL;
 	GVariant *ipc_data = NULL;
@@ -162,11 +214,11 @@ API void service_storage_method_call(GDBusConnection *connection,
 
 		SAL_INFO("uri: %s", uri);
 
-		ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
+		ipc_ret = SAL_ERROR_INTERNAL;
 		ipc_type = strdup(service_storage_cloud_file_res_s_type);
 
 		sal_h sal = sal_get_handle();
-		TRYVM_IF(NULL == sal, ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL, "sal_get_handle() Failed");
+		TRYVM_IF(NULL == sal, ipc_ret = SAL_ERROR_INTERNAL, "sal_get_handle() Failed");
 
 		storage_plugin_h plugin = storage_adaptor_get_plugin(sal->storage, uri);
 
@@ -175,7 +227,7 @@ API void service_storage_method_call(GDBusConnection *connection,
 		reply->type = strdup(ipc_type);
 
 		ipc_ret = _cloud_execute_operation(plugin, file, reply);
-		TRY_IF(SERVICE_ADAPTOR_ERROR_NONE == ipc_ret, "cloud_execute_operation() Request Successed");
+		TRY_IF(SAL_ERROR_NONE == ipc_ret, "cloud_execute_operation() Request Successed");
 
 		GVariantBuilder *builder = g_variant_builder_new(G_VARIANT_TYPE(file_list_type));
 		ipc_create_error_msg(ipc_ret, &ipc_msg);
@@ -194,3 +246,4 @@ catch:
 
 	SAL_FN_END;
 }
+*/

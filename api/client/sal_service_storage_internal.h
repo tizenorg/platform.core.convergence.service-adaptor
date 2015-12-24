@@ -28,7 +28,7 @@
 extern "C"
 {
 #endif
-
+/*
 #include <glib.h>
 
 #include "sal_service_adaptor.h"
@@ -54,14 +54,14 @@ typedef struct _service_storage_task_s
 {
         char *service_handle_name;
 }service_storage_task_t;
-
+*/
 /*==================================================================================================
                                          FUNCTION PROTOTYPES
 ==================================================================================================*/
-
+/*
 int service_storage_cloud_start(service_storage_cloud_file_h file);
 int service_storage_cloud_stop(service_storage_cloud_file_h file);
-
+*/
 /*==================================================================================================
                                        2.4 FUNCTION PROTOTYPES
 ==================================================================================================*/
@@ -69,6 +69,7 @@ int service_storage_cloud_stop(service_storage_cloud_file_h file);
 /**
  * Storage adaptor content type
  */
+/*
 typedef enum _service_storage_file_content_type_e
 {
 	SERVICE_ADAPTOR_STORAGE_CONTENT_TYPE_DEFAULT               = -1,    // initalize value
@@ -123,33 +124,36 @@ typedef struct _service_storage_cloud_meta_s
 	unsigned long long quota_byte;
 	char *extra_cloud_meta;
 } service_storage_cloud_meta_s;
+*/
 
 /**
 * @brief Describes file information description
 */
+
+/*
 struct _service_storage_file_s
 {
-	char    *plugin_name;		/**< specifies plugin name generated file_info */
-	char    *object_id;		/**< specifies file object id be used in storage */
-	char    *storage_path;		/**< specifies file path in storage */
-	unsigned long long file_size;	/**< specifies file size (recomend byte)*/
-	unsigned long long created_time;	/**< specifies timestamp */
-	unsigned long long modified_time;	/**< specifies timestamp */
-	int     file_info_index;	/**< specifies file info index (wide use; e.g : chunk upload, multi download)*/
-	service_storage_content_type_e content_type; /**< specifies file content type (reference service_adaptor_file_content_type_e)  */
+	char    *plugin_name;		// specifies plugin name generated file_info
+	char    *object_id;		   // specifies file object id be used in storage /
+	char    *storage_path;		// specifies file path in storage /
+	unsigned long long file_size;	//< specifies file size (recomend byte)/
+	unsigned long long created_time;	//< specifies timestamp /
+	unsigned long long modified_time;	//< specifies timestamp /
+	int     file_info_index;	//< specifies file info index (wide use; e.g : chunk upload, multi download)/
+	service_storage_content_type_e content_type; //< specifies file content type (reference service_adaptor_file_content_type_e)  /
 
 	service_storage_media_meta_s *media_meta;
 	service_storage_cloud_meta_s *cloud_meta;
-	char    *extra_file_info;		/**< specifies content name in metadata */
+	char    *extra_file_info;		//< specifies content name in metadata/
 };
 
 
 typedef struct _service_storage_file_s service_storage_file_s;
-
+*/
 /**
 * @brief The handle for File Description
 */
-typedef struct _service_storage_file_s *service_storage_file_h;
+//typedef struct _service_storage_file_s *service_storage_file_h;
 
 #ifdef __cplusplus
 }

@@ -20,8 +20,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
+#include "sal_types.h"
+#include "sal_log.h"
 #include "sal_ipc.h"
 
 /******************************************************************************
@@ -68,14 +68,14 @@ API char *ipc_make_return_type(const char *type)
 API void ipc_create_error_msg(int code, char **ipc_msg)
 {
 	switch (code) {
-	case SERVICE_ADAPTOR_ERROR_NONE:
+	case SAL_ERROR_NONE:
 		*ipc_msg = NULL;
 		break;
-	case SERVICE_ADAPTOR_ERROR_INTERNAL:
-		*ipc_msg = strdup("SERVICE_ADAPTOR_ERROR_INTERNAL");
+	case SAL_ERROR_INTERNAL:
+		*ipc_msg = strdup("SAL_ERROR_INTERNAL");
 		break;
 	default:
-		*ipc_msg = strdup("SERVICE_ADAPTOR_ERROR_UNKNOWN");
+		*ipc_msg = strdup("SAL_ERROR_UNKNOWN");
 		break;
 	}
 }
