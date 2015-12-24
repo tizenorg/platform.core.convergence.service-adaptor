@@ -20,8 +20,8 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
+#include "sal_types.h"
+#include "sal_log.h"
 #include "sal_ipc.h"
 #include "sal_ipc_server_core.h"
 #include "sal_ipc_server_auth.h"
@@ -30,6 +30,12 @@
 /******************************************************************************
  * Global variables and defines
  ******************************************************************************/
+
+static sal_ipc_method_call __base_method_cb = NULL;
+static sal_ipc_method_call __plugin_method_cb = NULL;
+static sal_ipc_method_call __auth_method_cb = NULL;
+static sal_ipc_method_call __storage_method_cb = NULL;
+static GHashTable *method_table = NULL;
 
 /**
  * D-Bus server thread
@@ -75,35 +81,29 @@ static const gchar introspection_xml[] =
 "    <method name='" DBUS_SERVICE_ADAPTOR_CONNECT_METHOD "'>"
 "      <arg type='" service_adaptor_connect_req_s_type "' name='req' direction='in'/>"
 "      <arg type='" service_adaptor_connect_res_s_type "' name='res' direction='out'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='s' name='ret_msg' direction='out'/>"
+"      <arg type='m(iis)' name='ret_code' direction='out'/>"
 "    </method>"
 "    <method name='" DBUS_SERVICE_ADAPTOR_DISCONNECT_METHOD "'>"
 "      <arg type='" service_adaptor_disconnect_s_type "' name='req' direction='in'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='s' name='ret_msg' direction='out'/>"
+"      <arg type='m(iis)' name='ret_code' direction='out'/>"
 "    </method>"
 "    <method name='" DBUS_SERVICE_PLUGIN_CREATE_METHOD "'>"
 "      <arg type='" service_plugin_create_s_type "' name='req' direction='in'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='s' name='ret_msg' direction='out'/>"
+"      <arg type='m(iis)' name='ret_code' direction='out'/>"
 "    </method>"
 "    <method name='" DBUS_SERVICE_PLUGIN_DESTROY_METHOD "'>"
 "      <arg type='" service_plugin_destroy_s_type "' name='req' direction='in'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='s' name='ret_msg' direction='out'/>"
+"      <arg type='m(iis)' name='ret_code' direction='out'/>"
 "    </method>"
 "    <method name='" DBUS_SERVICE_AUTH_OAUTH1_METHOD "'>"
 "      <arg type='" service_auth_oauth1_req_s_type "' name='req' direction='in'/>"
 "      <arg type='" service_auth_oauth1_res_s_type "' name='res' direction='out'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='s' name='ret_msg' direction='out'/>"
+"      <arg type='m(iis)' name='ret_code' direction='out'/>"
 "    </method>"
 "    <method name='" DBUS_SERVICE_STORAGE_CLOUD_FILE_METHOD "'>"
 "      <arg type='" service_storage_cloud_file_req_s_type "' name='req' direction='in'/>"
 "      <arg type='" service_storage_cloud_file_res_s_type "' name='res' direction='out'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='s' name='ret_msg' direction='out'/>"
+"      <arg type='m(iis)' name='ret_code' direction='out'/>"
 "    </method>"
 "    <signal name='" DBUS_SERVICE_ADAPTOR_NOTIFY_SIGNAL "'>"
 "      <arg type='t' name='signal_code' direction='out'/>"
@@ -125,7 +125,6 @@ typedef struct _method_call_s {
 	GDBusMethodInvocation *invocation;
 	gpointer user_data;
 } method_call_s;
-typedef struct _method_call_s *method_call_h;
 
 /******************************************************************************
  * Private interface
@@ -146,7 +145,9 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 	SAL_INFO("Call %s", handle->method_name);
 
 	if (0 == strncmp(handle->method_name, DBUS_SERVICE_ADAPTOR, DBUS_NAME_LENGTH)) {
-		service_adaptor_method_call(handle->connection,
+		__base_method_cb(handle);
+/*
+		__base_method_cb(handle->connection,
 				handle->sender,
 				handle->object_path,
 				handle->interface_name,
@@ -154,8 +155,11 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 				handle->parameters,
 				handle->invocation,
 				handle->user_data);
+*/
 	} else if (0 == strncmp(handle->method_name, DBUS_SERVICE_PLUGIN, DBUS_NAME_LENGTH)) {
-		service_plugin_method_call(handle->connection,
+		__plugin_method_cb(handle);
+/*
+		__plugin_method_cb(handle->connection,
 				handle->sender,
 				handle->object_path,
 				handle->interface_name,
@@ -163,8 +167,11 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 				handle->parameters,
 				handle->invocation,
 				handle->user_data);
+*/
 	} else if (0 == strncmp(handle->method_name, DBUS_SERVICE_AUTH, DBUS_NAME_LENGTH)) {
-		service_auth_method_call(handle->connection,
+		__auth_method_cb(handle);
+/*
+		__auth_method_cb(handle->connection,
 				handle->sender,
 				handle->object_path,
 				handle->interface_name,
@@ -172,8 +179,11 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 				handle->parameters,
 				handle->invocation,
 				handle->user_data);
+*/
 	} else if (0 == strncmp(handle->method_name, DBUS_SERVICE_STORAGE, DBUS_NAME_LENGTH)) {
-		service_storage_method_call(handle->connection,
+		__storage_method_cb(handle);
+/*
+		__storage_method_cb(handle->connection,
 				handle->sender,
 				handle->object_path,
 				handle->interface_name,
@@ -181,7 +191,9 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 				handle->parameters,
 				handle->invocation,
 				handle->user_data);
+*/
 	}
+	g_free(handle);
 }
 
 /**
@@ -365,18 +377,18 @@ static void _on_name_lost(GDBusConnection *connection,
 	kill(getpid(), SIGINT);
 }
 
-service_adaptor_error_e _sal_ipc_server_start()
+sal_error_e _sal_ipc_server_start()
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL != introspection_data, SERVICE_ADAPTOR_ERROR_INTERNAL);
-	RETV_IF(0 != owner_id, SERVICE_ADAPTOR_ERROR_INTERNAL);
+	RETV_IF(NULL != introspection_data, SAL_ERROR_INTERNAL);
+	RETV_IF(0 != owner_id, SAL_ERROR_INTERNAL);
 
 	introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
-	RETVM_IF(NULL == introspection_data, SERVICE_ADAPTOR_ERROR_INTERNAL, "g_dbus_node_info_new_for_xml() Failed");
+	RETVM_IF(NULL == introspection_data, SAL_ERROR_INTERNAL, "g_dbus_node_info_new_for_xml() Failed");
 
 	thread_pool = g_thread_pool_new(_method_call_async_func, NULL, -1, FALSE, NULL);
-	RETVM_IF(NULL == thread_pool, SERVICE_ADAPTOR_ERROR_SYSTEM, "g_thread_pool_new() Failed");
+	RETVM_IF(NULL == thread_pool, SAL_ERROR_SYSTEM, "g_thread_pool_new() Failed");
 
 	owner_id = g_bus_own_name(G_BUS_TYPE_SYSTEM,
 			SERVICE_ADAPTOR_BUS_NAME,
@@ -391,13 +403,13 @@ service_adaptor_error_e _sal_ipc_server_start()
 		g_dbus_node_info_unref(introspection_data);
 		introspection_data = NULL;
 
-		return SERVICE_ADAPTOR_ERROR_SYSTEM;
+		return SAL_ERROR_SYSTEM;
 	}
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
-service_adaptor_error_e _sal_ipc_server_stop()
+sal_error_e _sal_ipc_server_stop()
 {
 	SAL_FN_CALL;
 
@@ -415,7 +427,7 @@ service_adaptor_error_e _sal_ipc_server_stop()
 		introspection_data = NULL;
 	}
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 /**
  * @brief D-Bus server thread function.
@@ -436,7 +448,7 @@ static gpointer _dbus_server_thread_func(gpointer data)
 
 	ret = _sal_ipc_server_start();
 
-	if (SERVICE_ADAPTOR_ERROR_NONE == ret) {
+	if (SAL_ERROR_NONE == ret) {
 		g_main_loop_run(dbus_server_loop);
 	}
 
@@ -455,18 +467,30 @@ static gpointer _dbus_server_thread_func(gpointer data)
  * Public interface definition
  ******************************************************************************/
 
-API service_adaptor_error_e sal_ipc_server_init()
+API sal_error_e sal_ipc_server_init(sal_ipc_method_call base_method,
+		sal_ipc_method_call plugin_method,
+		sal_ipc_method_call auth_method,
+		sal_ipc_method_call storage_method)
 {
 	SAL_FN_CALL;
 
-	RETVM_IF(NULL != dbus_server_thread, SERVICE_ADAPTOR_ERROR_INTERNAL, "IPC server thread is already running");
+	RETVM_IF(NULL == base_method, SAL_ERROR_INTERNAL, "Please check param");
+	RETVM_IF(NULL == plugin_method, SAL_ERROR_INTERNAL, "Please check param");
+	RETVM_IF(NULL == auth_method, SAL_ERROR_INTERNAL, "Please check param");
+	RETVM_IF(NULL == storage_method, SAL_ERROR_INTERNAL, "Please check param");
+	RETVM_IF(NULL != dbus_server_thread, SAL_ERROR_INTERNAL, "IPC server thread is already running");
+
+	__base_method_cb	= base_method;
+	__plugin_method_cb	= plugin_method;
+	__auth_method_cb	= auth_method;
+	__storage_method_cb	= storage_method;
 
 	dbus_server_thread = g_thread_new("IPC Server", _dbus_server_thread_func, NULL);
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }
 
-API service_adaptor_error_e sal_ipc_server_deinit()
+API sal_error_e sal_ipc_server_deinit()
 {
 	SAL_FN_CALL;
 
@@ -492,5 +516,5 @@ API service_adaptor_error_e sal_ipc_server_deinit()
 		dbus_server_context = NULL;
 	}
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	return SAL_ERROR_NONE;
 }

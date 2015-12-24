@@ -33,11 +33,18 @@ extern "C"
 {
 #endif
 
-#include "service_adaptor_errors.h"
 #include "sal_ipc.h"
 
-service_adaptor_error_e sal_ipc_server_init();
-service_adaptor_error_e sal_ipc_server_deinit();
+typedef struct _method_call_s *method_call_h;
+
+typedef void (*sal_ipc_method_call)(mechod_call_h ipc_data);
+
+int sal_ipc_server_init(sal_ipc_method_call base_method,
+		sal_ipc_method_call plugin_method,
+		sal_ipc_method_call auth_method,
+		sal_ipc_method_call storage_method);
+
+int sal_ipc_server_deinit(void);
 
 #ifdef __cplusplus
 }
