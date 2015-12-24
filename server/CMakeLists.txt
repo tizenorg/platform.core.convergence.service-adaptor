@@ -31,7 +31,7 @@ SET(MAIN-SRCS
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/base
         ${CMAKE_SOURCE_DIR}/common/ipc-server
         ${CMAKE_SOURCE_DIR}/server
         ${CMAKE_SOURCE_DIR}/client

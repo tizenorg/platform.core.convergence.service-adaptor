@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef __TIZEN_CONVERGENCE_SAL_INTERNAL_H__
-#define __TIZEN_CONVERGENCE_SAL_INTERNAL_H__
+#ifndef __TIZEN_CONVERGENCE_SAL_LOG_H__
+#define __TIZEN_CONVERGENCE_SAL_LOG_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -159,4 +159,14 @@
 	ptr = NULL; \
 } while(0)
 
-#endif /* __TIZEN_CONVERGENCE_SAL_INTERNAL_H__ */
+#define SAL_STR_REPLACE(__string, __old_char, __new_char)	\
+		for (char *ch = (__string); *ch; ch++) { \
+			if ((__old_char) == *ch) \
+				*ch = (__new_char); \
+		}
+
+#define SAL_FOREACH_GLIST(iterator, list)	for (GList *iterator = g_list_first(list); iterator; iterator = g_list_next(iterator))
+
+#define SAL_SIZE_OF_TAB(arr)	(int)(sizeof(arr) / sizeof(arr[0]))
+
+#endif /* __TIZEN_CONVERGENCE_SAL_LOG_H__ */

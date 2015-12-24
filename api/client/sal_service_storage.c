@@ -22,17 +22,17 @@
 #include <glib.h>
 
 #include <app.h>
-
+#include "sal_service_storage.h"
+/*
 #include "service_adaptor_errors.h"
 #include "service_adaptor_internal.h"
 #include "sal_service_adaptor.h"
 #include "sal_service_adaptor_internal.h"
 #include "sal_service_task.h"
 #include "sal_service_task_internal.h"
-#include "sal_service_storage.h"
 #include "sal_service_storage_internal.h"
 #include "sal_ipc_client_storage.h"
-
+*/
 /******************************************************************************
  * Global variables and defines
  ******************************************************************************/
@@ -44,7 +44,7 @@
 /******************************************************************************
  * Private interface definition
  ******************************************************************************/
-
+/*
 int service_storage_cloud_start(service_storage_cloud_file_h file)
 {
 	SAL_FN_CALL;
@@ -75,11 +75,11 @@ int service_storage_cloud_stop(service_storage_cloud_file_h file)
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
-
+*/
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
-
+/*
 API int service_storage_cloud_file_create(service_plugin_h plugin, service_storage_cloud_file_h *file)
 {
 	SAL_FN_CALL;
@@ -119,7 +119,7 @@ API int service_storage_cloud_file_clone(service_storage_cloud_file_h src_file, 
 	cloud_file->local_path = g_strdup(src_file->local_path);
 	cloud_file->cloud_path = g_strdup(src_file->cloud_path);
 	cloud_file->operation = g_strdup(src_file->operation);
-	/* TODO: g_list_copy_deep() */
+	// TODO: g_list_copy_deep()
 	if (NULL != src_file->files) {
 		cloud_file->files = g_list_copy(src_file->files);
 	} else {
@@ -324,11 +324,11 @@ API int service_storage_cloud_file_destroy_task(service_task_h task)
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
-
+*/
 /******************************************************************************
  * 2.4 Public interface definition
  ******************************************************************************/
-
+/*
 API int service_storage_get_file_list(service_plugin_h plugin,
 						const char *dir_path,
 						service_storage_file_list_cb callback,
@@ -465,7 +465,7 @@ API int service_storage_cancel_task(service_storage_task_h task)
 {
 	RETV_IF(NULL == task, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-/*	return service_task_stop((service_task_h) task); */
+//	return service_task_stop((service_task_h) task);
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
@@ -627,3 +627,4 @@ API int service_storage_file_get_physical_path(service_storage_file_h file,
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
+*/

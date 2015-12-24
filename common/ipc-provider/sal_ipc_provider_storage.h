@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef __TIZEN_CONVERGENCE_SAL_IPC_SERVER_STORAGE_H__
-#define __TIZEN_CONVERGENCE_SAL_IPC_SERVER_STORAGE_H__
+#ifndef __TIZEN_CONVERGENCE_SAL_IPC_PROVIDER_STORAGE_H__
+#define __TIZEN_CONVERGENCE_SAL_IPC_PROVIDER_STORAGE_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -36,39 +36,30 @@ extern "C"
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "sal_ipc_server_types.h"
+#include "sal_ipc_provider_types.h"
 
-typedef struct _ipc_server_storage_req_s
+typedef struct _ipc_provider_storage_req_s
 {
-	void (*chunk_cb)(ipc_server_session_h session);
-} ipc_server_storage_req_s;
+	void (*download_cb)(ipc_provider_session_h session, const char *session_uri,
+			const char *local_path, const char *cloud_path);
+} ipc_provider_storage_req_s;
 
-typedef struct _ipc_server_storage_res_s
+typedef struct _ipc_provider_storage_res_s
 {
-	void (*chunk)(ipc_server_session_h session);
+	void (*download)(ipc_provider_session_h session, int fd);
 
-	void (*fail)(ipc_server_session_h session, int result, int error_code, const char *message);
-} ipc_server_storage_res_s;
+	void (*fail)(ipc_provider_session_h session, int result, int error_code, const char *message);
+} ipc_provider_storage_res_s;
 
-API int ipc_server_storage_init(ipc_server_storage_req_s *storage_req);
+API int ipc_provider_storage_init(ipc_provider_storage_req_s *storage_req);
 
-API gboolean sal_server_storage_method_call(void *data);
+API ipc_provider_storage_res_s *ipc_provider_get_storage_res_handle(void);
 
-API ipc_server_storage_res_s *ipc_server_get_storage_res_handle(void);
+ipc_provider_method_call_s ipc_provider_storage_method_call;
 
-/*
-void service_storage_method_call(GDBusConnection *connection,
-		const gchar *sender,
-		const gchar *object_path,
-		const gchar *interface_name,
-		const gchar *method_name,
-		GVariant *parameters,
-		GDBusMethodInvocation *invocation,
-		gpointer user_data);
-*/
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TIZEN_CONVERGENCE_SAL_IPC_SERVER_STORAGE_H__ */
+#endif /* __TIZEN_CONVERGENCE_SAL_IPC_PROVIDER_STORAGE_H__ */
 

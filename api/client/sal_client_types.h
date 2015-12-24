@@ -17,8 +17,8 @@
  *
  */
 
-#ifndef __SERVICE_AUTH_INTERNAL_H__
-#define __SERVICE_AUTH_INTERNAL_H__
+#ifndef __SAL_CLIENT_TYPES_H__
+#define __SAL_CLIENT_TYPES_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -31,28 +31,28 @@ extern "C"
 
 #include <glib.h>
 
-#include "sal_service_adaptor.h"
-#include "sal_service_auth.h"
+/**
+ * @brief Describes infromation about Adaptor Handle
+ */
+typedef struct _service_adaptor_s {
+	int pid;
+	char *uri;
 
-typedef struct _service_auth_oauth1_s
-{
-	service_plugin_h plugin;
-	service_auth_oauth1_cb callback;
-	void *user_data;
+	GList *plugins;		/* char **plugins (uri) */
+	GList *started_plugins;	/* service_plugin_h **started_plugins */
+} service_adaptor_s;
 
-	char *access_token;
-	char *operation;
-} service_auth_oauth1_s;
-
-/*==================================================================================================
-                                         FUNCTION PROTOTYPES
-==================================================================================================*/
-
-int service_auth_oauth1_start(service_auth_oauth1_h oauth1);
-int service_auth_oauth1_stop(service_auth_oauth1_h oauth1);
+/**
+ * @brief Describes infromation about Plugin Handle
+ */
+typedef struct _service_plugin_s {
+	char *uri;
+	char *handle;
+	GHashTable *property;
+} service_plugin_s;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __SERVICE_AUTH_INTERNAL_H__ */
+#endif /* __SAL_CLIENT_TYPES_H__ */

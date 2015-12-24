@@ -32,11 +32,11 @@
 extern "C"
 {
 #endif
-
+/*
 #include "sal_service_auth.h"
 
 int ipc_service_auth_oauth1(const char *uri, service_auth_oauth1_h req_oauth1, service_auth_oauth1_h *res_oauth1);
-
+*/
 #ifdef __cplusplus
 }
 #endif
