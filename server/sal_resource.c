@@ -37,7 +37,7 @@
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
-
+/*
 resource_adaptor_listener_h sal_resource_register_listener(resource_adaptor_h resource)
 {
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
@@ -53,3 +53,4 @@ resource_adaptor_listener_h sal_resource_register_listener(resource_adaptor_h re
 
 	return listener;
 }
+*/

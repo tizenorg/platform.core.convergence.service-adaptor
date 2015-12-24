@@ -36,6 +36,27 @@ extern "C"
 #include <glib.h>
 #include <gio/gio.h>
 
+#include "sal_ipc_server_types.h"
+
+typedef struct _ipc_server_storage_req_s
+{
+	void (*chunk_cb)(ipc_server_session_h session);
+} ipc_server_storage_req_s;
+
+typedef struct _ipc_server_storage_res_s
+{
+	void (*chunk)(ipc_server_session_h session);
+
+	void (*fail)(ipc_server_session_h session, int result, int error_code, const char *message);
+} ipc_server_storage_res_s;
+
+API int ipc_server_storage_init(ipc_server_storage_req_s *storage_req);
+
+API gboolean sal_server_storage_method_call(void *data);
+
+API ipc_server_storage_res_s *ipc_server_get_storage_res_handle(void);
+
+/*
 void service_storage_method_call(GDBusConnection *connection,
 		const gchar *sender,
 		const gchar *object_path,
@@ -44,7 +65,7 @@ void service_storage_method_call(GDBusConnection *connection,
 		GVariant *parameters,
 		GDBusMethodInvocation *invocation,
 		gpointer user_data);
-
+*/
 #ifdef __cplusplus
 }
 #endif

@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>
-
+/*
 #include <tizen.h>
 #include <app.h>
 #include <app_info.h>
@@ -31,7 +31,7 @@
 #include "sal.h"
 #include "sal_observer.h"
 #include "auth_adaptor.h"
-
+*/
 /******************************************************************************
  * Global variables and defines
  ******************************************************************************/
@@ -50,6 +50,7 @@
  *
  * @return      void.
  */
+/*
 static bool _sal_app_meta_cb(const char *key, const char *value, void *user_data)
 {
 	SAL_FN_CALL;
@@ -67,12 +68,14 @@ static bool _sal_app_meta_cb(const char *key, const char *value, void *user_data
 
 	return true;
 }
+*/
 
 /**
  * @brief callback of app info
  *
  * @return      void.
  */
+/*
 static bool _sal_app_info_cb(package_info_app_component_type_e comp_type, const char *app_id, void *user_data)
 {
 	SAL_FN_CALL;
@@ -93,12 +96,14 @@ static bool _sal_app_info_cb(package_info_app_component_type_e comp_type, const 
 
 	return true;
 }
+*/
 
 /**
  * @brief callback of package manager
  *
  * @return      void.
  */
+/*
 static void _sal_package_event_cb(const char *type,
 		const char *package,
 		package_manager_event_type_e event_type,
@@ -137,15 +142,16 @@ static void _sal_package_event_cb(const char *type,
 		storage_adaptor_unregister_plugin_service(storage_plugin);
 		storage_adaptor_destroy_plugin(storage_plugin);
 
-		/* TODO: destroy plugin of other adaptor */
+		// TODO: destroy plugin of other adaptor
 	}
 }
-
+*/
 /**
  * @brief callback of package_manager_foreach_package_info()
  *
  * @return      void.
  */
+/*
 static bool _sal_package_info_cb(package_info_h package_info, void *user_data)
 {
 	SAL_FN_CALL;
@@ -161,6 +167,7 @@ static bool _sal_package_info_cb(package_info_h package_info, void *user_data)
 
 	return true;
 }
+*/
 
 /******************************************************************************
  * Public interface definition
@@ -171,6 +178,7 @@ static bool _sal_package_info_cb(package_info_h package_info, void *user_data)
  *
  * @return      void.
  */
+/*
 service_adaptor_error_e sal_observer_start()
 {
 	SAL_FN_CALL;
@@ -185,12 +193,14 @@ service_adaptor_error_e sal_observer_start()
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
+*/
 
 /**
  * @brief register existing plugin using package manager
  *
  * @return      void.
  */
+/*
 service_adaptor_error_e sal_observer_register_existed_plugin()
 {
 	SAL_FN_CALL;
@@ -202,3 +212,4 @@ service_adaptor_error_e sal_observer_register_existed_plugin()
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
+*/

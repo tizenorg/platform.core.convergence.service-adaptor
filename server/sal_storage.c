@@ -37,7 +37,7 @@
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
-
+/*
 storage_adaptor_listener_h sal_storage_register_listener(storage_adaptor_h storage)
 {
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
@@ -53,3 +53,4 @@ storage_adaptor_listener_h sal_storage_register_listener(storage_adaptor_h stora
 
 	return listener;
 }
+*/
