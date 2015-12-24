@@ -56,9 +56,10 @@ extern "C"
 /**
  * struct for dbus.
  */
-#define service_adaptor_connect_req_s_type_length 1
+#define service_adaptor_connect_req_s_type_length 2
 #define service_adaptor_connect_req_s_type \
 	"(" \
+	"i" /* int pid */ \
 	"s" /* char *uri */ \
 	")"
 
@@ -68,22 +69,31 @@ extern "C"
 	"a(s)" /* char **uri */ \
 	")"
 
-#define service_adaptor_disconnect_s_type_length 1
+#define service_adaptor_disconnect_s_type_length 2
 #define service_adaptor_disconnect_s_type \
 	"(" \
+	"i" /* int pid */ \
 	"s" /* char *uri */ \
 	")"
 
-#define service_plugin_create_s_type_length 1
-#define service_plugin_create_s_type \
+#define service_plugin_start_req_s_type_length 3
+#define service_plugin_start_req_s_type \
 	"(" \
+	"i" /* int pid */ \
 	"s" /* char *uri */ \
+	"s" /* char *plugin_uri */ \
 	")"
 
-#define service_plugin_destroy_s_type_length 1
-#define service_plugin_destroy_s_type \
+#define service_plugin_start_res_s_type_length 1
+#define service_plugin_start_res_s_type \
 	"(" \
-	"s" /* char *uri */ \
+	"s" /* char *plugin_handle */ \
+	")"
+
+#define service_plugin_stop_s_type_length 1
+#define service_plugin_stop_s_type \
+	"(" \
+	"s" /* char *plugin_handle */ \
 	")"
 
 #define service_auth_oauth1_s_type_length 2
@@ -140,26 +150,25 @@ extern "C"
 /**
  * append error code to the type
  */
-#define RETURN_LENGTH					2
+#define RETURN_LENGTH					3
 
 /**
  * DBus APIs
  */
-#define DBUS_SERVICE_ADAPTOR				"dbus_00"
-#define DBUS_SERVICE_PLUGIN				"dbus_01"
+#define DBUS_SERVICE_ADAPTOR			"dbus_00"
 #define DBUS_SERVICE_AUTH				"dbus_02"
-#define DBUS_SERVICE_STORAGE				"dbus_03"
+#define DBUS_SERVICE_STORAGE			"dbus_03"
 #define DBUS_NAME_LENGTH				7
 
-#define DBUS_SERVICE_ADAPTOR_CONNECT_METHOD		DBUS_SERVICE_ADAPTOR "_service_adaptor_connect"
-#define DBUS_SERVICE_ADAPTOR_DISCONNECT_METHOD		DBUS_SERVICE_ADAPTOR "_service_adaptor_disconnect"
+#define DBUS_SERVICE_ADAPTOR_CONNECT_METHOD		DBUS_SERVICE_ADAPTOR "_connect"
+#define DBUS_SERVICE_ADAPTOR_DISCONNECT_METHOD	DBUS_SERVICE_ADAPTOR "_disconnect"
 
-#define DBUS_SERVICE_PLUGIN_CREATE_METHOD		DBUS_SERVICE_PLUGIN "_service_plugin_create"
-#define DBUS_SERVICE_PLUGIN_DESTROY_METHOD		DBUS_SERVICE_PLUGIN "_service_plugin_destroy"
+#define DBUS_SERVICE_PLUGIN_START_METHOD		DBUS_SERVICE_ADAPTOR "_plugin_start"
+#define DBUS_SERVICE_PLUGIN_STOP_METHOD			DBUS_SERVICE_ADAPTOR "_plugin_stop"
 
 #define DBUS_SERVICE_AUTH_OAUTH1_METHOD			DBUS_SERVICE_AUTH "_service_auth_oauth1"
 
-#define DBUS_SERVICE_STORAGE_CLOUD_FILE_METHOD		DBUS_SERVICE_STORAGE "_service_storage_cloud_file"
+#define DBUS_SERVICE_STORAGE_CLOUD_FILE_METHOD	DBUS_SERVICE_STORAGE "_service_storage_cloud_file"
 
 #define DBUS_SERVICE_ADAPTOR_NOTIFY_SIGNAL		DBUS_SERVICE_ADAPTOR "_service_adaptor_signal_notify"
 
@@ -177,6 +186,10 @@ void ipc_create_error_msg(int code, char **ipc_msg);
 void ipc_create_variant_info(GVariant *parameters, int size, GVariant ***var_info);
 void ipc_destroy_variant_info(GVariant **var_info, int size);
 void ipc_free_reply_data(ipc_reply_data_h reply);
+
+#define SAL_IPC_RETURN_TYPE(type)   "("type"iis)"
+#define SAL_IPC_SIMPLE_TYPE         "(iis)"
+#define SAL_IPC_SAFE_STR(str)		((str) ? (str) : "")
 
 #ifdef __cplusplus
 }

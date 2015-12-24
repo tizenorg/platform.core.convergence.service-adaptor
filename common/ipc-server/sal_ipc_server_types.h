@@ -1,5 +1,5 @@
 /*
- * Service Adaptor Server Auth IPC
+ * Service Adaptor Server IPC
  *
  * Copyright (c) 2014 - 2015 Samsung Electronics Co., Ltd. All rights reserved.
  *
@@ -21,8 +21,8 @@
  *
  */
 
-#ifndef __TIZEN_CONVERGENCE_SAL_IPC_SERVER_AUTH_H__
-#define __TIZEN_CONVERGENCE_SAL_IPC_SERVER_AUTH_H__
+#ifndef __TIZEN_CONVERGENCE_SAL_IPC_SERVER_TYPES_H__
+#define __TIZEN_CONVERGENCE_SAL_IPC_SERVER_TYPES_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -35,27 +35,27 @@ extern "C"
 
 #include <glib.h>
 
-#include "sal_ipc_server_types.h"
+/**
+ * information for method call
+ */
+typedef struct _ipc_server_session_s {
+	GDBusConnection *connection;
+	gchar *sender;
+	gchar *object_path;
+	gchar *interface_name;
+	gchar *method_name;
+	GVariant *parameters;
+	GDBusMethodInvocation *invocation;
+	gpointer user_data;
+} ipc_server_session_s;
 
-typedef struct _ipc_server_storage_req_s
-{
-	void (*chunk)(ipc_server_session_h session);
-} ipc_server_auth_res_s;
+typedef struct _ipc_server_session_s *ipc_server_session_h;
 
-typedef struct _ipc_server_storage_res_s
-{
-	void (*chunk)(ipc_server_session_h session);
-} ipc_server_auth_res_s;
-
-API int ipc_server_auth_init(ipc_server_auth_req_s *auth_req);
-
-API gboolean sal_server_auth_method_call(void *data);
-
-API ipc_server_auth_res_s *ipc_server_get_auth_res_handle(void);
+#define SAL_IPC_PAYLOAD_SKIP		0,0,""
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TIZEN_CONVERGENCE_SAL_IPC_SERVER_AUTH_H__ */
+#endif /* __TIZEN_CONVERGENCE_SAL_IPC_SERVER_TYPES_H__ */
 
