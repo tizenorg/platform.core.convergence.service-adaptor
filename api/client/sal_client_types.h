@@ -1,11 +1,7 @@
 /*
- * Service Adaptor Client Core IPC
+ * Service Auth Internal
  *
  * Copyright (c) 2014 - 2015 Samsung Electronics Co., Ltd. All rights reserved.
- *
- * Contact: Yongjin Kim <youth.kim@samsung.com>
- *          Jinhyeong Ahn <jinh.ahn@samsung.com>
- *          Jiwon Kim <jiwon177.kim@samsung.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +17,8 @@
  *
  */
 
-#ifndef __TIZEN_CONVERGENCE_SAL_IPC_CLIENT_CORE_H__
-#define __TIZEN_CONVERGENCE_SAL_IPC_CLIENT_CORE_H__
+#ifndef __SAL_CLIENT_TYPES_H__
+#define __SAL_CLIENT_TYPES_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -35,17 +31,27 @@ extern "C"
 
 #include <glib.h>
 
-int ipc_service_adaptor_connect(int pid, const char *uri, GList **plugins);
+/**
+ * @brief Describes infromation about Adaptor Handle
+ */
+typedef struct _service_adaptor_s {
+	int pid
+	char *uri;
 
-int ipc_service_adaptor_disconnect(int pid, const char *uri);
+	GList *plugins;		/* char **plugins (uri) */
+	GList *started_plugins;	/* service_plugin_h **started_plugins */
+} service_adaptor_s;
 
-int ipc_service_plugin_start(int pid, const char *uri, const char *plugin_uri, char **plugin_handle);
-
-int ipc_service_plugin_stop(const char *plugin_handle);
+/**
+ * @brief Describes infromation about Plugin Handle
+ */
+typedef struct _service_plugin_s {
+	char *uri;
+	GHashTable *property;
+} service_plugin_s;
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __TIZEN_CONVERGENCE_SAL_IPC_CLIENT_CORE_H__ */
-
+#endif /* __SAL_CLIENT_TYPES_H__ */

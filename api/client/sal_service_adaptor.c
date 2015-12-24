@@ -24,6 +24,11 @@
 
 #include <app.h>
 
+#include <service_adaptor_client.h>
+
+#include "sal_log.h"
+#include "sal_ipc.h"
+
 #include "service_adaptor_errors.h"
 #include "service_adaptor_internal.h"
 #include "sal_service_adaptor.h"
@@ -33,55 +38,56 @@
 #include "sal_ipc_client_core.h"
 #include "sal_ipc_client_auth.h"
 
+#include "sal_client_internal.h"
+
 /******************************************************************************
  * Global variables and defines
- ******************************************************************************
+ ******************************************************************************/
 
-/**
- * @brief Describes infromation about Adaptor Handle
- */
-typedef struct _service_adaptor_s {
-	char *uri;
-
-	GList *plugins;		/* char **plugins (uri) */
-	GList *started_plugins;	/* service_plugin_h **started_plugins */
-} service_adaptor_s;
-/* typedef struct _service_adaptor_s *service_adaptor_h; */
-
-/**
- * @brief Describes infromation about Plugin Handle
- */
-typedef struct _service_plugin_s {
-	char *uri;
-	GHashTable *property;
-} service_plugin_s;
-
-service_adaptor_h service_adaptor = NULL;
+static service_adaptor_h service_adaptor = NULL;
 
 /******************************************************************************
  * Private interface
  ******************************************************************************/
 
+static void __destroy_service_adaptor(service_adaptor_h handle);
+
+static void __destroy_service_plugin(service_plugin_h handle);
+
 /******************************************************************************
  * Private interface definition
  ******************************************************************************/
+
+static void __destroy_service_adaptor(service_adaptor_h handle)
+{
+}
+
+static void __destroy_service_plugin(service_plugin_h handle)
+{
+}
 
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
 
-API int service_adaptor_create(service_adaptor_h *service_adaptor)
+API int service_adaptor_create(service_adaptor_h *handle)
 {
-	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == handle, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	*service_adaptor = (service_adaptor_h) g_malloc0(sizeof(service_adaptor_s));
+	if (NULL == service_adaptor) {
+		/* TODO add handling for duplicated connect */
+		int ret = service_adaptor_connect();
+		if (ret)
+			return ret;
+	}
+	*handle = service_adaptor;
 
-	return service_adaptor_connect();
+	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-API int service_adaptor_destroy(service_adaptor_h service_adaptor)
+API int service_adaptor_destroy(service_adaptor_h handle)
 {
-	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == handle, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
 	return service_adaptor_disconnect();
 }
@@ -91,6 +97,7 @@ API int service_adaptor_connect()
 	SAL_FN_CALL;
 
 	service_adaptor = (service_adaptor_h) g_malloc0(sizeof(service_adaptor_s));
+	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_OUT_OF_MEMORY);
 
 	char *uri = NULL;
 
@@ -101,76 +108,78 @@ API int service_adaptor_connect()
 		int path_len = 0;
 
 		path_len = readlink("/proc/self/exe", path, 1024);
-		RETV_IF(0 == path_len, SERVICE_ADAPTOR_ERROR_SYSTEM);
+		if (0 == path_len)
+			uri = strdup("notfound");
+		else
+			uri = strndup(path, path_len);
 
-		uri = strndup(path, path_len);
+		RETV_IF(NULL == uri, SERVICE_ADAPTOR_ERROR_OUT_OF_MEMORY);
 	}
 
-	service_adaptor->uri = strdup(uri);
+	service_adaptor->uri = uri;
+	uri = NULL;
 
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-	ret = sal_ipc_client_init();
-	RETV_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INTERNAL);
-
 	GList *plugins = NULL;
-	ret = ipc_service_adaptor_connect(uri, &plugins);
-	RETV_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INTERNAL);
 
-	ret = service_task_connect();
-	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, ret, "service_task_connect() Failed");
+	ret = sal_ipc_client_init();
+	TRY_IF(SAL_ERROR_NONE != ret, "ipc init failed : %d", ret);
 
+	int pid = (int)getpid();
+	ret = ipc_service_adaptor_connect(pid, uri, &plugins);
+	TRY_IF(SAL_ERROR_NONE != ret, "API remote failed : %d", ret);
+
+	service_adaptor->pid = pid;
 	service_adaptor->plugins = plugins;
 
-	SAL_FREE(uri);
+	return sal_client_return_ipc_ret(ret);
 
-	return SERVICE_ADAPTOR_ERROR_NONE;
+catch:
+	SAL_FREE(service_adaptor->uri);
+	SAL_FREE(service_adaptor);
+
+	return sal_client_return_ipc_ret(ret);
 }
 
 API int service_adaptor_disconnect()
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_STATE);
 
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 	ret = service_task_disconnect();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, ret, "service_task_disconnect() Failed");
 
-	ret = ipc_service_adaptor_disconnect(service_adaptor->uri);
-	RETV_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INTERNAL);
+	ret = ipc_service_adaptor_disconnect(service_adaptor->pid, service_adaptor->uri);
+/*	RETV_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_UNKNOWN);*/
+	sal_debug("disconnect ret : %d", ret);
 
 	ret = sal_ipc_client_deinit();
-	RETV_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INTERNAL);
+/*	RETV_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_UNKNOWN);*/
+	sal_debug("deinit ret : %d", ret);
 
 	/* TODO: free memory in adaptor */
-	SAL_FREE(service_adaptor);
+	__destroy_service_adaptor(service_adaptor);
+	service_adaptor = NULL;
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-API int service_adaptor_foreach_plugin(service_adaptor_h service_adaptor, service_adaptor_plugin_cb callback, void *user_data)
+API int service_adaptor_foreach_plugin(service_adaptor_h handle, service_adaptor_plugin_cb callback, void *user_data)
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-
-	return service_adaptor_foreach_service_plugin(callback, user_data);
-}
-
-API int service_adaptor_foreach_service_plugin(service_adaptor_plugin_cb callback, void *user_data)
-{
-	SAL_FN_CALL;
-
-	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == handle, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == callback, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
 	RETV_IF(0 == g_list_length(service_adaptor->plugins), SERVICE_ADAPTOR_ERROR_NO_DATA);
 
-	for (GList *list = g_list_first(service_adaptor->plugins); list != NULL; list = list->next) {
-		char * uri = (char *) list->data;
-
-		bool ret = callback(uri, 0, user_data);
-		RETV_IF(false == ret, SERVICE_ADAPTOR_ERROR_NONE);
+	SAL_FOREACH_GLIST(iter, service_adaptor->plugins) {
+		char *_uri = (char *)iter->data;
+		bool ret = callback(uri, (SERVICE_PLUGIN_SERVICE_AUTH | SERVICE_PLUGIN_SERVICE_STORAGE), user_data);
+		if (false == ret)
+			break;
 	}
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
@@ -180,8 +189,8 @@ API int service_adaptor_get_last_result(int *err)
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == err, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	*err = sal_ipc_client_get_last_error();
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
@@ -190,39 +199,58 @@ API int service_adaptor_get_last_error_message(char **message)
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == message, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	char *_msg = sal_ipc_client_get_last_message();
+	RETV_IF(NULL == _msg, SERVICE_ADAPTOR_ERROR_NO_DATA);
+	RETV_IF('\0' == _msg[0], SERVICE_ADAPTOR_ERROR_NO_DATA);
 
-	return SERVICE_ADAPTOR_ERROR_NO_DATA;
+	char *ret = strdup(msg);
+	RETV_IF(NULL == ret, SERVICE_ADAPTOR_ERROR_OUT_OF_MEMORY);
+
+	*message = ret;
+	return SERVICE_ADAPTOR_ERROR_NONE;
 }
 
-API int service_adaptor_create_plugin(service_adaptor_h service_adaptor, const char *plugin_uri, service_plugin_h *plugin)
-{
-	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-
-	return service_plugin_create(plugin_uri, plugin);
-}
-
-API int service_plugin_create(const char *uri, service_plugin_h *plugin)
+API int service_adaptor_create_plugin(service_adaptor_h adaptor, const char *plugin_uri, service_plugin_h *plugin)
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(NULL == uri, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == adaptor, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+	RETV_IF(NULL == plugin_uri, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
 
-	int ret = ipc_service_plugin_create(uri);
+	RETV_IF(NULL == service_adaptor, SERVICE_ADAPTOR_ERROR_INVALID_STATE);
+
+/*	int ret = ipc_service_plugin_create(uri);
 	RETV_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
+*/
+	service_plugin_h service_plugin = NULL;
+	char *_uri = NULL;
+	GHashTable *_property = NULL;
 
-	service_plugin_h service_plugin = (service_plugin_h) g_malloc0(sizeof(service_plugin_s));
+	service_plugin = (service_plugin_h) g_malloc0(sizeof(service_plugin_s));
+	TRY_IF(NULL == service_plugin, "Out of memory");
 
-	service_plugin->uri = strdup(uri);
-	service_plugin->property = g_hash_table_new(g_str_hash, g_str_equal);
+	_uri = strdup(uri);
+	TRY_IF(NULL == service_plugin, "Out of memory");
 
+	_property = g_hash_table_new(g_str_hash, g_str_equal);
+	TRY_IF(NULL == _property, "Out of memory");
+
+	service_plugin->uri = _uri;
+	service_plugin->property = _property;
 	*plugin = service_plugin;
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
+
+catch:
+	SAL_FREE(_uri);
+	SAL_FREE(service_plugin);
+
+	return SERVICE_ADAPTOR_ERROR_OUT_OF_MEMORY;
 }
+
+/*jwk 160113 end */
 
 API int service_plugin_destroy(service_plugin_h plugin)
 {

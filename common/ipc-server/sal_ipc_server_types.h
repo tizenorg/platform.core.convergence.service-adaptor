@@ -1,7 +1,11 @@
 /*
- * Service Adaptor Client
+ * Service Adaptor Server IPC
  *
  * Copyright (c) 2014 - 2015 Samsung Electronics Co., Ltd. All rights reserved.
+ *
+ * Contact: Yongjin Kim <youth.kim@samsung.com>
+ *          Jinhyeong Ahn <jinh.ahn@samsung.com>
+ *          Jiwon Kim <jiwon177.kim@samsung.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +21,8 @@
  *
  */
 
-#ifndef __SERVICE_ADAPTOR_CLIENT_INTERNAL_H__
-#define __SERVICE_ADAPTOR_CLIENT_INTERNAL_H__
+#ifndef __TIZEN_CONVERGENCE_SAL_IPC_SERVER_TYPES_H__
+#define __TIZEN_CONVERGENCE_SAL_IPC_SERVER_TYPES_H__
 
 #ifndef API
 #define API __attribute__ ((visibility("default")))
@@ -29,20 +33,29 @@ extern "C"
 {
 #endif
 
-#include "sal_service_adaptor.h"
-
-/*==================================================================================================
-                                         FUNCTION PROTOTYPES
-==================================================================================================*/
-
-int service_plugin_get_uri(service_plugin_h plugin, char **uri);
+#include <glib.h>
 
 /**
- * @}
+ * information for method call
  */
+typedef struct _ipc_server_session_s {
+	GDBusConnection *connection;
+	gchar *sender;
+	gchar *object_path;
+	gchar *interface_name;
+	gchar *method_name;
+	GVariant *parameters;
+	GDBusMethodInvocation *invocation;
+	gpointer user_data;
+} ipc_server_session_s;
+
+typedef struct _ipc_server_session_s *ipc_server_session_h;
+
+#define SAL_IPC_PAYLOAD_SKIP		0,0,""
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __SERVICE_ADAPTOR_CLIENT_INTERNAL_H__ */
+#endif /* __TIZEN_CONVERGENCE_SAL_IPC_SERVER_TYPES_H__ */
+

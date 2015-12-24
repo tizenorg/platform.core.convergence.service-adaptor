@@ -22,12 +22,12 @@ ADD_DEFINITIONS("-DSERVICE_ADAPTOR_DEBUGGING")
 
 SET(COMMON-BASE-LIB "sal-common-base")
 SET(COMMON-BASE-SRCS
-        ${CMAKE_SOURCE_DIR}/common/sal_ipc.c
+        ${CMAKE_SOURCE_DIR}/common/base/sal_ipc.c
 )
 
 INCLUDE_DIRECTORIES(
         ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/common
+        ${CMAKE_SOURCE_DIR}/common/base
 )
 
 INCLUDE(FindPkgConfig)
@@ -58,20 +58,20 @@ INSTALL(TARGETS ${COMMON-BASE-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT Runt
 SET(COMMON-SERVER-LIB "sal-common-server")
 SET(COMMON-SERVER-SRCS
         ${CMAKE_SOURCE_DIR}/common/ipc-server/sal_ipc_server.c
-	${CMAKE_SOURCE_DIR}/common/ipc-server/sal_ipc_server_core.c
-	${CMAKE_SOURCE_DIR}/common/ipc-server/sal_ipc_server_auth.c
-	${CMAKE_SOURCE_DIR}/common/ipc-server/sal_ipc_server_storage.c
+        ${CMAKE_SOURCE_DIR}/common/ipc-server/sal_ipc_server_core.c
+        ${CMAKE_SOURCE_DIR}/common/ipc-server/sal_ipc_server_auth.c
+        ${CMAKE_SOURCE_DIR}/common/ipc-server/sal_ipc_server_storage.c
 )
 
 INCLUDE_DIRECTORIES(
-        ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor
-        ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor
-        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor
-        ${CMAKE_SOURCE_DIR}/adaptor/resource-adaptor
-        ${CMAKE_SOURCE_DIR}/common
+#        ${CMAKE_SOURCE_DIR}/include
+#        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor
+#        ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor
+#        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor
+#        ${CMAKE_SOURCE_DIR}/adaptor/resource-adaptor
+#        ${CMAKE_SOURCE_DIR}/common/base
         ${CMAKE_SOURCE_DIR}/common/ipc-server
-        ${CMAKE_SOURCE_DIR}/server
+#        ${CMAKE_SOURCE_DIR}/server
 )
 
 INCLUDE(FindPkgConfig)
@@ -108,10 +108,10 @@ SET(COMMON-CLIENT-SRCS
 )
 
 INCLUDE_DIRECTORIES(
-        ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/common
+#        ${CMAKE_SOURCE_DIR}/include
+#        ${CMAKE_SOURCE_DIR}/common/base
         ${CMAKE_SOURCE_DIR}/common/ipc-client
-        ${CMAKE_SOURCE_DIR}/client
+#        ${CMAKE_SOURCE_DIR}/client
 )
 
 INCLUDE(FindPkgConfig)

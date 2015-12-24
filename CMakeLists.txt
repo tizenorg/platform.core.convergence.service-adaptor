@@ -26,7 +26,7 @@ ADD_SUBDIRECTORY(common)
 ##########################################################
 # Define Adaptor API
 ##########################################################
-ADD_SUBDIRECTORY(client)
+ADD_SUBDIRECTORY(api)
 
 ##########################################################
 # Define Adaptor Manager & Execute File
