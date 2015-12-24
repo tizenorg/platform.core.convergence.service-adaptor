@@ -33,11 +33,19 @@ extern "C"
 {
 #endif
 
-#include "service_adaptor_errors.h"
-#include "sal_ipc.h"
+#include <glib.h>
 
-service_adaptor_error_e sal_ipc_server_init();
-service_adaptor_error_e sal_ipc_server_deinit();
+#include "sal_ipc_server_types.h"
+#include "sal_ipc_server_core.h"
+#include "sal_ipc_server_auth.h"
+#include "sal_ipc_server_storage.h"
+
+int sal_ipc_server_init(GMainContext *working_context,
+		ipc_server_base_req_s *base_method,
+		ipc_server_auth_req_s *auth_method,
+		ipc_server_storage_req_s *storage_method);
+
+int sal_ipc_server_deinit(void);
 
 #ifdef __cplusplus
 }

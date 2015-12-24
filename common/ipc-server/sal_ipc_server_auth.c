@@ -21,91 +21,168 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
+#include "sal_types.h"
+#include "sal_log.h"
 #include "sal.h"
-#include "sal_ipc_server.h"
 #include "sal_ipc_server_auth.h"
+/*
 #include "auth_adaptor.h"
 #include "sal_service_auth.h"
 #include "sal_service_auth_internal.h"
-
-/******************************************************************************
- * Global variables and defines
- ******************************************************************************/
+*/
 
 /******************************************************************************
  * Private interface
  ******************************************************************************/
 
+/* request callback internal */
+static void __chunk_cb(ipc_server_session_h session);
+
+/* response function internal */
+static void __response_chunk(ipc_server_session_h session);
+
+static void __response_fail(ipc_server_session_h session, int result, int error_code, const char *message);
+
+/* response fail function internal */
+static void __simple_fail_cb(ipc_server_session_h session, int ret, int err, const char *message);
+
+
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
+
+struct _dbus_interface_map
+{
+	char *method_name;
+	void (*func)(void *data);
+};
+
+static struct _dbus_interface_map __interface_map[] = {
+		NULL,
+	};
+
+struct _dbus_fail_response_map
+{
+	char *method_name;
+	void (*func)(ipc_server_session_h session, int ret, int err, const char *message);
+};
+
+static struct _dbus_fail_response_map __fail_response_map[] = {
+		/*{DBUS_SERVICE_PLUGIN_STOP_METHOD,			__simple_fail_cb},*/
+		NULL,
+	};
+
+static ipc_server_auth_req_s req_callbacks = {0, };
+
+static ipc_server_auth_res_s response_methods = {
+		__response_chunk,
+		__response_fail,
+	};
+
 /******************************************************************************
  * Private interface definition
  ******************************************************************************/
 
-void _oauth1_get_access_token_cb(int result, oauth1_h oauth1, void *user_data)
+/* request callbacks  */
+static void __chunk_cb(ipc_server_session_h session)
 {
 	SAL_FN_CALL;
 
-	ipc_reply_data_h reply = (ipc_reply_data_h) user_data;
-
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
-	char *ipc_msg = NULL;
-	GVariant *ipc_data = NULL;
-
-	ipc_create_error_msg(ipc_ret, &ipc_msg);
-	ipc_data = g_variant_new(ipc_make_return_type(reply->type), SAL_IPC_STR(oauth1->access_token), SAL_IPC_STR(oauth1->operation), ipc_ret, SAL_IPC_STR(ipc_msg));
-	g_dbus_method_invocation_return_value(reply->invocation, ipc_data);
-
-	SAL_FREE(ipc_msg);
-	ipc_free_reply_data(reply);
+	SAL_FN_END;
 }
 
-int _get_oauth1(GVariant *reply_info, service_auth_oauth1_h *oauth1)
+/* response functions  */
+static void __response_chunk(ipc_server_session_h session)
 {
 	SAL_FN_CALL;
 
-	service_auth_oauth1_h auth_oauth1 = (service_auth_oauth1_h) g_malloc0(sizeof(service_auth_oauth1_s));
-
-	int info_size = service_auth_oauth1_s_type_length;
-	GVariant *info[info_size];
-	ipc_create_variant_info(reply_info, info_size, (GVariant ***) &info);
-
-	int idx = 0;
-	auth_oauth1->access_token = ipc_insure_g_variant_dup_string(info[idx++]);
-	auth_oauth1->operation = ipc_insure_g_variant_dup_string(info[idx++]);
-
-	ipc_destroy_variant_info(info, info_size);
-
-	*oauth1 = auth_oauth1;
-
-	return SERVICE_ADAPTOR_ERROR_NONE;
+	SAL_FN_END;
 }
 
-int _oauth1_execute_operation(auth_plugin_h plugin, service_auth_oauth1_h oauth1, ipc_reply_data_h reply)
+static void __response_fail(ipc_server_session_h session, int result, int error_code, const char *message)
 {
 	SAL_FN_CALL;
 
-	RETV_IF(NULL == plugin, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(NULL == plugin->oauth1, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-	RETV_IF(NULL == oauth1, SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);
-
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-
-	if (0 == strcmp(oauth1->operation, SERVICE_AUTH_OAUTH1_0_GET_ACCESS_TOKEN_URI)) {
-		ret = plugin->oauth1->oauth1_get_access_token(plugin, _oauth1_get_access_token_cb, reply);
-
-		return ret;
-	} else if (0 == strcmp(oauth1->operation, SERVICE_AUTH_OAUTH1_0_GET_EXTRA_DATA_URI)) {
-		return ret;
+	for (int i = 0; __fail_response_map[i]; i++) {
+		if (!strncmp(session->method_name, __fail_response_map[i].method_name,
+				strlen(__fail_response_map[i].method_name))) {
+			sal_debug("<%s> method return fail", session->method_name);
+			__fail_response_map[i].func(session, result, error_code, message);
+		}
 	}
 
-	return SERVICE_ADAPTOR_ERROR_INTERNAL;
+	/* TODO unref session->invocation or return error */
+	g_free(session);
+
+	SAL_FN_END;
 }
+
+static void __simple_fail_cb(ipc_server_session_h session, int ret, int err, const char *message)
+{
+	SAL_FN_CALL;
+
+	sal_debug("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_SIMPLE_TYPE,
+			ret, err, SAL_IPC_SAFE_STR(message));
+
+	sal_debug("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
 
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
 
+API int ipc_server_auth_init(ipc_server_auth_req_s *auth_req)
+{
+	SAL_FN_CALL;
+
+	RETV_IF(NULL == auth_req, SAL_ERROR_INTERNAL);
+	/*RET_IF(NULL == base_req->chunk_cb);*/
+
+	req_callbacks.chunk_cb	= auth_req->chunk_cb;
+
+	SAL_FN_END;
+	return SAL_ERROR_NONE;
+}
+
+API gboolean sal_server_auth_method_call(void *data)
+{
+	SAL_FN_CALL;
+
+	ipc_server_session_h session = (ipc_server_session_h) data;
+	sal_info("===== method called : %s =====", session->method_name);
+
+	bool catched = false;
+	for (int i = 0; __interface_map[i]; i++) {
+		if (!strncmp(session->method_name, __interface_map[i].method_name,
+				strlen(__interface_map[i].method_name))) {
+			catched = true;
+			__interface_map[i].func(session);
+		}
+	}
+
+	if (false == catched) {
+		/* TODO add error handling */
+		sal_error("function does not matched (%s)", ipc_data->method_name);
+	}
+
+	SAL_FN_END;
+	return FALSE;
+}
+
+API ipc_server_auth_res_s *ipc_server_get_auth_res_handle(void);
+{
+	return &response_methods;
+}
+
+/*
 API void service_auth_method_call(GDBusConnection *connection,
 		const gchar *sender,
 		const gchar *object_path,
@@ -117,7 +194,7 @@ API void service_auth_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	char *ipc_type = NULL;
 	GVariant *ipc_data = NULL;
@@ -139,11 +216,11 @@ API void service_auth_method_call(GDBusConnection *connection,
 
 		SAL_INFO("uri: %s", uri);
 
-		ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
+		ipc_ret = SAL_ERROR_INTERNAL;
 		ipc_type = strdup(service_auth_oauth1_res_s_type);
 
 		sal_h sal = sal_get_handle();
-		TRYVM_IF(NULL == sal, ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL, "sal_get_handle() Failed");
+		TRYVM_IF(NULL == sal, ipc_ret = SAL_ERROR_INTERNAL, "sal_get_handle() Failed");
 
 		auth_plugin_h plugin = auth_adaptor_get_plugin(sal->auth, uri);
 
@@ -152,7 +229,7 @@ API void service_auth_method_call(GDBusConnection *connection,
 		reply->type = strdup(ipc_type);
 
 		ipc_ret = _oauth1_execute_operation(plugin, oauth1, reply);
-		TRY_IF(SERVICE_ADAPTOR_ERROR_NONE == ipc_ret, "oauth1_execute_operation() Request Successed");
+		TRY_IF(SAL_ERROR_NONE == ipc_ret, "oauth1_execute_operation() Request Successed");
 
 		ipc_create_error_msg(ipc_ret, &ipc_msg);
 		ipc_data = g_variant_new(ipc_make_return_type(ipc_type), SAL_IPC_STR(NULL), SAL_IPC_STR(NULL), ipc_ret, SAL_IPC_STR(ipc_msg));
@@ -169,3 +246,4 @@ catch:
 
 	SAL_FN_END;
 }
+*/
