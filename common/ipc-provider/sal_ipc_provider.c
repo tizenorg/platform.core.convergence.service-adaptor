@@ -19,36 +19,17 @@
 
 #include <glib.h>
 #include <gio/gio.h>
+#include <app.h>
 
 #include "sal_types.h"
 #include "sal_log.h"
 #include "sal_ipc.h"
 
-#include "sal_ipc_server.h"
-#include "sal_ipc_server_core.h"
-#include "sal_ipc_server_auth.h"
-#include "sal_ipc_server_storage.h"
+#include "sal_ipc_provider.h"
 
 /******************************************************************************
  * Global variables and defines
  ******************************************************************************/
-
-static GMainContext *g_working_context = NULL;
-
-/**
- * D-Bus server thread
- */
-static GThread *dbus_server_thread = NULL;
-
-/**
- * D-Bus server thread main loop context
- */
-static GMainContext *dbus_server_context = NULL;
-
-/**
- * D-Bus server thread main loop
- */
-static GMainLoop *dbus_server_loop = NULL;
 
 /**
  * D-Bus server thread pool
@@ -70,48 +51,42 @@ static guint owner_id = 0;
  */
 static GDBusConnection *dbus_connection = NULL;
 
+/*
+ * Do not free
+ */
+static char *g_dbus_busname = NULL;
+
+/*
+ * Do not free
+ */
+static char *g_dbus_objectpath = NULL;
+
 /**
  * Introspection data describing D-Bus interface
  */
 static const gchar introspection_xml[] =
 "<node>"
-"  <interface name='" SERVICE_ADAPTOR_INTERFACE "'>"
-"    <method name='" DBUS_SERVICE_ADAPTOR_CONNECT_METHOD "'>"
-"      <arg type='" service_adaptor_connect_req_s_type "' name='req' direction='in'/>"
-"      <arg type='" service_adaptor_connect_res_s_type "' name='res' direction='out'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='i' name='err_code' direction='out'/>"
-"      <arg type='s' name='err_msg' direction='out'/>"
+"  <interface name='" SERVICE_PROVIDER_BUS_INTERFACE "'>"
+"    <method name='" SERVICE_PROVIDER_BASE_SESSION_START "'>"
+"      <arg type='" SERVICE_PROVIDER_BASE_SESSION_START_REQ "' name='req' direction='in'/>"
+"      <arg type='" SERVICE_PROVIDER_BASE_SESSION_START_RES "' name='res' direction='out'/>"
 "    </method>"
-"    <method name='" DBUS_SERVICE_ADAPTOR_DISCONNECT_METHOD "'>"
-"      <arg type='" service_adaptor_disconnect_s_type "' name='req' direction='in'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='i' name='err_code' direction='out'/>"
-"      <arg type='s' name='err_msg' direction='out'/>"
+"    <method name='" SERVICE_PROVIDER_BASE_SESSION_STOP "'>"
+"      <arg type='" SERVICE_PROVIDER_BASE_SESSION_STOP_REQ "' name='req' direction='in'/>"
+"      <arg type='" SERVICE_PROVIDER_BASE_SESSION_STOP_RES "' name='res' direction='out'/>"
 "    </method>"
-"    <method name='" DBUS_SERVICE_PLUGIN_START_METHOD "'>"
-"      <arg type='" service_plugin_start_req_s_type "' name='req' direction='in'/>"
-"      <arg type='" service_plugin_start_res_s_type "' name='res' direction='out'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='i' name='err_code' direction='out'/>"
-"      <arg type='s' name='err_msg' direction='out'/>"
+"    <method name='" SERVICE_PROVIDER_STORAGE_DOWNLOAD "'>"
+"      <arg type='" SERVICE_PROVIDER_STORAGE_DOWNLOAD_REQ "' name='req' direction='in'/>"
+"      <arg type='" SERVICE_PROVIDER_STORAGE_DOWNLOAD_RES "' name='res' direction='out'/>"
 "    </method>"
-"    <method name='" DBUS_SERVICE_PLUGIN_STOP_METHOD "'>"
-"      <arg type='" service_plugin_stop_s_type "' name='req' direction='in'/>"
-"      <arg type='i' name='ret_code' direction='out'/>"
-"      <arg type='i' name='err_code' direction='out'/>"
-"      <arg type='s' name='err_msg' direction='out'/>"
-"    </method>"
-"    <signal name='" DBUS_SERVICE_ADAPTOR_NOTIFY_SIGNAL "'>"
-"      <arg type='t' name='signal_code' direction='out'/>"
-"      <arg type='s' name='signal_msg' direction='out'/>"
-"    </signal>"
 "  </interface>"
 "</node>";
 
 /******************************************************************************
  * Private interface
  ******************************************************************************/
+
+USER_DATA_TYPEDEF(ipc_state_data_t, 2);
 
 /******************************************************************************
  * Private interface definition
@@ -121,20 +96,14 @@ static void _method_call_async_func(gpointer data, gpointer user_data)
 {
 	SAL_FN_CALL;
 
-	ipc_server_session_h handle = data;
+	RET_IF(NULL == data);
 
-	RET_IF(NULL == handle);
+	ipc_provider_session_h handle = (ipc_provider_session_h)data;
 
 	SAL_INFO("Call %s", handle->method_name);
 
-	if (0 == strncmp(handle->method_name, DBUS_SERVICE_ADAPTOR, DBUS_NAME_LENGTH)) {
-		g_main_context_invoke(g_working_context, sal_server_base_method_call, (void *)handle);
-
-	} else if (0 == strncmp(handle->method_name, DBUS_SERVICE_AUTH, DBUS_NAME_LENGTH)) {
-		g_main_context_invoke(g_working_context, sal_server_auth_method_call, (void *)handle);
-
-	} else if (0 == strncmp(handle->method_name, DBUS_SERVICE_STORAGE, DBUS_NAME_LENGTH)) {
-		g_main_context_invoke(g_working_context, sal_server_storage_method_call, (void *)handle);
+	if (0 == strncmp(SERVICE_PROVIDER_STORAGE_PREFIX, handle->method_name, SERVICE_PROVIDER_PREFIX_LEN)) {
+		ipc_provider_storage_method_call(data);
 	}
 }
 
@@ -163,7 +132,7 @@ static void _handle_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	ipc_server_session_h handle = (ipc_server_session_h) g_malloc0(sizeof(ipc_server_session_s));
+	ipc_provider_session_h handle = (ipc_provider_session_h) g_malloc0(sizeof(ipc_provider_session_s));
 
 	handle->connection = connection;
 	handle->sender = (gchar *) sender;
@@ -174,7 +143,12 @@ static void _handle_method_call(GDBusConnection *connection,
 	handle->invocation = invocation;
 	handle->user_data = user_data;
 
-	g_thread_pool_push(thread_pool, (gpointer) handle, NULL);
+	if (0 == strncmp(SERVICE_PROVIDER_BASE_PREFIX, method_name, SERVICE_PROVIDER_PREFIX_LEN)) {
+		GMainContext *global_main_context = g_main_context_default();
+		g_main_context_invoke(global_main_context, ipc_provider_base_method_call, (user_data_t)handle);
+	} else { /* == SAL_SERVICE_STORAGE */
+		g_thread_pool_push(thread_pool, (user_data_t)handle, NULL);
+	}
 }
 
 /**
@@ -264,9 +238,10 @@ static void _on_bus_acquired(GDBusConnection *connection,
 	SAL_FN_CALL;
 
 	guint registration_id;
+	char *_object_path = g_dbus_objectpath;
 
 	registration_id = g_dbus_connection_register_object(connection,
-			SERVICE_ADAPTOR_OBJECT_PATH,
+			_object_path,
 			introspection_data->interfaces[0],
 			&interface_vtable,
 			NULL, /* user_data */
@@ -292,6 +267,14 @@ static void _on_name_acquired(GDBusConnection *connection,
 
 	dbus_connection = connection;
 	g_object_ref(dbus_connection);
+
+
+	USER_DATA_DEFINE(ipc_state_data_t, _callback_data) = USER_DATA_TYPE(ipc_state_data_t)user_data;
+	ipc_provider_connection_cb callback = (ipc_provider_connection_cb)USER_DATA_ELEMENT(_callback_data, 0);
+	void *_user_data = (void *)USER_DATA_ELEMENT(_callback_data, 1);
+
+	if (callback)
+		callback(IPC_PROVIDER_CONNECTION_OPENED, _user_data);
 }
 
 /**
@@ -308,6 +291,13 @@ static void _on_name_lost(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
+	USER_DATA_DEFINE(ipc_state_data_t, _callback_data) = USER_DATA_TYPE(ipc_state_data_t)user_data;
+	ipc_provider_connection_cb callback = (ipc_provider_connection_cb)USER_DATA_ELEMENT(_callback_data, 0);
+	void *_user_data = (void *)USER_DATA_ELEMENT(_callback_data, 1);
+
+	if (callback)
+		callback(IPC_PROVIDER_CONNECTION_CLOSED, _user_data);
+
 	if (NULL != dbus_connection) {
 		g_object_unref(dbus_connection);
 		dbus_connection = NULL;
@@ -316,47 +306,108 @@ static void _on_name_lost(GDBusConnection *connection,
 	SAL_INFO("Unexpected D-bus bus name lost");
 
 	/* Send SIGINT to main thread to stop File Manager process and cleanly close Service Adaptor */
-	kill(getpid(), SIGINT);
+	/* kill(getpid(), SIGINT); */
 }
 
-int _sal_ipc_server_start()
+int _sal_ipc_provider_start()
 {
 	SAL_FN_CALL;
 
 	RETV_IF(NULL != introspection_data, SAL_ERROR_INTERNAL);
 	RETV_IF(0 != owner_id, SAL_ERROR_INTERNAL);
 
+	return SAL_ERROR_NONE;
+}
+
+
+/******************************************************************************
+ * Public interface definition
+ ******************************************************************************/
+
+API int sal_ipc_provider_init(ipc_provider_base_req_s *base_method,
+		ipc_provider_storage_req_s *storage_method,
+		ipc_provider_connection_cb callback,
+		void *user_data)
+{
+	SAL_FN_CALL;
+
+	RETVM_IF(NULL == base_method, SAL_ERROR_INVALID_PARAMETER, "Please check param");
+	RETVM_IF(NULL == storage_method, SAL_ERROR_INVALID_PARAMETER, "Please check param");
+	RETVM_IF(NULL == callback, SAL_ERROR_INVALID_PARAMETER, "Please check param");
+
 	introspection_data = g_dbus_node_info_new_for_xml(introspection_xml, NULL);
 	RETVM_IF(NULL == introspection_data, SAL_ERROR_INTERNAL, "g_dbus_node_info_new_for_xml() Failed");
 
-	thread_pool = g_thread_pool_new(_method_call_async_func, NULL, -1, FALSE, NULL);
-	RETVM_IF(NULL == thread_pool, SAL_ERROR_SYSTEM, "g_thread_pool_new() Failed");
+	char *app_id = NULL;
+	char *bus_name = NULL;
+	char *obj_path = NULL;
 
-	owner_id = g_bus_own_name(G_BUS_TYPE_SYSTEM,
-			SERVICE_ADAPTOR_BUS_NAME,
+	USER_DATA_DEFINE(ipc_state_data_t, _callback_data) = NULL;
+
+	USER_DATA_VAL(_callback_data) = USER_DATA_CREATE(ipc_state_data_t, _callback_data);
+	TRY_IF(NULL == USER_DATA_VAL(_callback_data), "Out of memory");
+	USER_DATA_ELEMENT(_callback_data, 0) = (user_data_t)callback;
+	USER_DATA_ELEMENT(_callback_data, 1) = (user_data_t)user_data;
+
+	int ret = app_get_id(&app_id);
+	TRY_IF(APP_ERROR_NONE != ret, "app_id get failed");
+	TRY_IF(NULL == app_id, "Out of memory");
+
+	bus_name = g_strdup_printf("%s.%s", SERVICE_PROVIDER_BUS_NAME_PREFIX, app_id);
+	TRY_IF(NULL == bus_name, "Out of memory");
+
+	obj_path = g_strdup(bus_name);
+	TRY_IF(NULL == obj_path, "Out of memory");
+
+	SAL_STR_REPLACE(obj_path, '.', '/');
+
+	thread_pool = g_thread_pool_new(_method_call_async_func, NULL, -1, FALSE, NULL);
+	TRY_IF(NULL == thread_pool, "g_thread_pool_new() Failed");
+
+	owner_id = g_bus_own_name(G_BUS_TYPE_SESSION,
+			bus_name,
 			G_BUS_NAME_OWNER_FLAGS_NONE,
 			_on_bus_acquired,
 			_on_name_acquired,
 			_on_name_lost,
-			NULL,
-			NULL);
+			USER_DATA_VAL(_callback_data),
+			(GDestroyNotify)USER_DATA_DESTROY_FUNC);
 
-	if (0 == owner_id) {
-		g_dbus_node_info_unref(introspection_data);
-		introspection_data = NULL;
+	TRY_IF(0 == owner_id, "Dbus own name failed");
 
-		return SAL_ERROR_SYSTEM;
-	}
+	g_dbus_busname = bus_name;
+	g_dbus_objectpath = obj_path;
 
 	return SAL_ERROR_NONE;
-}
 
-int _sal_ipc_server_stop()
-{
-	SAL_FN_CALL;
+catch:
+	USER_DATA_DESTROY(_callback_data);
+	SAL_FREE(obj_path);
+	SAL_FREE(bus_name);
+	SAL_FREE(app_id);
+ 	if (introspection_data) {
+		g_dbus_node_info_unref(introspection_data);
+		introspection_data = NULL;
+	}
 
 	if (NULL != thread_pool) {
 		g_thread_pool_free(thread_pool, TRUE, TRUE);
+		thread_pool = NULL;
+	}
+
+	return SAL_ERROR_SYSTEM;
+}
+
+API int sal_ipc_provider_deinit()
+{
+	SAL_FN_CALL;
+
+	SAL_FREE(g_dbus_busname);
+	SAL_FREE(g_dbus_objectpath);
+
+	if (NULL != thread_pool) {
+		g_thread_pool_free(thread_pool, TRUE, TRUE);
+		thread_pool = NULL;
 	}
 
 	if (0 != owner_id) {
@@ -371,93 +422,25 @@ int _sal_ipc_server_stop()
 
 	return SAL_ERROR_NONE;
 }
-/**
- * @brief D-Bus server thread function.
- *
- * D-Bus server thread function. It initialises structures and callbacks needed to export D-Bus interfaces.
- * @param data Data passed to thread.
- * @return Result data from thread (always NULL in this implementation).
- */
-static gpointer _dbus_server_thread_func(gpointer data)
+
+API int sal_ipc_provider_emit_signal(const char *signal_name, GVariant *parameters)
 {
-	SAL_FN_CALL;
+	RETVM_IF(0 >= owner_id, SAL_ERROR_INTERNAL, "Bus not ready");
+	RETVM_IF(NULL == dbus_connection, SAL_ERROR_INTERNAL, "Bus not ready");
+	RETVM_IF(NULL == g_dbus_busname, SAL_ERROR_INTERNAL, "Bus not ready");
+	RETVM_IF(NULL == g_dbus_objectpath, SAL_ERROR_INTERNAL, "Bus not ready");
 
-	int ret = 0;
+	RETVM_IF(NULL == signal_name, SAL_ERROR_INVALID_PARAMETER, "Invalid parameter");
+	RETVM_IF(NULL == parameters, SAL_ERROR_INVALID_PARAMETER, "Invalid parameter");
 
-	dbus_server_context = g_main_context_new();
-	dbus_server_loop = g_main_loop_new(dbus_server_context, FALSE);
-	g_main_context_push_thread_default(dbus_server_context);
-
-	ret = _sal_ipc_server_start();
-
-	if (SAL_ERROR_NONE == ret) {
-		g_main_loop_run(dbus_server_loop);
+	GError *err = NULL;
+	g_dbus_connection_emit_signal(dbus_connection, g_dbus_busname, g_dbus_objectpath,
+			SERVICE_PROVIDER_BUS_INTERFACE, signal_name, parameters, &err);
+	if (err) {
+		sal_error("Signal emit error : %d, %s", err->code, err->message);
+		g_error_free(err);
+		err = NULL;
+		return SAL_ERROR_IPC_UNSTABLE;
 	}
-
-	_sal_ipc_server_stop();
-
-	g_main_context_pop_thread_default(dbus_server_context);
-	g_main_loop_unref(dbus_server_loop);
-	dbus_server_loop = NULL;
-	g_main_context_unref(dbus_server_context);
-	dbus_server_context = NULL;
-
-	return NULL;
-}
-
-/******************************************************************************
- * Public interface definition
- ******************************************************************************/
-
-API int sal_ipc_server_init(GMainContext *working_context,
-		ipc_server_base_req_s *base_method,
-		ipc_server_auth_req_s *auth_method,
-		ipc_server_storage_req_s *storage_method)
-{
-	SAL_FN_CALL;
-
-	RETVM_IF(NULL == base_method, SAL_ERROR_INTERNAL, "Please check param");
-	RETVM_IF(NULL == auth_method, SAL_ERROR_INTERNAL, "Please check param");
-	RETVM_IF(NULL == storage_method, SAL_ERROR_INTERNAL, "Please check param");
-
-	RETVM_IF(NULL != dbus_server_thread, SAL_ERROR_INTERNAL, "IPC server thread is already running");
-
-	RETV_IF(ipc_server_base_init(base_method), SAL_ERROR_INTERNAL);
-	RETV_IF(ipc_server_auth_init(auth_method), SAL_ERROR_INTERNAL);
-	RETV_IF(ipc_server_storage_init(storage_method), SAL_ERROR_INTERNAL);
-
-	g_working_context = working_context;
-
-	dbus_server_thread = g_thread_new("IPC Server", _dbus_server_thread_func, NULL);
-
-	return SAL_ERROR_NONE;
-}
-
-API int sal_ipc_server_deinit()
-{
-	SAL_FN_CALL;
-
-	if (NULL != dbus_server_loop) {
-		if (g_main_loop_is_running(dbus_server_loop)) {
-			g_main_loop_quit(dbus_server_loop);
-		}
-	}
-
-	if (NULL != dbus_server_thread) {
-		g_thread_join(dbus_server_thread);
-		dbus_server_thread = NULL;
-	}
-
-	if (NULL != dbus_server_loop) {
-		g_main_loop_unref(dbus_server_loop);
-		dbus_server_loop = NULL;
-	}
-
-	if (NULL != dbus_server_context) {
-		g_main_context_pop_thread_default(dbus_server_context);
-		g_main_context_unref(dbus_server_context);
-		dbus_server_context = NULL;
-	}
-
 	return SAL_ERROR_NONE;
 }

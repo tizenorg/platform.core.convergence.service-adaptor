@@ -87,3 +87,14 @@ API int storage_provider_add_extra_data(storage_provider_h provider, app_control
 
 	return SERVICE_ADAPTOR_ERROR_NONE;
 }
+
+
+
+API int storage_provider_stat_set_path (storage_provider_stat_h stat, const char *path);
+API int storage_provider_stat_set_size (storage_provider_stat_h stat, unsigned long long size);
+API int storage_provider_stat_set_dir (storage_provider_stat_h stat, bool is_dir);
+API int storage_provider_stat_set_mode (storage_provider_stat_h stat, int mode);
+API int storage_provider_stat_set_atime (storage_provider_stat_h stat, unsigned long long timestamp);
+API int storage_provider_stat_set_mtime (storage_provider_stat_h stat, unsigned long long timestamp);
+API int storage_provider_stat_set_ctime (storage_provider_stat_h stat, unsigned long long timestamp);
+

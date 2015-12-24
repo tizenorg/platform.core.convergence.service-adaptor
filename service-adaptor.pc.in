@@ -5,8 +5,8 @@ includedir=${prefix}/include
 Name: service-adaptor library
 Description: service-adaptor library 1.0
 
-Requires: capi-base-common
+Requires: capi-base-common bundle
 Version: @VERSION@
 
-Libs: -L${libdir} -lsal-common-client -lservice-adaptor-client -lservice-provider
+Libs: -L${libdir} -lservice-adaptor-client -lservice-provider
 Cflags: -I${includedir}/service-adaptor -I${includedir}/service-provider

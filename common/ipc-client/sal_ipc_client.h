@@ -36,13 +36,28 @@ extern "C"
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "sal_ipc.h"
+#include "sal_ipc_client_core.h"
+#include "sal_ipc_client_auth.h"
+#include "sal_ipc_client_storage.h"
 
-service_adaptor_error_e sal_ipc_client_init();
-service_adaptor_error_e sal_ipc_client_deinit();
-service_adaptor_error_e sal_ipc_client_get_interface(GDBusProxy **interface);
+int sal_ipc_client_init(void);
+
+int sal_ipc_client_deinit(void);
+
 int sal_ipc_client_call_request(const char *request_method, GVariant *request_data, const char *reply_type, GVariant **reply_info);
+
+int sal_ipc_client_get_simple_response(GVariant *response);
+
+int sal_ipc_client_get_data_response(GVariant *response, GVariant **data);
+
+
+API void sal_ipc_client_init_last_error(void);
+
+API void sal_ipc_client_set_last_error(int error, const char *message);
+
+API int sal_ipc_client_get_last_error(void);
+
+API char *sal_ipc_client_get_last_message(void);
 
 #ifdef __cplusplus
 }
