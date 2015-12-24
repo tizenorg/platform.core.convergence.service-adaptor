@@ -37,7 +37,7 @@
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
-
+/*
 contact_adaptor_listener_h sal_contact_register_listener(contact_adaptor_h contact)
 {
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
@@ -53,3 +53,4 @@ contact_adaptor_listener_h sal_contact_register_listener(contact_adaptor_h conta
 
 	return listener;
 }
+*/

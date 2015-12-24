@@ -34,16 +34,26 @@ extern "C"
 #endif
 
 #include <glib.h>
-#include <gio/gio.h>
 
-void service_auth_method_call(GDBusConnection *connection,
-		const gchar *sender,
-		const gchar *object_path,
-		const gchar *interface_name,
-		const gchar *method_name,
-		GVariant *parameters,
-		GDBusMethodInvocation *invocation,
-		gpointer user_data);
+#include "sal_ipc_server_types.h"
+
+typedef struct _ipc_server_auth_req_s
+{
+	void (*chunk_cb)(ipc_server_session_h session);
+} ipc_server_auth_req_s;
+
+typedef struct _ipc_server_auth_res_s
+{
+	void (*chunk)(ipc_server_session_h session);
+
+	void (*fail)(ipc_server_session_h session, int result, int error_code, const char *message);
+} ipc_server_auth_res_s;
+
+API int ipc_server_auth_init(ipc_server_auth_req_s *auth_req);
+
+API gboolean sal_server_auth_method_call(void *data);
+
+API ipc_server_auth_res_s *ipc_server_get_auth_res_handle(void);
 
 #ifdef __cplusplus
 }

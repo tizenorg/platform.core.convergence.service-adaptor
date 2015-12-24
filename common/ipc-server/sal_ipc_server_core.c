@@ -21,28 +21,372 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#include "service_adaptor_errors.h"
-#include "service_adaptor_internal.h"
-#include "sal.h"
-#include "sal_ipc_server.h"
+#include "sal_types.h"
+#include "sal_log.h"
+#include "sal_ipc.h"
 #include "sal_ipc_server_core.h"
 
-/******************************************************************************
- * Global variables and defines
- ******************************************************************************/
 
 /******************************************************************************
  * Private interface
  ******************************************************************************/
 
+/* request callback internal */
+static void __connect_cb(ipc_server_session_h session);
+
+static void __disconnect_cb(ipc_server_session_h session);
+
+static void __plugin_start_cb(ipc_server_session_h session);
+
+static void __plugin_stop_cb(ipc_server_session_h session);
+
+
+/* response function internal */
+static void __response_connect(ipc_server_session_h session, GList *plugin_uris);
+
+static void __response_disconnect(ipc_server_session_h session);
+
+static void __response_plugin_start(ipc_server_session_h session, const char *plugin_handle);
+
+static void __response_plugin_stop(ipc_server_session_h session);
+
+static void __response_fail(ipc_server_session_h session, int result, int error_code, const char *message);
+
+
+/* response fail function internal */
+static void __simple_fail_cb(ipc_server_session_h session, int ret, int err, const char *message);
+
+static void __connect_fail_cb(ipc_server_session_h session, int ret, int err, const char *message);
+
+static void __plugin_start_fail_cb(ipc_server_session_h session, int ret, int err, const char *message);
+
+
+/******************************************************************************
+ * Global variables and defines
+ ******************************************************************************/
+
+struct _dbus_interface_map
+{
+	char *method_name;
+	void (*func)(ipc_server_session_h session);
+};
+
+static struct _dbus_interface_map __interface_map[] = {
+		{DBUS_SERVICE_ADAPTOR_CONNECT_METHOD,		__connect_cb},
+		{DBUS_SERVICE_ADAPTOR_DISCONNECT_METHOD,	__disconnect_cb},
+		{DBUS_SERVICE_PLUGIN_START_METHOD,			__plugin_start_cb},
+		{DBUS_SERVICE_PLUGIN_STOP_METHOD,			__plugin_stop_cb},
+	};
+
+struct _dbus_fail_response_map
+{
+	char *method_name;
+	void (*func)(ipc_server_session_h session, int ret, int err, const char *message);
+};
+
+static struct _dbus_fail_response_map __fail_response_map[] = {
+		{DBUS_SERVICE_ADAPTOR_CONNECT_METHOD,		__connect_fail_cb},
+		{DBUS_SERVICE_ADAPTOR_DISCONNECT_METHOD,	__simple_fail_cb},
+		{DBUS_SERVICE_PLUGIN_START_METHOD,			__plugin_start_fail_cb},
+		{DBUS_SERVICE_PLUGIN_STOP_METHOD,			__simple_fail_cb},
+	};
+
+
+static ipc_server_base_req_s req_callbacks = {0, };
+
+static ipc_server_base_res_s response_methods = {
+		__response_connect,
+		__response_disconnect,
+		__response_plugin_start,
+		__response_plugin_stop,
+		__response_fail,
+	};
+
 /******************************************************************************
  * Private interface definition
  ******************************************************************************/
+
+/* request callbacks  */
+static void __connect_cb(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("gets parameters from gvriant");
+	int _client_pid = 0;
+	char *_client_uri = NULL;
+	g_variant_get_child(session->parameters, 0, service_adaptor_connect_req_s_type,
+			&_client_pid, &_client_uri);
+
+	SAL_DBG("invokes callback");
+	req_callbacks.connect_cb(session, _client_pid, _client_uri);
+
+	SAL_FREE(_client_uri);
+
+	SAL_FN_END;
+}
+
+static void __disconnect_cb(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("gets parameters from gvriant");
+	int _client_pid = 0;
+	char *_client_uri = NULL;
+	g_variant_get_child(session->parameters, 0, service_adaptor_disconnect_s_type,
+			&_client_pid, &_client_uri);
+
+	SAL_DBG("invokes callback");
+	req_callbacks.connect_cb(session, _client_pid, _client_uri);
+
+	SAL_FREE(_client_uri);
+	SAL_FN_END;
+}
+
+static void __plugin_start_cb(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("gets parameters from gvriant");
+	int _client_pid = 0;
+	char *_client_uri = NULL;
+	char *_plugin_uri = NULL;
+	int _service_mask = 7;
+	g_variant_get_child(session->parameters, 0, service_adaptor_connect_req_s_type,
+			&_client_pid, &_client_uri, &_plugin_uri);
+
+	SAL_DBG("invokes callback");
+	req_callbacks.plugin_start_cb(session, _client_pid, _client_uri,
+			_plugin_uri, _service_mask);
+	/* TODO support service_mask*/
+
+	SAL_FREE(_client_uri);
+	SAL_FREE(_plugin_uri);
+
+	SAL_FN_END;
+}
+
+static void __plugin_stop_cb(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("gets parameters from gvriant");
+	char *_plugin_handle = NULL;
+	g_variant_get_child(session->parameters, 0, service_adaptor_connect_req_s_type,
+			&_plugin_handle);
+
+	SAL_DBG("invokes callback");
+	req_callbacks.plugin_stop_cb(session, _plugin_handle);
+
+	SAL_FREE(_plugin_handle);
+
+	SAL_FN_END;
+}
+
+
+/* response functions  */
+static void __response_connect(ipc_server_session_h session, GList *plugin_uris)
+{
+	SAL_FN_CALL;
+
+	GVariantBuilder *plugins = g_variant_builder_new((GVariantType *)"a(s)");
+
+	SAL_FOREACH_GLIST(iterator, plugin_uris) {
+		SAL_DBG("plugin_uri : %s", (const char *)iterator->data);
+		ipc_insure_g_variant_builder_add_array_string(plugins, (const char *)iterator->data);
+	}
+
+	SAL_DBG("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_RETURN_TYPE(service_adaptor_connect_res_s_type),
+			plugins, SAL_IPC_PAYLOAD_SKIP);
+
+	SAL_DBG("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_builder_unref(plugins);
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+static void __response_disconnect(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_SIMPLE_TYPE, SAL_IPC_PAYLOAD_SKIP);
+
+	SAL_DBG("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+static void __response_plugin_start(ipc_server_session_h session, const char *plugin_handle)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_RETURN_TYPE(service_plugin_start_res_s_type),
+			plugin_handle, SAL_IPC_PAYLOAD_SKIP);
+
+	SAL_DBG("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+static void __response_plugin_stop(ipc_server_session_h session)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_SIMPLE_TYPE, SAL_IPC_PAYLOAD_SKIP);
+
+	SAL_DBG("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+static void __response_fail(ipc_server_session_h session, int result, int error_code, const char *message)
+{
+	SAL_FN_CALL;
+
+	for (int i = 0; i > SAL_SIZE_OF_TAB(__fail_response_map); i++) {
+		if (!strncmp(session->method_name, __fail_response_map[i].method_name,
+				strlen(__fail_response_map[i].method_name))) {
+			SAL_DBG("<%s> method return fail", session->method_name);
+			__fail_response_map[i].func(session, result, error_code, message);
+		}
+	}
+
+	/* TODO unref session->invocation or return error */
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+static void __simple_fail_cb(ipc_server_session_h session, int ret, int err, const char *message)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_SIMPLE_TYPE,
+			ret, err, SAL_IPC_SAFE_STR(message));
+
+	SAL_DBG("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+static void __connect_fail_cb(ipc_server_session_h session, int ret, int err, const char *message)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("creates response to gvaiant");
+	GVariantBuilder *plugins = g_variant_builder_new("a(s)");
+	GVariant *response = g_variant_new(SAL_IPC_RETURN_TYPE(service_adaptor_connect_res_s_type),
+			plugins, ret, err, SAL_IPC_SAFE_STR(message));
+
+	SAL_DBG("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_builder_unref(plugins);
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
+
+
+static void __plugin_start_fail_cb(ipc_server_session_h session, int ret, int err, const char *message)
+{
+	SAL_FN_CALL;
+
+	SAL_DBG("creates response to gvaiant");
+	GVariant *response = g_variant_new(SAL_IPC_RETURN_TYPE(service_plugin_start_res_s_type),
+			"", ret, err, SAL_IPC_SAFE_STR(message));
+
+	SAL_DBG("invoke gdbus response");
+	g_dbus_method_invocation_return_value(session->invocation, response);
+
+	g_variant_unref(response);
+	g_free(session);
+
+	SAL_FN_END;
+}
+
 
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
 
+API int ipc_server_base_init(ipc_server_base_req_s *base_req)
+{
+	SAL_FN_CALL;
+
+	RETV_IF(NULL == base_req, SAL_ERROR_INTERNAL);
+	RETV_IF(NULL == base_req->connect_cb, SAL_ERROR_INTERNAL);
+	RETV_IF(NULL == base_req->disconnect_cb, SAL_ERROR_INTERNAL);
+	RETV_IF(NULL == base_req->plugin_start_cb, SAL_ERROR_INTERNAL);
+	RETV_IF(NULL == base_req->plugin_stop_cb, SAL_ERROR_INTERNAL);
+
+	req_callbacks.connect_cb		= base_req->connect_cb;
+	req_callbacks.disconnect_cb		= base_req->disconnect_cb;
+	req_callbacks.plugin_start_cb	= base_req->plugin_start_cb;
+	req_callbacks.plugin_stop_cb	= base_req->plugin_stop_cb;
+
+	SAL_FN_END;
+	return SAL_ERROR_NONE;
+}
+
+/* It will be invoked on working thread */
+API gboolean sal_server_base_method_call(void *data)
+{
+	SAL_FN_CALL;
+
+	ipc_server_session_h session = (ipc_server_session_h) data;
+	SAL_INFO("===== method called : %s =====", session->method_name);
+
+	bool catched = false;
+	for (int i = 0; i > SAL_SIZE_OF_TAB(__interface_map); i++) {
+		if (!strncmp(session->method_name, __interface_map[i].method_name,
+				strlen(__interface_map[i].method_name))) {
+			catched = true;
+			__interface_map[i].func(session);
+		}
+	}
+
+	if (false == catched) {
+		/* TODO add error handling */
+		SAL_ERR("function does not matched (%s)", session->method_name);
+	}
+
+	SAL_FN_END;
+	return FALSE;
+}
+
+API ipc_server_base_res_s *ipc_server_get_base_res_handle(void)
+{
+	return &response_methods;
+}
+
+/*
 API void service_adaptor_method_call(GDBusConnection *connection,
 		const gchar *sender,
 		const gchar *object_path,
@@ -54,7 +398,7 @@ API void service_adaptor_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	char *ipc_type = NULL;
 	GVariant *ipc_data = NULL;
@@ -131,7 +475,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 {
 	SAL_FN_CALL;
 
-	int ipc_ret = SERVICE_ADAPTOR_ERROR_NONE;
+	int ipc_ret = SAL_ERROR_NONE;
 	char *ipc_msg = NULL;
 	char *ipc_type = NULL;
 	GVariant *ipc_data = NULL;
@@ -151,7 +495,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 		SAL_INFO("uri: %s", uri);
 
-		ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
+		ipc_ret = SAL_ERROR_INTERNAL;
 
 		sal_h sal = sal_get_handle();
 
@@ -174,7 +518,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 		SAL_INFO("uri: %s", uri);
 
-		ipc_ret = SERVICE_ADAPTOR_ERROR_INTERNAL;
+		ipc_ret = SAL_ERROR_INTERNAL;
 
 		sal_h sal = sal_get_handle();
 
@@ -196,6 +540,7 @@ API void service_plugin_method_call(GDBusConnection *connection,
 
 	SAL_FN_END;
 }
+*/
 /*
 service_adaptor_internal_error_code_e dbus_service_adaptor_signal_callback(service_adaptor_internal_signal_code_e signal_code,
 						const char *signal_msg)

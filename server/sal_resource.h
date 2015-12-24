@@ -23,9 +23,9 @@
 
 #ifndef __TIZEN_CONVERGENCE_SAL_RESOURCE_H__
 #define __TIZEN_CONVERGENCE_SAL_RESOURCE_H__
-
+/*
 #include "resource_adaptor.h"
 
 resource_adaptor_listener_h sal_resource_register_listener(resource_adaptor_h resource);
-
+*/
 #endif /* __TIZEN_CONVERGENCE_SAL_RESOURCE_H__ */

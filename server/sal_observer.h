@@ -25,8 +25,8 @@
 #define __TIZEN_CONVERGENCE_SAL_OBSERVER_H__
 
 #include "service_adaptor_errors.h"
-
+/*
 service_adaptor_error_e sal_observer_start();
 service_adaptor_error_e sal_observer_register_existed_plugin();
-
+*/
 #endif /* __TIZEN_CONVERGENCE_SAL_OBSERVER_H__ */
