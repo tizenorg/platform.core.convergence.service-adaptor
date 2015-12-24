@@ -33,14 +33,15 @@
 /******************************************************************************
  * Private interface definition
  ******************************************************************************/
+/*
 void _sal_auth_login_cb(const char *uri, void *user_data)
 {
 }
-
+*/
 /******************************************************************************
  * Public interface definition
  ******************************************************************************/
-
+/*
 auth_adaptor_listener_h sal_auth_register_listener(auth_adaptor_h auth)
 {
 	SAL_FN_CALL;
@@ -58,3 +59,4 @@ auth_adaptor_listener_h sal_auth_register_listener(auth_adaptor_h auth)
 
 	return listener;
 }
+*/

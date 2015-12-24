@@ -44,6 +44,22 @@
 
 static sal_h g_service_adaptor = NULL;
 
+typedef enum
+{
+	SAL_ENGINE_MODE_DEFAULT	= 0,
+	SAL_ENGINE_MODE_SLIM	= 1,
+} sal_engine_mode_e;
+
+static GMainLoop *ipc_server_engine = NULL;
+
+static GMainLoop *ipc_adaptor_engine = NULL;
+
+static GMainLoop *main_engine = NULL;
+
+static GMainLoop *server_engine = NULL;
+
+static GMainLoop *file_engine = NULL;
+
 /******************************************************************************
  * Private interface
  ******************************************************************************/
@@ -52,11 +68,95 @@ static sal_h g_service_adaptor = NULL;
  * Private interface definition
  ******************************************************************************/
 
+static int __sal_engine_run(sal_engine_mode_e mode)
+{
+	SAL_FN_CALL;
+	int ret = SAL_ERROR_NONE;
+
+	GMainContext *ipc_server_context = NULL;
+	GMainContext *ipc_adaptor_context = NULL;
+	GMainContext *main_context = NULL;
+	GMainContext *server_context = NULL;
+	GMainContext *file_context = NULL;
+
+	ipc_server_context	= g_main_context_new();
+	TRY_IF(NULL == ipc_server_context);
+	ipc_server_engine = g_main_loop_new(ipc_server_context, FALSE);
+	TRY_IF(NULL == ipc_server_engine);
+
+	ipc_adaptor_context	= g_main_context_new();
+	TRY_IF(NULL == ipc_adaptor_context);
+	ipc_adaptor_engine = g_main_loop_new(ipc_adaptor_context, FALSE);
+	TRY_IF(NULL == ipc_adaptor_engine);
+
+	main_context		= g_main_context_new();
+	TRY_IF(NULL == main_context);
+	main_engine = g_main_loop_new(main_context, FALSE);
+	TRY_IF(NULL == main_engine);
+
+	server_context		= g_main_context_new();
+	TRY_IF(NULL == server_context);
+	g_main_loop_new(server_context, FALSE);
+	TRY_IF(NULL == server_context);
+
+	file_context		= g_main_context_new();
+	TRY_IF(NULL == file_context);
+	g_main_loop_new(file_context, FALSE);
+	TRY_IF(NULL == file_engine);
+
+	ipc_server_engine = NULL;
+	ipc_adaptor_engine = NULL;
+	main_engine = NULL;
+	server_engine = NULL;
+	file_engine = NULL;
+
+	SAL_FN_END;
+	return ret;
+
+catch:
+
+	if (SAL_ENGINE_MODE_DEFAULT == mode) {
+		if (ipc_server_engine)
+			g_main_loop_unref(ipc_server_engine);
+		if (ipc_adaptor_engine)
+			g_main_loop_unref(ipc_adaptor_engine);
+	}
+
+	if (main_engine)
+		g_main_loop_unref(main_engine);
+	if (server_engine)
+		g_main_loop_unref(server_engine);
+	if (file_engine)
+		g_main_loop_unref(file_engine);
+
+	if (SAL_ENGINE_MODE_DEFAULT == mode) {
+		if (ipc_server_context)
+			g_main_context_unref(ipc_server_context);
+		if (ipc_adaptor_context)
+			g_main_context_unref(ipc_adaptor_context);
+	}
+
+	if (main_context)
+		g_main_context_unref(main_context);
+	if (server_context)
+		g_main_context_unref(server_context);
+	if (file_context)
+		g_main_context_unref(file_context);
+
+	ipc_server_engine = NULL;
+	ipc_adaptor_engine = NULL;
+	main_engine = NULL;
+	server_engine = NULL;
+	file_engine = NULL;
+
+	return ret;
+}
 /**
  * @brief callback of app control
  *
  * @return      void.
  */
+/*
 static bool _app_control_extra_data_cb(app_control_h app_control, const char *key, void *user_data)
 {
 	char *value = NULL;
@@ -68,12 +168,13 @@ static bool _app_control_extra_data_cb(app_control_h app_control, const char *ke
 
 	return true;
 }
-
+*/
 /**
  * @brief callback of plugin connection
  *
  * @return      void.
  */
+/*
 static void _provider_connect_cb(app_control_h request, app_control_h reply, app_control_result_e result, void *user_data)
 {
 	SAL_FN_CALL;
@@ -110,12 +211,13 @@ static void _provider_connect_cb(app_control_h request, app_control_h reply, app
 
 	SAL_FN_END;
 }
-
+*/
 /**
  * @brief callback of plugin disconnection
  *
  * @return      void.
  */
+/*
 static void _provider_disconnect_cb(app_control_h request, app_control_h reply, app_control_result_e result, void *user_data)
 {
 	SAL_FN_CALL;
@@ -132,16 +234,17 @@ static void _provider_disconnect_cb(app_control_h request, app_control_h reply, 
 	auth_adaptor_unregister_plugin_service(plugin);
 	auth_adaptor_destroy_plugin(plugin);
 
-	/* TODO: destroy plugin of other adaptor */
+	// TODO: destroy plugin of other adaptor
 
 	SAL_FN_END;
 }
-
+*/
 /**
  * @brief create spec file
  *
  * @return      void.
  */
+/*
 static service_adaptor_error_e _sal_create_spec_file(sal_h sal)
 {
 	SAL_FN_CALL;
@@ -151,12 +254,13 @@ static service_adaptor_error_e _sal_create_spec_file(sal_h sal)
 
 	return ret;
 }
-
+*/
 /**
  * @brief destroy spec file
  *
  * @return      void.
  */
+/*
 static service_adaptor_error_e _sal_destroy_spec_file(sal_h sal)
 {
 	SAL_FN_CALL;
@@ -166,12 +270,13 @@ static service_adaptor_error_e _sal_destroy_spec_file(sal_h sal)
 
 	return ret;
 }
-
+*/
 /**
  * @brief start service adaptor
  *
  * @return      void.
  */
+/*
 static service_adaptor_error_e _sal_start(sal_h sal)
 {
 	SAL_FN_CALL;
@@ -201,12 +306,13 @@ static service_adaptor_error_e _sal_start(sal_h sal)
 
 	return ret;
 }
-
+*/
 /**
  * @brief stop service adaptor
  *
  * @return      void.
  */
+/*
 static service_adaptor_error_e _sal_stop(sal_h sal)
 {
 	SAL_FN_CALL;
@@ -225,7 +331,7 @@ static service_adaptor_error_e _sal_stop(sal_h sal)
 
 	return ret;
 }
-
+*/
 /**
  * @brief create service adaptor
  *
@@ -320,37 +426,48 @@ static service_adaptor_error_e _sal_init()
 	SAL_FN_CALL;
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
+	/* 1) create engine (based g_main_loop) */
+	sal_engine_run();
+
 	/* 1) create adaptor (memory allocation) */
+/*
 	sal_h sal = _sal_create();
 	RETVM_IF(NULL == sal, SERVICE_ADAPTOR_ERROR_INTERNAL, "_sal_create() Fail");
-
+*/
 	/* 2) start adaptor (plugin loading) */
+/*
 	ret = _sal_start(sal);
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INTERNAL, "_sal_start() Fail(%d)", ret);
-
+*/
 	/* 3) start adaptor (spec file creation) */
+/*
 	ret = _sal_create_spec_file(sal);
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_INTERNAL, "_sal_create_spec_file() Fail(%d)", ret);
-
+*/
 	/* 4) init dbus server */
+/*
 	ret = sal_ipc_server_init();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE, "sal_ipc_server_init() Fail(%d)", ret);
-
+*/
 	/* 5) assign to global service adaptor handle */
+/*
 	g_service_adaptor = sal;
-
+*/
 	/* 6) register callback for package event */
+/*
 	ret = sal_observer_start();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, ret, "sal_observer_start() Fail(%d)", ret);
-
+*/
 	/* 7) create service discovery */
+/*
 	ret = service_discovery_create();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, ret, "service_discovery_create() Fail(%d)", ret);
-
+*/
 	/* 8) create service federation */
+/*
 	ret = service_federation_create();
 	RETVM_IF(SERVICE_ADAPTOR_ERROR_NONE != ret, ret, "service_federation_create() Fail(%d)", ret);
-
+*/
 	return ret;
 }
 
