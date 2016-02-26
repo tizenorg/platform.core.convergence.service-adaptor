@@ -20,7 +20,8 @@ BuildRequires:  pkgconfig(capi-appfw-application)
 BuildRequires:  pkgconfig(capi-appfw-app-manager)
 BuildRequires:  pkgconfig(capi-appfw-package-manager)
 BuildRequires:  pkgconfig(capi-appfw-service-application)
-BuildRequires:  pkgconfig(libsmack)
+BuildRequires:  pkgconfig(json-glib-1.0)
+#BuildRequires:  pkgconfig(libsmack)
 #BuildRequires:  pkgconfig(service-discovery)
 #BuildRequires:  pkgconfig(service-federation)
 #BuildRequires:  service-discovery-devel
@@ -82,18 +83,20 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 %manifest service-adaptor.manifest
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
-%{_bindir}/service-adaptor-server
+#%{_bindir}/service-adaptor-server
 #%{_bindir}/sal-test
 %{_unitdir_user}/service-adaptor.service
 %{_unitdir_user}/default.target.wants/service-adaptor.service
 %{_datadir}/dbus-1/system-services/org.tizen.serviceadaptor.client.service
 %{_sysconfdir}/dbus-1/system.d/org.tizen.serviceadaptor.client.conf
 /usr/share/license/%{name}
+%{_includedir}/*.h
 
 %files -n service-adaptor-devel
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so
 %{_libdir}/pkgconfig/service-adaptor.pc
-%{_includedir}/service-adaptor/*.h
-%{_includedir}/service-provider/*.h
+%{_includedir}/*.h
+#%{_includedir}/service-adaptor/*.h
+#%{_includedir}/service-provider/*.h
 /usr/share/license/%{name}-devel
