@@ -16,12 +16,12 @@ MESSAGE(">>> Build type: ${CMAKE_BUILD_TYPE}")
 ##########################################################
 # Define Adaptor
 ##########################################################
-#ADD_SUBDIRECTORY(adaptor)
+ADD_SUBDIRECTORY(adaptor)
 
 ##########################################################
 # Define BASE LIB
 ##########################################################
-#ADD_SUBDIRECTORY(common)
+ADD_SUBDIRECTORY(common)
 
 ##########################################################
 # Define Adaptor API
