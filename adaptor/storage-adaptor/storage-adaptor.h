@@ -889,10 +889,12 @@ typedef struct storage_adaptor_plugin_listener_s
 /**
  * Loads plugin from selected path
  */
+EXPORT_API
 int storage_adaptor_load_plugin(storage_adaptor_h,
 						const char *plugin_path);
 
 // For 3rd party plugin packages
+EXPORT_API
 int storage_adaptor_load_plugin_from_package(storage_adaptor_h adaptor,
 						const char *package_id,
 						const char *plugin_path);
@@ -900,12 +902,14 @@ int storage_adaptor_load_plugin_from_package(storage_adaptor_h adaptor,
 /**
  * Unloads selected plugin
  */
+EXPORT_API
 int storage_adaptor_unload_plugin(storage_adaptor_h,
 						storage_adaptor_plugin_h);
 
 /**
  * Gets plugin name
  */
+EXPORT_API
 void storage_adaptor_get_plugin_uri(storage_adaptor_plugin_h plugin,
 						char **plugin_uri);
 

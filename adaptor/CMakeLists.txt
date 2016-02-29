@@ -12,11 +12,13 @@ MESSAGE(">>> current directory: ${CMAKE_CURRENT_SOURCE_DIR}")
 MESSAGE(">>> Build type: ${CMAKE_BUILD_TYPE}")
 
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VISIBILITY} -fvisibility=hidden")
+#SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VISIBILITY} -fvisibility=hidden")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,--gc-sections")
 
 ADD_DEFINITIONS("-DSERVICE_ADAPTOR_DEBUGGING")
 ADD_DEFINITIONS("-D_SERVICE_ADAPTOR_IPC_SERVER")
+
+ADD_DEFINITIONS("-DDEBUG_ADAPTOR_PARAMS")
 
 ##########################################################
 # Define auth adaptor lib
@@ -24,12 +26,12 @@ ADD_DEFINITIONS("-D_SERVICE_ADAPTOR_IPC_SERVER")
 
 SET(AUTH-LIB "auth-adaptor")
 SET(AUTH-SRCS
-        ./auth-adaptor/auth-adaptor.c
+        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor/auth-adaptor.c
 )
 
 INCLUDE_DIRECTORIES(
-        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor/
         ${CMAKE_SOURCE_DIR}/common/plugin_config
+        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor/
 )
 
 INCLUDE(FindPkgConfig)
@@ -49,12 +51,17 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -std=gnu99")
 SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed")
 
 ADD_LIBRARY(${AUTH-LIB} SHARED ${AUTH-SRCS})
-TARGET_LINK_LIBRARIES(${AUTH-LIB} ${auth_pkgs_LDFLAGS} plugin-config)
+TARGET_LINK_LIBRARIES(${AUTH-LIB} ${auth_pkgs_LDFLAGS} plugin-config auth-adaptor)
 SET_TARGET_PROPERTIES(${AUTH-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
 SET_TARGET_PROPERTIES(${AUTH-LIB} PROPERTIES VERSION ${VERSION})
 
-INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor/auth-adaptor.h DESTINATION /usr/include/)
+#INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor/auth-adaptor.h DESTINATION /usr/include/)
 INSTALL(TARGETS ${AUTH-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibraries)
+
+SET(AUTH-ADAPTOR-HEADERS
+        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor/auth-adaptor.h
+)
+INSTALL(FILES ${AUTH-ADAPTOR-HEADERS} DESTINATION include/service-provider)
 
 ##########################################################
 # Define contact adaptor lib
@@ -62,7 +69,7 @@ INSTALL(TARGETS ${AUTH-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibr
 
 SET(CONTACT-LIB "contact-adaptor")
 SET(CONTACT-SRCS
-        ./contact-adaptor/contact-adaptor.c
+        ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor/contact-adaptor.c
 )
 
 INCLUDE_DIRECTORIES(
@@ -90,9 +97,13 @@ TARGET_LINK_LIBRARIES(${CONTACT-LIB} ${contact_pkgs_LDFLAGS})
 SET_TARGET_PROPERTIES(${CONTACT-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
 SET_TARGET_PROPERTIES(${CONTACT-LIB} PROPERTIES VERSION ${VERSION})
 
-INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor/contact-adaptor.h DESTINATION /usr/include/)
+#INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor/contact-adaptor.h DESTINATION /usr/include/)
 INSTALL(TARGETS ${CONTACT-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibraries)
 
+SET(CONTACT-ADAPTOR-HEADERS
+        ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor/contact-adaptor.h
+)
+INSTALL(FILES ${CONTACT-ADAPTOR-HEADERS} DESTINATION include/service-provider)
 
 ##########################################################
 # Define storage adaptor lib
@@ -100,12 +111,12 @@ INSTALL(TARGETS ${CONTACT-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeL
 
 SET(STORAGE-LIB "storage-adaptor")
 SET(STORAGE-SRCS
-        ./storage-adaptor/storage-adaptor.c
+        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor/storage-adaptor.c
 )
 
 INCLUDE_DIRECTORIES(
-        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor
         ${CMAKE_SOURCE_DIR}/common/plugin_config
+        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor
 )
 
 INCLUDE(FindPkgConfig)
@@ -125,12 +136,17 @@ SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -std=gnu99")
 SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed")
 
 ADD_LIBRARY(${STORAGE-LIB} SHARED ${STORAGE-SRCS})
-TARGET_LINK_LIBRARIES(${STORAGE-LIB} ${storage_pkgs_LDFLAGS} plugin-config)
+TARGET_LINK_LIBRARIES(${STORAGE-LIB} ${storage_pkgs_LDFLAGS} storage-adaptor plugin-config)
 SET_TARGET_PROPERTIES(${STORAGE-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
 SET_TARGET_PROPERTIES(${STORAGE-LIB} PROPERTIES VERSION ${VERSION})
 
-INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor/storage-adaptor.h DESTINATION /usr/include/)
+#INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor/storage-adaptor.h DESTINATION /usr/include/)
 INSTALL(TARGETS ${STORAGE-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibraries)
+
+SET(STORAGE-ADAPTOR-HEADERS
+        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor/storage-adaptor.h
+)
+INSTALL(FILES ${STORAGE-ADAPTOR-HEADERS} DESTINATION include/service-provider)
 
 ##########################################################
 # Define message adaptor lib
@@ -138,7 +154,7 @@ INSTALL(TARGETS ${STORAGE-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeL
 
 SET(MESSAGE-LIB "message-adaptor")
 SET(MESSAGE-SRCS
-        ./message-adaptor/message-adaptor.c
+        ${CMAKE_SOURCE_DIR}/adaptor/message-adaptor/message-adaptor.c
 )
 
 INCLUDE_DIRECTORIES(
@@ -166,8 +182,13 @@ TARGET_LINK_LIBRARIES(${MESSAGE-LIB} ${message_pkgs_LDFLAGS})
 SET_TARGET_PROPERTIES(${MESSAGE-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
 SET_TARGET_PROPERTIES(${MESSAGE-LIB} PROPERTIES VERSION ${VERSION})
 
-INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/message-adaptor/message-adaptor.h DESTINATION /usr/include/)
+#INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/message-adaptor/message-adaptor.h DESTINATION /usr/include/)
 INSTALL(TARGETS ${MESSAGE-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibraries)
+
+SET(MESSAGE-ADAPTOR-HEADERS
+        ${CMAKE_SOURCE_DIR}/adaptor/message-adaptor/message-adaptor.h
+)
+INSTALL(FILES ${MESSAGE-ADAPTOR-HEADERS} DESTINATION include/service-provider)
 
 ##########################################################
 # Define push adaptor lib
@@ -175,7 +196,7 @@ INSTALL(TARGETS ${MESSAGE-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeL
 
 SET(PUSH-LIB "push-adaptor")
 SET(PUSH-SRCS
-        ./push-adaptor/push-adaptor.c
+        ${CMAKE_SOURCE_DIR}/adaptor/push-adaptor/push-adaptor.c
 )
 
 INCLUDE_DIRECTORIES(
@@ -203,8 +224,13 @@ TARGET_LINK_LIBRARIES(${PUSH-LIB} ${push_pkgs_LDFLAGS})
 SET_TARGET_PROPERTIES(${PUSH-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
 SET_TARGET_PROPERTIES(${PUSH-LIB} PROPERTIES VERSION ${VERSION})
 
-INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/push-adaptor/push-adaptor.h DESTINATION /usr/include/)
+#INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/push-adaptor/push-adaptor.h DESTINATION /usr/include/)
 INSTALL(TARGETS ${PUSH-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibraries)
+
+SET(PUSH-ADAPTOR-HEADERS
+        ${CMAKE_SOURCE_DIR}/adaptor/push-adaptor/push-adaptor.h
+)
+INSTALL(FILES ${PUSH-ADAPTOR-HEADERS} DESTINATION include/service-provider)
 
 ##########################################################
 # Define shop adaptor lib
@@ -212,7 +238,7 @@ INSTALL(TARGETS ${PUSH-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibr
 
 SET(SHOP-LIB "shop-adaptor")
 SET(SHOP-SRCS
-        ./shop-adaptor/shop-adaptor.c
+        ${CMAKE_SOURCE_DIR}/adaptor/shop-adaptor/shop-adaptor.c
 )
 
 INCLUDE_DIRECTORIES(
@@ -240,5 +266,10 @@ TARGET_LINK_LIBRARIES(${SHOP-LIB} ${shop_pkgs_LDFLAGS})
 SET_TARGET_PROPERTIES(${SHOP-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
 SET_TARGET_PROPERTIES(${SHOP-LIB} PROPERTIES VERSION ${VERSION})
 
-INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/shop-adaptor/shop-adaptor.h DESTINATION /usr/include/)
+#INSTALL(FILES ${CMAKE_SOURCE_DIR}/adaptor/shop-adaptor/shop-adaptor.h DESTINATION /usr/include/)
 INSTALL(TARGETS ${SHOP-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibraries)
+
+SET(SHOP-ADAPTOR-HEADERS
+        ${CMAKE_SOURCE_DIR}/adaptor/shop-adaptor/shop-adaptor.h
+)
+INSTALL(FILES ${SHOP-ADAPTOR-HEADERS} DESTINATION include/service-provider)
