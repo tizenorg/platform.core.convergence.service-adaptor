@@ -9,9 +9,8 @@ IF("${CMAKE_BUILD_TYPE}" STREQUAL "")
         SET(CMAKE_BUILD_TYPE "Debug")
 ENDIF("${CMAKE_BUILD_TYPE}" STREQUAL "")
 
-MESSAGE("")
-MESSAGE(">>> current directory: ${CMAKE_CURRENT_SOURCE_DIR}")
-MESSAGE(">>> Build type: ${CMAKE_BUILD_TYPE}")
+SET(PROVIDER_PATH "${LIB_INSTALL_DIR}/service-provider")
+ADD_DEFINITIONS("-DSERVICE_PROVIDER_INSTALL_PATH=\"${PROVIDER_PATH}\"")
 
 ##########################################################
 # Define Adaptor
@@ -26,12 +25,12 @@ ADD_SUBDIRECTORY(common)
 ##########################################################
 # Define Adaptor API
 ##########################################################
-#ADD_SUBDIRECTORY(api)
+ADD_SUBDIRECTORY(api)
 
 ##########################################################
 # Define Adaptor Manager & Execute File
 ##########################################################
-#ADD_SUBDIRECTORY(server)
+ADD_SUBDIRECTORY(server)
 
 ##########################################################
 # Define Test App

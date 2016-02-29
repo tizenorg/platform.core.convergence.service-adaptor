@@ -11,7 +11,7 @@ MESSAGE("")
 MESSAGE(">>> current directory: ${CMAKE_CURRENT_SOURCE_DIR}")
 MESSAGE(">>> Build type: ${CMAKE_BUILD_TYPE}")
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VISIBILITY} -fvisibility=hidden")
+#SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VISIBILITY} -fvisibility=hidden")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,--gc-sections")
 
 ADD_DEFINITIONS("-DSERVICE_ADAPTOR_DEBUGGING")
@@ -23,6 +23,8 @@ ADD_DEFINITIONS("-DSERVICE_ADAPTOR_DEBUGGING")
 SET(PLUGIN-CONFIG-LIB "plugin-config")
 SET(PLUGIN-CONFIG-SRCS
         ${CMAKE_SOURCE_DIR}/common/plugin_config/plugin_message.c
+        ${CMAKE_SOURCE_DIR}/common/plugin_config/pluginConfig.c
+        ${CMAKE_SOURCE_DIR}/common/plugin_config/trimming.c
 )
 
 INCLUDE_DIRECTORIES(
@@ -46,4 +48,11 @@ SET_TARGET_PROPERTIES(${PLUGIN-CONFIG-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR}
 SET_TARGET_PROPERTIES(${PLUGIN-CONFIG-LIB} PROPERTIES VERSION ${VERSION})
 
 INSTALL(TARGETS ${PLUGIN-CONFIG-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibraries)
+
+SET(PLUGIN-CONFIG-HEADERS
+        ${CMAKE_SOURCE_DIR}/common/plugin_config/pluginConfig.h
+        ${CMAKE_SOURCE_DIR}/common/plugin_config/pluginConfigTypes.h
+        ${CMAKE_SOURCE_DIR}/common/plugin_config/plugin_message.h
+)
+INSTALL(FILES ${PLUGIN-CONFIG-HEADERS} DESTINATION include)
 
