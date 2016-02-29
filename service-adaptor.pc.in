@@ -8,5 +8,5 @@ Description: service-adaptor library 1.0
 Requires: capi-base-common bundle
 Version: @VERSION@
 
-Libs: -L${libdir} -lservice-adaptor-client -lservice-provider
+Libs: -L${libdir} -lservice-adaptor-client -lauth-adaptor -lcontact-adaptor -lstorage-adaptor -lmessage-adaptor -lpush-adaptor -lshop-adaptor
 Cflags: -I${includedir}/service-adaptor -I${includedir}/service-provider

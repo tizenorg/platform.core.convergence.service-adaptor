@@ -21,7 +21,7 @@ BuildRequires:  pkgconfig(capi-appfw-app-manager)
 BuildRequires:  pkgconfig(capi-appfw-package-manager)
 BuildRequires:  pkgconfig(capi-appfw-service-application)
 BuildRequires:  pkgconfig(json-glib-1.0)
-#BuildRequires:  pkgconfig(libsmack)
+#BuildRequires:  pkgconfig(security-server)
 #BuildRequires:  pkgconfig(service-discovery)
 #BuildRequires:  pkgconfig(service-federation)
 #BuildRequires:  service-discovery-devel
@@ -42,8 +42,10 @@ This package contains the header and pc files of Service Adaptor.
 %setup -q
 
 %build
-export CFLAGS="${CFLAGS} -fPIC -Wall -g -fvisibility=hidden -fdata-sections -ffunction-sections"
-export CXXFLAGS="${CXXFLAGS} -fPIC -Wall -g -fvisibility=hidden"
+#export CFLAGS="${CFLAGS} -fPIC -Wall -g -fvisibility=hidden -fdata-sections -ffunction-sections"
+export CFLAGS="${CFLAGS} -fPIC -Wall -g -fdata-sections -ffunction-sections"
+#export CXXFLAGS="${CXXFLAGS} -fPIC -Wall -g -fvisibility=hidden"
+export CXXFLAGS="${CXXFLAGS} -fPIC -Wall -g"
 export LDFLAGS="${LDFLAGS} -Wl,--hash-style=both -Wl,--rpath=%{_prefix}/lib -Wl,--as-needed"
 
 %if 0%{?sec_build_binary_debug_enable}
@@ -62,6 +64,13 @@ make %{?_smp_mflags}
 %install
 rm -rf %{buildroot}
 %make_install
+
+mkdir -p %{buildroot}%{_libdir}/service-provider/auth
+mkdir -p %{buildroot}%{_libdir}/service-provider/storage
+mkdir -p %{buildroot}%{_libdir}/service-provider/contact
+mkdir -p %{buildroot}%{_libdir}/service-provider/message
+mkdir -p %{buildroot}%{_libdir}/service-provider/push
+mkdir -p %{buildroot}%{_libdir}/service-provider/shop
 
 mkdir -p %{buildroot}%{_unitdir_user}/default.target.wants
 install -m 0644 %SOURCE1 %{buildroot}%{_unitdir_user}/service-adaptor.service
@@ -83,7 +92,9 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 %manifest service-adaptor.manifest
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
-#%{_bindir}/service-adaptor-server
+%{_libdir}/service-provider
+%{_libdir}/service-provider/*
+%{_bindir}/service-adaptor-server
 #%{_bindir}/sal-test
 %{_unitdir_user}/service-adaptor.service
 %{_unitdir_user}/default.target.wants/service-adaptor.service
@@ -97,6 +108,6 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 %{_libdir}/lib*.so
 %{_libdir}/pkgconfig/service-adaptor.pc
 %{_includedir}/*.h
-#%{_includedir}/service-adaptor/*.h
-#%{_includedir}/service-provider/*.h
+%{_includedir}/service-adaptor/*.h
+%{_includedir}/service-provider/*.h
 /usr/share/license/%{name}-devel

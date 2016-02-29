@@ -12,7 +12,7 @@ MESSAGE(">>> current directory: ${CMAKE_CURRENT_SOURCE_DIR}")
 MESSAGE(">>> Build type: ${CMAKE_BUILD_TYPE}")
 
 SET(VISIBILITY "-DEXPORT_API=\"__attribute__((visibility(\\\"default\\\")))\"")
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VISIBILITY} -fvisibility=hidden")
+#SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${VISIBILITY} -fvisibility=hidden")
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wl,--gc-sections")
 
 ADD_DEFINITIONS("-DSERVICE_ADAPTOR_DEBUGGING")
@@ -23,21 +23,21 @@ ADD_DEFINITIONS("-D_SERVICE_ADAPTOR_IPC_CLIENT")
 ##########################################################
 
 SET(ADAPTOR-CLIENT-LIB "service-adaptor-client")
-SET(ADAPTOR-CLIENT-SRCS
-        ${CMAKE_SOURCE_DIR}/api/client/sal_service_adaptor.c
-#        ${CMAKE_SOURCE_DIR}/api/client/sal_service_task.c
-#        ${CMAKE_SOURCE_DIR}/api/client/sal_service_auth.c
-#        ${CMAKE_SOURCE_DIR}/api/client/sal_service_storage.c
+FILE(GLOB ADAPTOR-CLIENT-SRCS
+        ${CMAKE_SOURCE_DIR}/api/client/src/*.c
+        ${CMAKE_SOURCE_DIR}/api/client/src/dbus/*.c
+        ${CMAKE_SOURCE_DIR}/api/client/src/util/*.c
 )
 
 INCLUDE_DIRECTORIES(
+        ${CMAKE_SOURCE_DIR}/server/inc
+        ${CMAKE_SOURCE_DIR}/server/inc/dbus
+
         ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/api/client
-        ${CMAKE_SOURCE_DIR}/common/base
-        ${CMAKE_SOURCE_DIR}/common/ipc-client
-#        ${CMAKE_SOURCE_DIR}/adaptor/auth-adaptor
-#        ${CMAKE_SOURCE_DIR}/adaptor/contact-adaptor
-#        ${CMAKE_SOURCE_DIR}/adaptor/storage-adaptor
+        ${CMAKE_SOURCE_DIR}/api/client/include
+        ${CMAKE_SOURCE_DIR}/api/client/include/private
+        ${CMAKE_SOURCE_DIR}/api/client/include/dbus
+        ${CMAKE_SOURCE_DIR}/api/client/include/util
 )
 
 INCLUDE(FindPkgConfig)
@@ -52,7 +52,7 @@ SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed")
 
 ADD_LIBRARY(${ADAPTOR-CLIENT-LIB} SHARED ${ADAPTOR-CLIENT-SRCS})
 
-TARGET_LINK_LIBRARIES(${ADAPTOR-CLIENT-LIB} ${adaptor_client_pkgs_LDFLAGS} sal-common-base sal-common-client)
+TARGET_LINK_LIBRARIES(${ADAPTOR-CLIENT-LIB} ${adaptor_client_pkgs_LDFLAGS})
 SET_TARGET_PROPERTIES(${ADAPTOR-CLIENT-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
 SET_TARGET_PROPERTIES(${ADAPTOR-CLIENT-LIB} PROPERTIES VERSION ${VERSION})
 
@@ -61,63 +61,20 @@ INSTALL(TARGETS ${ADAPTOR-CLIENT-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT R
 SET(SAL-ADAPTOR-CLIENT-HEADERS
         ${CMAKE_SOURCE_DIR}/include/service_adaptor_client.h
         ${CMAKE_SOURCE_DIR}/include/service_adaptor_client_plugin.h
-#        ${CMAKE_SOURCE_DIR}/include/service_adaptor_client_storage.h
-        ${CMAKE_SOURCE_DIR}/include/service_adaptor_type.h
-#        ${CMAKE_SOURCE_DIR}/include/service_adaptor_errors.h
-#        ${CMAKE_SOURCE_DIR}/include/service_adaptor_internal.h
-#        ${CMAKE_SOURCE_DIR}/client/sal_service_adaptor.h
-#        ${CMAKE_SOURCE_DIR}/client/sal_service_task.h
-#        ${CMAKE_SOURCE_DIR}/client/sal_service_auth.h
-#        ${CMAKE_SOURCE_DIR}/client/sal_service_storage.h
-#        ${CMAKE_SOURCE_DIR}/common/base/sal_ipc.h
-#        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client.h
-#        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_core.h
-#        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_auth.h
-#        ${CMAKE_SOURCE_DIR}/common/ipc-client/sal_ipc_client_storage.h
+        ${CMAKE_SOURCE_DIR}/include/service_adaptor_client_storage.h
+
+        ${CMAKE_SOURCE_DIR}/api/client/include/service_adaptor_client_private.h
+        ${CMAKE_SOURCE_DIR}/api/client/include/service_adaptor_client_storage_internal.h
+        ${CMAKE_SOURCE_DIR}/api/client/include/service_adaptor_client_type.h
+
+        ${CMAKE_SOURCE_DIR}/api/client/include/private/service-adaptor-client.h
+        ${CMAKE_SOURCE_DIR}/api/client/include/private/service-adaptor-client-auth.h
+        ${CMAKE_SOURCE_DIR}/api/client/include/private/service-adaptor-client-contact.h
+        ${CMAKE_SOURCE_DIR}/api/client/include/private/service-adaptor-client-message.h
+        ${CMAKE_SOURCE_DIR}/api/client/include/private/service-adaptor-client-push.h
+        ${CMAKE_SOURCE_DIR}/api/client/include/private/service-adaptor-client-shop.h
+        ${CMAKE_SOURCE_DIR}/api/client/include/private/service-adaptor-client-storage.h
 )
 
 INSTALL(FILES ${SAL-ADAPTOR-CLIENT-HEADERS} DESTINATION include/service-adaptor)
 
-##########################################################
-# Define Service Provider CLIENT
-##########################################################
-
-SET(PLUGIN-CLIENT-LIB "service-provider")
-SET(PLUGIN-CLIENT-SRCS
-        ${CMAKE_SOURCE_DIR}/api/provider/sal_provider_service.c
-        ${CMAKE_SOURCE_DIR}/api/provider/sal_provider_base.c
-        ${CMAKE_SOURCE_DIR}/api/provider/sal_provider_storage.c
-)
-
-INCLUDE_DIRECTORIES(
-        ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/api/provider
-        ${CMAKE_SOURCE_DIR}/common/base
-        ${CMAKE_SOURCE_DIR}/common/ipc-provider
-)
-
-INCLUDE(FindPkgConfig)
-pkg_check_modules(plugin_client_pkgs REQUIRED dlog glib-2.0 capi-appfw-application capi-appfw-service-application)
-
-FOREACH(flag ${plugin_client_pkgs_CFLAGS})
-        SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
-ENDFOREACH(flag)
-
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -std=gnu99")
-SET(CMAKE_EXE_LINKER_FLAGS "-Wl,--as-needed")
-
-ADD_LIBRARY(${PLUGIN-CLIENT-LIB} SHARED ${PLUGIN-CLIENT-SRCS})
-
-TARGET_LINK_LIBRARIES(${PLUGIN-CLIENT-LIB} ${plugin_client_pkgs_LDFLAGS})
-SET_TARGET_PROPERTIES(${PLUGIN-CLIENT-LIB} PROPERTIES SOVERSION ${VERSION_MAJOR})
-SET_TARGET_PROPERTIES(${PLUGIN-CLIENT-LIB} PROPERTIES VERSION ${VERSION})
-
-INSTALL(TARGETS ${PLUGIN-CLIENT-LIB} DESTINATION ${LIB_INSTALL_DIR} COMPONENT RuntimeLibraries)
-
-SET(SAL-PLUGIN-CLIENT-HEADERS
-        ${CMAKE_SOURCE_DIR}/include/service_provider.h
-        ${CMAKE_SOURCE_DIR}/include/service_provider_types.h
-        ${CMAKE_SOURCE_DIR}/include/storage_provider.h
-)
-
-INSTALL(FILES ${SAL-PLUGIN-CLIENT-HEADERS} DESTINATION include/service-provider)

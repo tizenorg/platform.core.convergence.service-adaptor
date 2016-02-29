@@ -17,6 +17,10 @@
 #ifndef __TIZEN_SOCIAL_LIBSERVICE_PLUGIN_MESSAGE_H__
 #define __TIZEN_SOCIAL_LIBSERVICE_PLUGIN_MESSAGE_H__
 
+#ifndef API
+#define API __attribute__ ((visibility("default")))
+#endif
+
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -74,69 +78,98 @@ typedef struct _plugin_message_s *plugin_message_h;
 
 typedef struct _plugin_message_array_s *plugin_message_array_h;
 
-
+API
 int plugin_message_create(plugin_message_h *message);
 
+API
 void plugin_message_destroy(plugin_message_h message);
 
+API
 int plugin_message_set_value_number(plugin_message_h message, plugin_message_element_e field, pmnumber value);
 
+API
 int plugin_message_get_value_number(plugin_message_h message, plugin_message_element_e field, pmnumber *value);
 
+API
 int plugin_message_set_value_string(plugin_message_h message, plugin_message_element_e field, const char *value);
 
+API
 int plugin_message_get_value_string(plugin_message_h message, plugin_message_element_e field, char **value);
 
+API
 int plugin_message_set_value_bool(plugin_message_h message, plugin_message_element_e field, bool value);
 
+API
 int plugin_message_get_value_bool(plugin_message_h message, plugin_message_element_e field, bool *value);
 
 
+API
 int plugin_message_set_param_number(plugin_message_h message, int param_index, pmnumber value);
 
+API
 int plugin_message_get_param_number(plugin_message_h message, int param_index, pmnumber *value);
 
+API
 int plugin_message_set_param_string(plugin_message_h message, int param_index, const char *value);
 
+API
 int plugin_message_get_param_string(plugin_message_h message, int param_index, char **value);
 
+API
 int plugin_message_set_param_bool(plugin_message_h message, int param_index, bool value);
 
+API
 int plugin_message_get_param_bool(plugin_message_h message, int param_index, bool *value);
 
+API
 int plugin_message_set_param_array(plugin_message_h message, int param_index, plugin_message_array_h value);
 
+API
 int plugin_message_get_param_array(plugin_message_h message, int param_index, plugin_message_array_h *value);
 
 
+API
 int plugin_message_set_opt_param_number(plugin_message_h message, int param_index, pmnumber value);
 
+API
 int plugin_message_get_opt_param_number(plugin_message_h message, int param_index, pmnumber *value);
 
+API
 int plugin_message_set_opt_param_string(plugin_message_h message, int param_index, const char *value);
 
+API
 int plugin_message_get_opt_param_string(plugin_message_h message, int param_index, char **value);
 
+API
 int plugin_message_set_opt_param_bool(plugin_message_h message, int param_index, bool value);
 
+API
 int plugin_message_get_opt_param_bool(plugin_message_h message, int param_index, bool *value);
 
+API
 int plugin_message_set_opt_param_array(plugin_message_h message, int param_index, plugin_message_array_h value);
 
+API
 int plugin_message_get_opt_param_array(plugin_message_h message, int param_index, plugin_message_array_h *value);
 
 
+API
 int plugin_message_serialize(plugin_message_h message, char **data);
 
+API
 int plugin_message_deserialize(const char *data, plugin_message_h *message);
 
 
+API
 int plugin_message_array_create(const plugin_data_type *type_string, plugin_message_array_h *array);
 
+API
 void plugin_message_array_destroy(plugin_message_array_h array);
 
+API
 int plugin_message_array_add_element(plugin_message_array_h array, ...);
 
+API
 int plugin_message_array_get_element(plugin_message_array_h array, int idx, ...);
 
 #ifdef __cplusplus
