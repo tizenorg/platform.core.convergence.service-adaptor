@@ -1,6 +1,6 @@
 Name:       service-adaptor
 Summary:    Service Adaptor Framework for Convergence
-Version:    1.1.4
+Version:    1.1.5
 Release:    1
 Group:      System/Libraries
 License:    Apache-2.0
@@ -21,11 +21,6 @@ BuildRequires:  pkgconfig(capi-appfw-app-manager)
 BuildRequires:  pkgconfig(capi-appfw-package-manager)
 BuildRequires:  pkgconfig(capi-appfw-service-application)
 BuildRequires:  pkgconfig(json-glib-1.0)
-#BuildRequires:  pkgconfig(security-server)
-#BuildRequires:  pkgconfig(service-discovery)
-#BuildRequires:  pkgconfig(service-federation)
-#BuildRequires:  service-discovery-devel
-#BuildRequires:  service-federation-devel
 
 %description
 Service Adaptor Framework Library/Binary package
@@ -42,9 +37,7 @@ This package contains the header and pc files of Service Adaptor.
 %setup -q
 
 %build
-#export CFLAGS="${CFLAGS} -fPIC -Wall -g -fvisibility=hidden -fdata-sections -ffunction-sections"
 export CFLAGS="${CFLAGS} -fPIC -Wall -g -fdata-sections -ffunction-sections"
-#export CXXFLAGS="${CXXFLAGS} -fPIC -Wall -g -fvisibility=hidden"
 export CXXFLAGS="${CXXFLAGS} -fPIC -Wall -g"
 export LDFLAGS="${LDFLAGS} -Wl,--hash-style=both -Wl,--rpath=%{_prefix}/lib -Wl,--as-needed"
 
@@ -72,12 +65,12 @@ mkdir -p %{buildroot}%{_libdir}/service-provider/message
 mkdir -p %{buildroot}%{_libdir}/service-provider/push
 mkdir -p %{buildroot}%{_libdir}/service-provider/shop
 
-mkdir -p %{buildroot}%{_unitdir_user}/default.target.wants
-install -m 0644 %SOURCE1 %{buildroot}%{_unitdir_user}/service-adaptor.service
-ln -s ../service-adaptor.service %{buildroot}%{_unitdir_user}/default.target.wants/service-adaptor.service
-
 mkdir -p %{buildroot}%{_datadir}/dbus-1/system-services
 install -m 0644 %SOURCE2 %{buildroot}%{_datadir}/dbus-1/system-services/org.tizen.serviceadaptor.client.service
+
+mkdir -p %{buildroot}%{_unitdir}/multi-user.target.wants
+install -m 0644 %SOURCE1 %{buildroot}%{_unitdir}/service-adaptor.service
+%install_service multi-user.target.wants service-adaptor.service
 
 mkdir -p %{buildroot}/usr/share/license
 cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor
@@ -95,9 +88,8 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 %{_libdir}/service-provider
 %{_libdir}/service-provider/*
 %{_bindir}/service-adaptor-server
-#%{_bindir}/sal-test
-%{_unitdir_user}/service-adaptor.service
-%{_unitdir_user}/default.target.wants/service-adaptor.service
+%{_unitdir}/service-adaptor.service
+%{_unitdir}/multi-user.target.wants/service-adaptor.service
 %{_datadir}/dbus-1/system-services/org.tizen.serviceadaptor.client.service
 %{_sysconfdir}/dbus-1/system.d/org.tizen.serviceadaptor.client.conf
 /usr/share/license/%{name}

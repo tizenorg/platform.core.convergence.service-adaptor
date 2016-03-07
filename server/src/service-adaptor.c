@@ -1016,9 +1016,8 @@ FUNC_START();
 	}
 
 	service_adaptor_debug("Service Adaptor: started");
-/*	TODO it will be activated for on-demand
+/*	TODO it will be activated for on-demand */
 	ping_manager_init(5, g_default_loop);
-*/
 
 	/* 3) assign to global service adaptor handle */
 	g_service_adaptor = service_adaptor;

@@ -4,11 +4,11 @@ After=dbus.socket dbus.service
 Requires=dbus.socket
 
 [Service]
-Type=simple
+Type=dbus
 BusName=org.tizen.serviceadaptor.client
 ExecStart=/usr/bin/service-adaptor-server
-Restart=on-failure
-RestartSec=0
+#Restart=on-failure
+#RestartSec=0
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
