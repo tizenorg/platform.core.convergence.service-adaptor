@@ -1209,8 +1209,7 @@ auth_error_code_t auth_adaptor_login(auth_adaptor_plugin_h plugin,
 			auth_adaptor_error("Login returns success but access_token is NULL");
 			ret = AUTH_ADAPTOR_ERROR_PLUGIN_INTERNAL;
 
-			if (NULL != error_code)
-			{
+			if (NULL != error_code) {
 				*error_code = auth_adaptor_create_error_code((int64_t) AUTH_ADAPTOR_ERROR_PLUGIN_INTERNAL,
 						"Plugin returns Login success but access_token is Empty");
 			}

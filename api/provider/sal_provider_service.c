@@ -45,7 +45,7 @@ static void __ipc_connection_callback(ipc_provider_connection_state_e state, voi
 {
 	SAL_FN_CALL;
 
-	USER_DATA_DEFINE(_ipc_state_data_t, _callback_data) = (USER_DATA_TYPE(_ipc_state_data_t) *)user_data;
+	USER_DATA_DEFINE(_ipc_state_data_t, _callback_data) = (USER_DATA_TYPE(_ipc_state_data_t)*)user_data;
 	service_provider_channel_cb callback = (service_provider_channel_cb)USER_DATA_ELEMENT(_callback_data, 0);
 	void *_user_data = (void *)USER_DATA_ELEMENT(_callback_data, 1);
 
@@ -75,7 +75,7 @@ static void __ipc_connection_callback(ipc_provider_connection_state_e state, voi
 	SAL_FN_END;
 }
 
-API int service_provider_set_storage_provider (storage_provider_s *storage_provider, void *user_data)
+API int service_provider_set_storage_provider(storage_provider_s *storage_provider, void *user_data)
 {
 	SAL_FN_CALL;
 

@@ -76,16 +76,16 @@ static GMainLoop *g_default_loop = NULL;
  ******************************************************************************/
 
 #define __init_context_info_s(x)        do { \
-                                                (x).user_id = NULL; \
-                                                (x).app_id = NULL; \
-                                                (x).service_id = 0U; \
-                                                (x).imsi = NULL; \
-                                                (x).duid = NULL; \
-                                                (x).msisdn = NULL; \
-                                                (x).access_token = NULL; \
-                                                (x).refresh_token = NULL; \
-                                                (x).property = NULL; \
-                                        } while (0)
+						(x).user_id = NULL; \
+						(x).app_id = NULL; \
+						(x).service_id = 0U; \
+						(x).imsi = NULL; \
+						(x).duid = NULL; \
+						(x).msisdn = NULL; \
+						(x).access_token = NULL; \
+						(x).refresh_token = NULL; \
+						(x).property = NULL; \
+					} while (0)
 
 
 /******************************************************************************
@@ -131,20 +131,20 @@ void debug_service_context(GList *service_list)
 }
 
 static void __glog_handler_cb(const gchar *log_domain,
-                        GLogLevelFlags log_level,
-                        const gchar *message,
-                        gpointer user_data)
+				GLogLevelFlags log_level,
+				const gchar *message,
+				gpointer user_data)
 {
-    service_adaptor_error("============================================================");
-    service_adaptor_error("============================================================");
-    service_adaptor_error("================== Critical GLib Error =====================");
-    service_adaptor_error("============================================================");
-    service_adaptor_error("============================================================");
-    service_adaptor_error("=== Log Domain : %s", log_domain);
-    service_adaptor_error("=== Level : %d", (int)log_level);
-    service_adaptor_error("=== Message : %s", message);
-    service_adaptor_error("============================================================");
-    service_adaptor_error("============================================================");
+	service_adaptor_error("============================================================");
+	service_adaptor_error("============================================================");
+	service_adaptor_error("================== Critical GLib Error =====================");
+	service_adaptor_error("============================================================");
+	service_adaptor_error("============================================================");
+	service_adaptor_error("=== Log Domain : %s", log_domain);
+	service_adaptor_error("=== Level : %d", (int)log_level);
+	service_adaptor_error("=== Message : %s", message);
+	service_adaptor_error("============================================================");
+	service_adaptor_error("============================================================");
 }
 
 static void glog_handler_init()

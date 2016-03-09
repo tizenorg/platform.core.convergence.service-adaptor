@@ -1046,7 +1046,7 @@ int service_adaptor_set_plugin(service_adaptor_h handle,
 	service_adaptor_plugin_h plugin = NULL;
 	plugin = (service_adaptor_plugin_h) calloc(1, sizeof(service_adaptor_plugin_s));
 	char *_plugin_uri = strdup(plugin_uri);
-	if ((NULL == plugin) || (NULL == _plugin_uri)){
+	if ((NULL == plugin) || (NULL == _plugin_uri)) {
 		free(plugin);
 		free(_plugin_uri);
 		return SERVICE_ADAPTOR_ERROR_UNKNOWN;

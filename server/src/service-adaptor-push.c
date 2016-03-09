@@ -60,7 +60,7 @@
 
 static GList *g_push_activate_list = NULL;
 
-static GMutex g_push_activate_mutex;
+/* static GMutex g_push_activate_mutex; */
 
 static GMutex g_push_reconnect_mutex;
 
@@ -69,6 +69,7 @@ static GMutex g_push_reconnect_mutex;
  *               Internal function prototype
  *************************************************/
 
+#ifdef SA_PUSH_ON_DEMAND_ENABLE
 static push_activate_h _create_push_handle_by_service_file(service_file_h file);
 
 static void _add_push_service_file(const char *service_file_name);
@@ -78,6 +79,7 @@ static void _remove_push_service_file(const char *service_file_name);
 static void _load_all_push_service_file(void);
 
 static void _unload_all_push_service_file(void);
+#endif
 
 static void push_data_dbus_activate_callback(const char *app_id, const char *session_info, long long int timestamp, const char *data, const char *message);
 
@@ -92,7 +94,7 @@ service_adaptor_internal_error_code_e service_adaptor_ref_enabled_push_services(
 /*************************************************
  *               Internal function definition
  *************************************************/
-
+#ifdef SA_PUSH_ON_DEMAND_ENABLE
 static push_activate_h _create_push_handle_by_service_file(service_file_h file)
 {
 	service_adaptor_debug("<Start> %s", __FUNCTION__);
@@ -201,6 +203,7 @@ static void _load_all_push_service_file()
 	service_adaptor_debug("<End> %s", __FUNCTION__);
 }
 
+
 static void _unload_all_push_service_file(void)
 {
 	service_adaptor_debug("<Start> %s", __FUNCTION__);
@@ -233,6 +236,7 @@ static void _unload_all_push_service_file(void)
 	service_adaptor_debug_func(">>>>>[UNLOCK] push-activate mutex");
 	service_adaptor_debug("<End> %s", __FUNCTION__);
 }
+
 
 static void _add_push_service_file(const char *service_file_name)
 {
@@ -318,6 +322,7 @@ static void _remove_push_service_file(const char *service_file)
 
 	service_adaptor_debug("<End> %s", __FUNCTION__);
 }
+#endif
 
 
 /***********************************************************

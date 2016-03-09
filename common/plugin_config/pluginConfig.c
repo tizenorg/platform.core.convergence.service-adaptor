@@ -181,6 +181,7 @@ typedef struct plugin_internal_ConfigData {
 static
 void plugin_internal_ConfigData_cbMapStrSectionFreeData(gpointer data);
 
+#if 0
 /**
  * @brief Function passed to g_hash_table_foreach().
  * Function is called for each key/value pair.
@@ -208,6 +209,8 @@ static
 void plugin_internal_ConfigData_cbMapStrSectionCopy(gpointer key,
 	gpointer value,
 	gpointer user_data);
+
+
 /**
  * @brief Function passed to g_list_foreach().
  * The function called for each element's data.
@@ -219,6 +222,7 @@ void plugin_internal_ConfigData_cbMapStrSectionCopy(gpointer key,
 static
 gpointer plugin_internal_ConfigData_cbListSectionCopy(gconstpointer data,
 	gpointer user_data);
+#endif
 
 /**
  * @brief The function to be called to free each element's data.
@@ -334,6 +338,7 @@ void plugin_internal_ConfigData_parseLineCsv(plugin_internal_ConfigData *self,
 	char separator);
 
 /* Public */
+#if 0
 /**
  * @brief ...
  *
@@ -345,6 +350,7 @@ static
 bool
 plugin_internal_ConfigData_hasSection(const plugin_internal_ConfigData *self,
 						const char *section);
+
 
 /**
 * @brief This method assumes that the given section exists. Use hasSection()
@@ -360,6 +366,7 @@ bool
 plugin_internal_ConfigData_hasKey(const plugin_internal_ConfigData *self,
 						const char *section,
 						const char *key);
+#endif
 
 /**
  * @brief ...
@@ -375,6 +382,7 @@ plugin_internal_ConfigData_hasSectionAndKey(const plugin_internal_ConfigData *se
 						const char *section,
 						const char *key);
 
+#if 0
 /**
  * @brief ...
  *
@@ -394,6 +402,7 @@ plugin_internal_ConfigData_getFilepath(const plugin_internal_ConfigData *self);
 static
 PluginConfigType
 plugin_internal_ConfigData_getType(const plugin_internal_ConfigData *self);
+#endif
 
 /**
  * @brief ...
@@ -513,6 +522,7 @@ plugin_internal_ConfigData_new(const char *filepath, PluginConfigType type)
 	}
 
 	ConfigParserState state;
+	state.current_section = NULL;
 
 	while ((read = getline(&line, &len, fp)) != -1) {
 		/* printf("Retrieved line of length %zu :\n", read); */
@@ -555,6 +565,7 @@ plugin_internal_ConfigData_new(const char *filepath, PluginConfigType type)
 	return self;
 }
 
+#if 0
 /******************************************************************************/
 static
 void plugin_internal_ConfigData_cbMapStrSectionEntryCopy(gpointer key,
@@ -570,6 +581,7 @@ void plugin_internal_ConfigData_cbMapStrSectionEntryCopy(gpointer key,
 }
 
 /******************************************************************************/
+
 static
 void plugin_internal_ConfigData_cbMapStrSectionCopy(gpointer key,
 	gpointer value,
@@ -620,6 +632,8 @@ gpointer plugin_internal_ConfigData_cbListSectionCopy(gconstpointer src,
 }
 
 /******************************************************************************/
+#endif
+
 #if 0
 static
 plugin_internal_ConfigData *
@@ -766,7 +780,7 @@ plugin_internal_ConfigData_parseLineIni(plugin_internal_ConfigData *self,
 
 				g_hash_table_insert(state->current_section, strdup(key), strdup(value));
 			}
-                        if (NULL != key) {
+			if (NULL != key) {
 				free(key);
 				key = NULL;
 			}
@@ -852,7 +866,7 @@ void plugin_internal_ConfigData_clear(plugin_internal_ConfigData *self)
 
 	endfunc;
 }
-
+#if 0
 /******************************************************************************/
 static
 bool
@@ -895,10 +909,12 @@ plugin_internal_ConfigData_hasKey(const plugin_internal_ConfigData *self,
 	endfunc;
 	return result;
 }
+#endif
 
 /******************************************************************************
  * PUBLIC
  ******************************************************************************/
+#if 0
 static
 bool
 plugin_internal_ConfigData_hasSection(const plugin_internal_ConfigData *self,
@@ -926,7 +942,7 @@ plugin_internal_ConfigData_hasSection(const plugin_internal_ConfigData *self,
 	endfunc;
 	return result;
 }
-
+#endif
 /******************************************************************************/
 static
 bool
@@ -969,6 +985,7 @@ plugin_internal_ConfigData_hasSectionAndKey(const plugin_internal_ConfigData *se
 	return result;
 }
 
+#if 0
 /******************************************************************************/
 static
 const char *
@@ -1010,6 +1027,7 @@ plugin_internal_ConfigData_getType(const plugin_internal_ConfigData *self)
 	endfunc;
 	return result;
 }
+#endif
 
 /******************************************************************************/
 static
@@ -1154,6 +1172,7 @@ plugin_Config_getString(plugin_Config *self, const char *section, const char *ke
 static
 int plugin_Config_getInt(plugin_Config *self, const char *section, const char *key);
 
+#if 0
 /**
  * @brief From _loaded configuration, gets double value attached to given key.
  *
@@ -1164,6 +1183,7 @@ int plugin_Config_getInt(plugin_Config *self, const char *section, const char *k
  **/
 static
 double getDouble(plugin_Config *self, const char *section, const char *key);
+#endif
 
 /******************************************************************************
  * Definitiions (methods of Config class)

@@ -839,13 +839,12 @@ int _dbus_is_login_required(service_plugin_h plugin,
 	return ret;
 }
 
-struct __login_request_context
-{
+struct __login_request_context {
 	void *callback;
 	void *user_data;
 };
 
-static void __dbus_login_result_callback (GObject *source_object,
+static void __dbus_login_result_callback(GObject *source_object,
 						GAsyncResult *res,
 						gpointer user_data)
 {
