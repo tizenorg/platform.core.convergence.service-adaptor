@@ -214,7 +214,7 @@ static gboolean __ping_watcher_cb(gpointer user_data)
 	}
 
 	service_adaptor_info("=== === === return %s === === ===",
-			(g_ping_watcher_stop == TRUE)?"TRUE":"FALSE");
+			(g_ping_watcher_stop == TRUE) ? "TRUE" : "FALSE");
 
 	#ifdef PEERS_INFO_DEBUG
 	}

@@ -58,10 +58,10 @@
 		(x)->extra_cloud_meta   = NULL; } while (0)
 
 #define FILE_INFO_CLEAR(x) do {\
-                (x)->plugin_uri          = NULL;\
-                (x)->object_id           = NULL;\
-                (x)->storage_path        = NULL;\
-                (x)->file_size           = 0ULL;\
+		(x)->plugin_uri          = NULL;\
+		(x)->object_id           = NULL;\
+		(x)->storage_path        = NULL;\
+		(x)->file_size           = 0ULL;\
 \
 		(x)->revision            = -1;\
 		(x)->timestamp           = 0ULL;\

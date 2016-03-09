@@ -58,7 +58,7 @@ static __thread char last_error_message[ERROR_MSG_MAX_LEN] = {0, };
  *               Internal function prototype
  *************************************************/
 
-static client_data_s *__client_data_create(void);
+/* static client_data_s *__client_data_create(void); */
 
 static void __client_data_free(void *data);
 
@@ -97,6 +97,7 @@ const char *clieht_checker_get_last_error(void);
  *               Internal function definition
  *************************************************/
 
+/*
 static client_data_s *__client_data_create(void)
 {
 	client_data_s *data = (client_data_s *) calloc(1, sizeof(client_data_s));
@@ -105,7 +106,8 @@ static client_data_s *__client_data_create(void)
 		memset(data->cookie, 0, 21);
 	}
 	return data;
-}
+} 
+*/
 
 static void __client_data_free(void *data)
 {
@@ -126,37 +128,37 @@ static client_data_s *__client_data_find(const char *_key)
 
 static int __get_dir_path(const char *path, char **dir_path)
 {
-        if ((NULL == path) || ('/' != path[0]) || (1 >= strlen(path))) {
+	if ((NULL == path) || ('/' != path[0]) || (1 >= strlen(path))) {
 		/* path must be absolute path (starts with '/') */
 		__set_last_error("[Permission checker] Path must be absolute path (starts with '/')");
-                return -1;
-        }
+		return -1;
+	}
 
-        char *full_path = strdup(path);
-        if (NULL == full_path) {
+	char *full_path = strdup(path);
+	if (NULL == full_path) {
 		/* dup failed */
 		__set_last_error("[Permission checker] Internal error");
-                return -1;
-        } else if (full_path[strlen(full_path) - 1] == '/') {
+		return -1;
+	} else if (full_path[strlen(full_path) - 1] == '/') {
 		/* if full_path is "/abc/d/" -> "abc/d" */
-                full_path[strlen(full_path) - 1] = '\0';
-        }
+		full_path[strlen(full_path) - 1] = '\0';
+	}
 
-        char *base = strrchr(full_path, '/');
-        if (base == full_path) {
+	char *base = strrchr(full_path, '/');
+	if (base == full_path) {
 		/* if full_path is "/abc" */
-                *dir_path = strdup("/");
-        } else if (NULL != base) {
+		*dir_path = strdup("/");
+	} else if (NULL != base) {
 		/* expected case */
-                *dir_path = strndup(full_path, (base - full_path));
-        } else {
+		*dir_path = strndup(full_path, (base - full_path));
+	} else {
 		__set_last_error("[Permission checker] Invalid path (Can not parse string)");
-                free(full_path);
-                return -1;
-        }
-        free(full_path);
+		free(full_path);
+		return -1;
+	}
+	free(full_path);
 
-        return 0;
+	return 0;
 }
 
 
@@ -310,7 +312,7 @@ int client_checker_check_access_right_read(const char *service_handle_name, cons
 {
 	int ret;
 	char *target_label = NULL;
-	char *check_permission = NULL;
+	/* char *check_permission = NULL; */
 	service_adaptor_debug("service_handle(%s), path(%s)", service_handle_name, path);
 	if (NULL == path) {
 		__set_last_error("[Permission checker] Invalid path");
@@ -360,7 +362,7 @@ int client_checker_check_access_right_read(const char *service_handle_name, cons
 	/* Check to 'r' permission to path */
 /*
 	check_permission = "r";
-        service_adaptor_info("[serice-adaptor] check path execute permission : <path : %s> <right : %s>", path, check_permission);
+	service_adaptor_info("[serice-adaptor] check path execute permission : <path : %s> <right : %s>", path, check_permission);
 	free(target_label);
 	target_label = NULL;
 	ret = smack_getlabel(path, &target_label, SMACK_LABEL_ACCESS);
@@ -399,8 +401,8 @@ int client_checker_check_access_right_write(const char *service_handle_name, con
 int client_checker_check_access_right_create(const char *service_handle_name, const char *path)
 {
 	int ret;
-	char *target_label = NULL;
-	char *check_permission = NULL;
+	/* char *target_label = NULL; */
+	/* char *check_permission = NULL; */
 	service_adaptor_debug("service_handle(%s), path(%s)", service_handle_name, path);
 	if (NULL == path) {
 		return -801;

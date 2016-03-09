@@ -968,7 +968,7 @@ push_error_code_t push_adaptor_is_connected(push_adaptor_plugin_h plugin,
 {
 	push_adaptor_info("Check push connection");
 
-	if ((NULL == context) || (NULL == is_connected)){
+	if ((NULL == context) || (NULL == is_connected)) {
 		return PUSH_ADAPTOR_ERROR_INVALID_ARGUMENT;
 	}
 

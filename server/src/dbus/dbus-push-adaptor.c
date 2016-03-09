@@ -113,8 +113,8 @@ typedef struct __push_data_s {
 } _push_data_s;
 
 static void g_bus_async_ready_callback(GObject *source_object,
-                        GAsyncResult *res,
-                        gpointer user_data)
+			GAsyncResult *res,
+			gpointer user_data)
 {
 	service_adaptor_debug("[START] Push dbus proxy creation callback");
 	GDBusProxy *_proxy = (GDBusProxy *) source_object;

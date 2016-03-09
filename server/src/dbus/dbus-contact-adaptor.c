@@ -33,18 +33,18 @@
 
 char *ipc_g_variant_dup_contact_string(GVariant *string)
 {
-        char *ret = g_variant_dup_string(string, NULL);
+	char *ret = g_variant_dup_string(string, NULL);
 	const int contact_protocol_padding_length = 1;
-        if (0 == strcmp(ret, "")) {
-                free(ret);
-                ret = NULL;
-        } else if (0 < strlen(ret)) {
+	if (0 == strcmp(ret, "")) {
+		free(ret);
+		ret = NULL;
+	} else if (0 < strlen(ret)) {
 		char *dummy = ret;
 		ret = strdup((dummy + contact_protocol_padding_length));
 		free(dummy);
 	}
 
-        return ret;
+	return ret;
 }
 
 
