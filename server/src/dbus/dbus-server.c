@@ -338,6 +338,11 @@ static const gchar introspection_xml[] =
 "      <arg type='t' name='error_code' direction='out'/>"
 "      <arg type='s' name='error_msg' direction='out'/>"
 "    </method>"
+"    <method name='" PRIVATE_DBUS_GET_PRIVILEGE_CHECK_RESULT_METHOD "'>"
+"      <arg type='" private_service_adaptor_privilege_check_req_s_type "' name='req' direction='in'/>"
+"      <arg type='t' name='error_code' direction='out'/>"
+"      <arg type='s' name='error_msg' direction='out'/>"
+"    </method>"
 "    <signal name='" PRIVATE_DBUS_REPLY_CREATE_CHATROOM_SIGNAL "'>"
 "      <arg type='" private_service_adaptor_create_chatroom_res_s_type "' name='res' direction='out'/>"
 "      <arg type='t' name='error_code' direction='out'/>"
@@ -913,11 +918,17 @@ int dbus_server_init()
 	}
 
 	service_adaptor_debug("[End] %s", __FUNCTION__);
+
+	if (SERVICE_ADAPTOR_INTERNAL_ERROR_NONE != sa_cynara_init()) {
+		return -1;
+	}
 	return 0;
 }
 
 void dbus_server_deinit()
 {
+	sa_cynara_deinit();
+
 	if (NULL != thread_pool) {
 		g_thread_pool_free(thread_pool, TRUE, TRUE);
 	}

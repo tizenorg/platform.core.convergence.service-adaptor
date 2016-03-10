@@ -21,6 +21,9 @@ BuildRequires:  pkgconfig(capi-appfw-app-manager)
 BuildRequires:  pkgconfig(capi-appfw-package-manager)
 BuildRequires:  pkgconfig(capi-appfw-service-application)
 BuildRequires:  pkgconfig(json-glib-1.0)
+BuildRequires:  pkgconfig(cynara-client)
+BuildRequires:  pkgconfig(cynara-session)
+BuildRequires:  pkgconfig(cynara-creds-gdbus)
 
 %description
 Service Adaptor Framework Library/Binary package

@@ -542,16 +542,15 @@ int service_storage_create_upload_task(service_plugin_h plugin,
 		FUNC_STOP();
 		return SERVICE_ADAPTOR_ERROR_INVALID_STATE;
 	}
-/*
+
 	if (CLIENT_APP_TYPE_APPLICATION == plugin->app_type) {
 		int privilege_ret = 0;
-		privilege_ret = privilege_checker_check_privilege(TIZEN_PRIVILEGE_NAME_INTERNET);
-		if (PRIVILEGE_CHECKER_ERR_NONE != privilege_ret) {
+		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
+		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
 			sac_error("Privilege check error (ret : %d)", privilege_ret);
 			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
 		}
 	}
-*/
 
 	service_storage_task_h _task = (service_storage_task_h) calloc(1, sizeof(service_storage_task_t));
 	if (NULL == _task) {
@@ -615,16 +614,16 @@ int service_storage_create_download_task(service_plugin_h plugin,
 		FUNC_STOP();
 		return SERVICE_ADAPTOR_ERROR_INVALID_STATE;
 	}
-/*
+
 	if (CLIENT_APP_TYPE_APPLICATION == plugin->app_type) {
 		int privilege_ret = 0;
-		privilege_ret = privilege_checker_check_privilege(TIZEN_PRIVILEGE_NAME_INTERNET);
-		if (PRIVILEGE_CHECKER_ERR_NONE != privilege_ret) {
+		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
+		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
 			sac_error("Privilege check error (ret : %d)", privilege_ret);
 			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
 		}
 	}
-*/
+
 	service_storage_task_h _task = (service_storage_task_h) calloc(1, sizeof(service_storage_task_t));
 	if (NULL == _task) {
 		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
@@ -686,16 +685,16 @@ int service_storage_create_download_thumbnail_task(service_plugin_h plugin,
 		FUNC_STOP();
 		return SERVICE_ADAPTOR_ERROR_INVALID_STATE;
 	}
-/*
+
 	if (CLIENT_APP_TYPE_APPLICATION == plugin->app_type) {
 		int privilege_ret = 0;
-		privilege_ret = privilege_checker_check_privilege(TIZEN_PRIVILEGE_NAME_INTERNET);
-		if (PRIVILEGE_CHECKER_ERR_NONE != privilege_ret) {
+		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
+		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
 			sac_error("Privilege check error (ret : %d)", privilege_ret);
 			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
 		}
 	}
-*/
+
 	service_storage_task_h _task = (service_storage_task_h) calloc(1, sizeof(service_storage_task_t));
 	int *t_size = (int *)calloc(1, sizeof(int));
 	if ((NULL == _task) || (NULL == t_size)) {
@@ -1028,16 +1027,18 @@ int service_storage_get_file_list(service_plugin_h plugin,
 		FUNC_STOP();
 		return SERVICE_ADAPTOR_ERROR_INVALID_STATE;
 	}
-/*
+
 	if (CLIENT_APP_TYPE_APPLICATION == plugin->app_type) {
 		int privilege_ret = 0;
-		privilege_ret = privilege_checker_check_privilege(TIZEN_PRIVILEGE_NAME_INTERNET);
-		if (PRIVILEGE_CHECKER_ERR_NONE != privilege_ret) {
+		service_adaptor_error_s error;
+		error.msg = NULL;
+		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
+		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
 			sac_error("Privilege check error (ret : %d)", privilege_ret);
 			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
 		}
 	}
-*/
+
 	struct __async_wrapper_context *params = NULL;
 	params = (struct __async_wrapper_context *) calloc(1, sizeof(struct __async_wrapper_context));
 
@@ -1393,16 +1394,18 @@ int service_storage_remove(service_plugin_h plugin,
 		FUNC_STOP();
 		return SERVICE_ADAPTOR_ERROR_INVALID_STATE;
 	}
-/*
+
 	if (CLIENT_APP_TYPE_APPLICATION == plugin->app_type) {
 		int privilege_ret = 0;
-		privilege_ret = privilege_checker_check_privilege(TIZEN_PRIVILEGE_NAME_INTERNET);
-		if (PRIVILEGE_CHECKER_ERR_NONE != privilege_ret) {
+		service_adaptor_error_s error;
+		error.msg = NULL;
+		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
+		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
 			sac_error("Privilege check error (ret : %d)", privilege_ret);
 			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
 		}
 	}
-*/
+
 	struct __async_wrapper_context *params = NULL;
 	params = (struct __async_wrapper_context *) calloc(1, sizeof(struct __async_wrapper_context));
 
@@ -1432,6 +1435,34 @@ int service_storage_remove(service_plugin_h plugin,
 }
 
 
+int service_storage_check_privilege(service_plugin_h handle,
+						const char *privilege_name)
+{
+	sac_api_start();
+	int ret = SERVICE_ADAPTOR_ERROR_NONE;
+	service_adaptor_error_s error;
+	error.msg = NULL;
+
+	if (NULL == handle) {
+		FUNC_STOP();
+		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	if (NULL == handle->service_handle_name) {
+		FUNC_STOP();
+		return SERVICE_ADAPTOR_ERROR_INVALID_STATE;
+	}
+
+	ret = _dbus_get_privilege_check_result(handle->service_handle_name, privilege_name, NULL, &error);
+
+	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
+		service_adaptor_set_last_result(error.code, error.msg);
+		free(error.msg);
+	}
+
+	sac_api_end(ret);
+	return ret;
+}
 
 
 /******************************** private feature */

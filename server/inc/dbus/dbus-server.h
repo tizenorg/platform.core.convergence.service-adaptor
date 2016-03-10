@@ -249,6 +249,13 @@
 	"i" /* int32 file_description */ \
 	")"
 
+#define private_service_adaptor_privilege_check_req_s_type_length 2
+#define private_service_adaptor_privilege_check_req_s_type \
+	"(" \
+	"s" /* char * service_name */ \
+	"s" /* char * privilege_name */ \
+	")"
+
 #define private_service_adaptor_file_status_res_s_type_length 3
 #define private_service_adaptor_file_status_res_s_type \
 	"(" \
@@ -1195,6 +1202,7 @@
 #define PRIVATE_DBUS_DOWNLOAD_FILE_PUBLISH_ASYNC_METHOD		DBUS_STORAGE_ADAPTOR "_private" "_download_file_publish_async"
 #define PRIVATE_DBUS_UPLOAD_FILE_PUBLISH_METHOD			DBUS_STORAGE_ADAPTOR "_private" "_upload_file_publish"
 #define PRIVATE_DBUS_UPLOAD_FILE_PUBLISH_ASYNC_METHOD		DBUS_STORAGE_ADAPTOR "_private" "_upload_file_publish_async"
+#define PRIVATE_DBUS_GET_PRIVILEGE_CHECK_RESULT_METHOD          DBUS_STORAGE_ADAPTOR "_private" "_get_privilege_check_result"
 
 #define PRIVATE_DBUS_REPLY_CREATE_CHATROOM_SIGNAL		DBUS_MESSAGE_ADAPTOR "_private" "_reply_create_chatroom"
 #define PRIVATE_DBUS_REPLY_CHANGE_CHATROOM_META_SIGNAL		DBUS_MESSAGE_ADAPTOR "_private" "_reply_change_chatroom_meta"

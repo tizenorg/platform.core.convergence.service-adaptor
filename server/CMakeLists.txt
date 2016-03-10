@@ -48,7 +48,21 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE(FindPkgConfig)
-pkg_check_modules(main_pkgs REQUIRED glib-2.0 gobject-2.0 gio-2.0 gthread-2.0 dlog bundle capi-base-common capi-appfw-application capi-appfw-app-manager capi-appfw-package-manager)
+pkg_check_modules(main_pkgs REQUIRED
+        glib-2.0
+        gobject-2.0
+        gio-2.0
+        gthread-2.0
+        dlog
+        bundle
+        capi-base-common
+        capi-appfw-application
+        capi-appfw-app-manager
+        capi-appfw-package-manager
+        cynara-client
+        cynara-session
+        cynara-creds-gdbus
+)
 
 FOREACH(flag ${main_pkgs_CFLAGS})
         SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")

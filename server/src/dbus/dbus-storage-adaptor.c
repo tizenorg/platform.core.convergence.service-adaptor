@@ -243,6 +243,26 @@ GVariant *__private_create_file_status_res_type(int64_t progress_size,
 	return response;
 }
 
+void __private_get_privilege_check_req_type(GVariant *parameters,
+						char **service_name,
+						char **privilege_name)
+{
+	GVariant *in_parameters = g_variant_get_child_value(parameters, 0);
+	GVariant *req_struct[private_service_adaptor_privilege_check_req_s_type_length];
+
+	for (size_t j = 0; j < private_service_adaptor_privilege_check_req_s_type_length; j++) {
+		req_struct[j] = g_variant_get_child_value(in_parameters, j);
+	}
+
+	int idx = 0;
+	*service_name	= ipc_g_variant_dup_string(req_struct[idx++]);
+	*privilege_name	= ipc_g_variant_dup_string(req_struct[idx++]);
+
+	for (size_t j = 0; j < private_service_adaptor_privilege_check_req_s_type_length; j++) {
+		g_variant_unref(req_struct[j]);
+	}
+}
+
 /* public feature */
 void __get_get_root_folder_path_req_type(GVariant *parameters,
 						char **service_name)
@@ -1784,6 +1804,49 @@ void storage_adaptor_method_call(GDBusConnection *connection,
 			}
 		}
 
+		__check_error_code();
+
+		g_dbus_method_invocation_return_value(invocation, g_variant_new("(ts)",
+				(uint64_t) error_code->code, __safe_add_string(error_code->msg)));
+
+		if (error_code != &_error) {
+			free(error_code->msg);
+			free(error_code);
+			error_code = NULL;
+		} else {
+			free(_error.msg);
+		}
+		free(service_name);
+	} else if (0 == g_strcmp0(method_name, PRIVATE_DBUS_GET_PRIVILEGE_CHECK_RESULT_METHOD)) {
+		char *service_name = NULL;
+		char *privilege_name = NULL;
+		storage_adaptor_error_code_h error_code = NULL;
+		storage_adaptor_error_code_t _error;
+		_error.msg = NULL;
+
+		__private_get_privilege_check_req_type(parameters, &service_name, &privilege_name);
+
+		service_adaptor_debug("(%s)", service_name);
+
+		service_adaptor_h service_adaptor = service_adaptor_get_handle();
+		service_adaptor_service_context_h service =
+				service_adaptor_get_service_context(service_adaptor, service_name);
+
+		if (NULL == service) {
+			service_adaptor_error("Can not get service context: %s", service_name);
+			error_code = &_error;
+			error_code->code = STORAGE_ADAPTOR_ERROR_NOT_FOUND;
+			error_code->msg = strdup("Can not get service context");
+
+			g_dbus_method_invocation_return_value(invocation, g_variant_new("(ts)",
+					(uint64_t) error_code->code, __safe_add_string(error_code->msg)));
+
+			free(_error.msg);
+			free(service_name);
+			return;
+		}
+
+		ret_code = sa_cynara_check(invocation, privilege_name);
 		__check_error_code();
 
 		g_dbus_method_invocation_return_value(invocation, g_variant_new("(ts)",

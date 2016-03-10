@@ -1546,6 +1546,40 @@ int _dbus_resume_file_transfer(const char *service_name,
 	return ret;
 }
 
+int _dbus_get_privilege_check_result(const char *service_name,
+						const char *privilege_name,
+						void **server_data,
+						service_adaptor_error_s *error)
+{
+	int ret = SERVICE_ADAPTOR_ERROR_NONE;
+	GError *g_error = NULL;
+	GVariant *call_result = NULL;
+
+	GDBusProxy *sac_interface_proxy = _dbus_get_sac_interface_proxy();
+
+	ipc_check_proxy(sac_interface_proxy);
+
+	if ((NULL == service_name) || (NULL == privilege_name)) {
+		error->code = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
+		error->msg = strdup("Invalid Param");
+		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
+	}
+
+	GVariant *request = g_variant_new("(" private_service_adaptor_privilege_check_req_s_type ")", __safe_add_string(service_name), __safe_add_string(privilege_name));
+
+	call_result = g_dbus_proxy_call_sync(sac_interface_proxy,
+			PRIVATE_DBUS_GET_PRIVILEGE_CHECK_RESULT_METHOD,
+			request,
+			G_DBUS_CALL_FLAGS_NONE,
+			G_MAXINT,
+			NULL,
+			&g_error);
+
+	ret = _ipc_get_simple_result(call_result, g_error, error);
+
+	return ret;
+}
+
 
 /******************************************************************************
 				private feature

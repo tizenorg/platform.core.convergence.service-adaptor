@@ -256,6 +256,10 @@ int _dbus_resume_file_transfer(const char *service_name,
 						service_adaptor_error_s *error);
 
 
+int _dbus_get_privilege_check_result(const char *service_name,
+						const char *privilege_name,
+						void **server_data,
+						service_adaptor_error_s *error);
 
 ///////////////////// private feature
 
