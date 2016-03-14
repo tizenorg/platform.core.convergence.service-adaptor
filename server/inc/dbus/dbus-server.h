@@ -17,6 +17,8 @@
 #ifndef __DBUS_SERVER_H__
 #define __DBUS_SERVER_H__
 
+#include <tzplatform_config.h>
+
 /**
  * Service Adaptor D-Bus server bus name.
  */
@@ -35,7 +37,7 @@
 /**
  * Service Adaptor Activation start key path
  */
-#define SERVICE_ADAPTOR_START_KEY_PATH		"/opt/share/service-adaptor/.fingerprint"
+#define SERVICE_ADAPTOR_START_KEY_PATH		tzplatform_mkpath(TZ_SYS_SHARE, "/service-adaptor/.fingerprint")
 
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////

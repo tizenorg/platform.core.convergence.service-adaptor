@@ -27,7 +27,7 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE(FindPkgConfig)
-pkg_check_modules(test_pkgs REQUIRED dlog glib-2.0 capi-appfw-application)
+pkg_check_modules(test_pkgs REQUIRED dlog glib-2.0 capi-appfw-application libtzplatform-config)
 
 FOREACH(flag ${test_pkgs_CFLAGS})
         SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")

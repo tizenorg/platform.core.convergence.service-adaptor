@@ -16,6 +16,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <tzplatform_config.h>
 
 #include "service-adaptor.h"
 #include "service-adaptor-push.h"
@@ -39,8 +40,8 @@
 
 /*#define PUSH_PLUGIN_PATH	"/usr/lib/push-adaptor/plugins"*/
 #ifdef SA_PUSH_ON_DEMAND_ENABLE
-#define SERVICE_ADAPTOR_SERVICE_FILE_PATH	"/opt/share/service-adaptor/services/"
-#define SERVICE_ADAPTOR_PUSH_ENABLED_PATH	"/opt/share/service-adaptor/.push/"
+#define SERVICE_ADAPTOR_SERVICE_FILE_PATH	tzplatform_mkpath(TZ_SYS_SHARE, "/service-adaptor/services/")
+#define SERVICE_ADAPTOR_PUSH_ENABLED_PATH	tzplatform_mkpath(TZ_SYS_SHARE, "/service-adaptor/.push/")
 #endif
 
 #define PUSH_SERVICE_FILE_KEY_PLUGIN_URI	"PluginUri"
