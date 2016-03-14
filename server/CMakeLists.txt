@@ -62,6 +62,7 @@ pkg_check_modules(main_pkgs REQUIRED
         cynara-client
         cynara-session
         cynara-creds-gdbus
+        libtzplatform-config
 )
 
 FOREACH(flag ${main_pkgs_CFLAGS})
