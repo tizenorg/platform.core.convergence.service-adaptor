@@ -22,6 +22,7 @@
 #include <glib.h>
 
 #include <pluginConfig.h>
+#include <tzplatform_config.h>
 
 #include "util/service_file_manager.h"
 #include "service-adaptor-log.h"
@@ -34,10 +35,7 @@ typedef struct _service_file_s {
 	ConfigHandle handle;
 } service_file_t;
 
-#define SERVICE_FILE_ROOT_PATH	"/opt/share/service-adaptor/"
-#define SERVICE_FILE_SERVICES_PATH	SERVICE_FILE_ROOT_PATH "services/"
-#define SERVICE_FILE_AUTH_PATH		SERVICE_FILE_ROOT_PATH ".auth/"
-#define SERVICE_FILE_PUSH_PATH		SERVICE_FILE_ROOT_PATH ".push/"
+#define SERVICE_FILE_PUSH_PATH		tzplatform_mkpath(TZ_SYS_SHARE, "/service-adaptor/.push/")
 
 #define SERVICE_FILE_SECTION_STRING_GENERAL	"general"
 #define SERVICE_FILE_SECTION_STRING_BUS		"bus"
@@ -89,12 +87,10 @@ int service_file_get_list(service_file_directory_e directory, char ***file_names
 		return -102;
 	}
 
-	char *path = SERVICE_FILE_PUSH_PATH;
-
 	DIR *dirp = NULL;
 	struct dirent dent, *result = NULL;
 
-	dirp = opendir(path);
+	dirp = opendir(SERVICE_FILE_PUSH_PATH);
 	if (NULL == dirp) {
 		service_adaptor_error("dir open error");
 		return -103;

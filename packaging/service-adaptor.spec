@@ -24,6 +24,7 @@ BuildRequires:  pkgconfig(json-glib-1.0)
 BuildRequires:  pkgconfig(cynara-client)
 BuildRequires:  pkgconfig(cynara-session)
 BuildRequires:  pkgconfig(cynara-creds-gdbus)
+BuildRequires:  pkgconfig(libtzplatform-config)
 
 %description
 Service Adaptor Framework Library/Binary package
@@ -75,9 +76,9 @@ mkdir -p %{buildroot}%{_unitdir}/multi-user.target.wants
 install -m 0644 %SOURCE1 %{buildroot}%{_unitdir}/service-adaptor.service
 %install_service multi-user.target.wants service-adaptor.service
 
-mkdir -p %{buildroot}/usr/share/license
-cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor
-cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
+mkdir -p %{buildroot}/%{TZ_SYS_RO_SHARE}/license
+cp LICENSE.APLv2 %{buildroot}/%{TZ_SYS_RO_SHARE}/license/service-adaptor
+cp LICENSE.APLv2 %{buildroot}/%{TZ_SYS_RO_SHARE}/license/service-adaptor-devel
 
 %post -n service-adaptor
 /sbin/ldconfig
@@ -95,7 +96,7 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 %{_unitdir}/multi-user.target.wants/service-adaptor.service
 %{_datadir}/dbus-1/system-services/org.tizen.serviceadaptor.client.service
 %{_sysconfdir}/dbus-1/system.d/org.tizen.serviceadaptor.client.conf
-/usr/share/license/%{name}
+%{TZ_SYS_RO_SHARE}/license/%{name}
 %{_includedir}/*.h
 
 %files -n service-adaptor-devel
@@ -105,4 +106,4 @@ cp LICENSE.APLv2 %{buildroot}/usr/share/license/service-adaptor-devel
 %{_includedir}/*.h
 %{_includedir}/service-adaptor/*.h
 %{_includedir}/service-provider/*.h
-/usr/share/license/%{name}-devel
+%{TZ_SYS_RO_SHARE}/license/%{name}-devel

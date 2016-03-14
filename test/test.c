@@ -3,6 +3,7 @@
 #include <string.h>
 #include <glib-object.h>
 #include <glib-unix.h>
+#include <tzplatform-config.h>
 
 #include "service_adaptor_client.h"
 
@@ -50,7 +51,7 @@ void _service_plugin_login_callback(int result, void *user_data)
 		printf("service_auth_oauth1_get_access_token() Request Successed\n");
 	}
 
-	char *cloud_path = "/root/cloud";
+	char *cloud_path = tzplatform_mkstr(TZ_SYS_ROOT,"/cloud");
 	service_storage_cloud_file_h file = NULL;
 	ret = service_storage_cloud_file_create(service_plugin, &file);
 	ret = service_storage_cloud_file_set_callback(file, _service_storage_cloud_file_cb, NULL);
