@@ -314,7 +314,7 @@ static void on_name_appeared(GDBusConnection *connection,
 	}
 	FUNC_END();
 }
-
+//LCOV_EXCL_START
 static void on_name_vanished(GDBusConnection *connection,
 						const gchar *name,
 						gpointer user_data)
@@ -332,6 +332,7 @@ static void on_name_vanished(GDBusConnection *connection,
 	}
 	FUNC_END();
 }
+//LCOV_EXCL_STOP
 
 static void _service_signal_emitter(void *data)
 {
@@ -353,85 +354,19 @@ static void _service_signal_emitter(void *data)
 	FUNC_END();
 }
 
-static void on_service_signal(GDBusProxy *proxy,
-						gchar *sender_name,
-						gchar *signal_name,
-						GVariant *parameters,
-						gpointer user_data)
-{
-	FUNC_START();
-
-	if (0 == g_strcmp0(signal_name, DBUS_SERVICE_ADAPTOR_SIGNAL)) {
-		service_adaptor_task_h task = _signal_queue_get_task(SIGNAL_SERVICE_ADAPTOR);
-
-		if (NULL == task) {
-			FUNC_STOP();
-			return;
-		}
-
-		struct _internal_service_signal_data_s *signal_context =
-			(struct _internal_service_signal_data_s *)g_malloc0(sizeof(struct _internal_service_signal_data_s));
-
-		if (NULL == signal_context) {
-			FUNC_STOP();
-			return;
-		} else {
-			signal_context->msg = NULL;
-			signal_context->task = NULL;
-		}
-
-		GVariant *call_result[2];
-		call_result[0] = g_variant_get_child_value(parameters, 0);
-		call_result[1] = g_variant_get_child_value(parameters, 1);
-
-		signal_context->code = g_variant_get_uint64(call_result[0]);
-		signal_context->msg = ipc_g_variant_dup_string(call_result[1]);
-		signal_context->task = task;
-
-
-		GError *worker_error = NULL;
-		g_thread_try_new("service-adaptor-client-signal-emitter", (GThreadFunc) _service_signal_emitter,
-				(void *) signal_context, &worker_error);
-
-		g_clear_error(&worker_error);
-		worker_error = NULL;
-	}
-
-	FUNC_END();
-}
-
 static void on_signal(GDBusProxy *proxy,
 						gchar *sender_name,
 						gchar *signal_name,
 						GVariant *parameters,
 						gpointer user_data)
 {
-	if (0 == strncmp(signal_name, DBUS_SERVICE_ADAPTOR, DBUS_NAME_LENGTH)) {
-		on_service_signal(proxy,
-				sender_name,
-				signal_name,
-				parameters,
-				user_data);
-	} else if (0 == strncmp(signal_name, DBUS_MESSAGE_ADAPTOR, DBUS_NAME_LENGTH)) {
-		on_message_signal(proxy,
-				sender_name,
-				signal_name,
-				parameters,
-				user_data);
-	} else if (0 == strncmp(signal_name, DBUS_STORAGE_ADAPTOR, DBUS_NAME_LENGTH)) {
+	if (0 == strncmp(signal_name, DBUS_STORAGE_ADAPTOR, DBUS_NAME_LENGTH)) {
 		on_storage_signal(proxy,
 				sender_name,
 				signal_name,
 				parameters,
 				user_data);
-	} else if (0 == strncmp(signal_name, DBUS_PUSH_ADAPTOR, DBUS_NAME_LENGTH)) {
-		on_push_signal(proxy,
-				sender_name,
-				signal_name,
-				parameters,
-				user_data);
-	}
-
+	} 
 }
 
 /******************************************************************************
@@ -536,6 +471,7 @@ void _dbus_client_service_adaptor_deinit()
  * @param builder Builder
  * @param data String to be added
  */
+/*
 void __safe_g_variant_builder_add_string(GVariantBuilder *builder,
 						const char *data)
 {
@@ -555,6 +491,7 @@ void __safe_g_variant_builder_add_array_string(GVariantBuilder *builder,
 		g_variant_builder_add(builder, "(s)", data);
 	}
 }
+*/
 
 char *ipc_g_variant_dup_string(GVariant *string)
 {
@@ -639,74 +576,7 @@ int _dbus_connect_service_adaptor(service_adaptor_error_s *error)
 	return ret;
 }
 
-int _dbus_disconnect_service_adaptor(service_adaptor_error_s *error)
-{
-	FUNC_START();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-	GError *g_error = NULL;
-	GVariant *call_result = NULL;
-
-	ipc_check_proxy(sac_interface_proxy);
-
-	char executable_path[1000] = {0, };
-	int executable_path_len = 0;
-	executable_path_len = readlink("/proc/self/exe", executable_path, 1000);
-
-	if (executable_path_len <= 0)
-		snprintf(executable_path, strlen("notfound") + 1, "%s", "notfound");
-
-	char *client_info = g_strdup_printf("%s %d", executable_path, (int)getpid());
-
-	sac_info("[DM] client info <%s>", client_info);
-	GVariant *req = g_variant_new("("service_adaptor_essential_s_type")", client_info);
-	call_result = g_dbus_proxy_call_sync(sac_interface_proxy,
-			DBUS_DISCONNECT_SERVICE_ADAPTOR_METHOD,
-			req,
-			G_DBUS_CALL_FLAGS_NONE,
-			-1,
-			NULL,
-			&g_error);
-
-	if (NULL == call_result) {
-		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-
-		if (NULL != g_error) {
-			error->msg = __SAFE_STRDUP(g_error->message);
-			g_error_free(g_error);
-		}
-	} else {
-		if (FALSE == g_variant_is_of_type(call_result, G_VARIANT_TYPE("(ts)"))) {
-			error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-			error->msg = strdup("D-Bus return type error");
-			ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-		} else {
-			GVariant *call_result_struct[2];
-			call_result_struct[0] = g_variant_get_child_value(call_result, 0);
-			call_result_struct[1] = g_variant_get_child_value(call_result, 1);
-
-			uint64_t remote_call_result = g_variant_get_uint64(call_result_struct[0]);
-
-			if (SERVICE_ADAPTOR_ERROR_NONE != remote_call_result) {
-				error->code = remote_call_result;
-				error->msg = ipc_g_variant_dup_string(call_result_struct[1]);
-				ret = SERVICE_ADAPTOR_ERROR_PLUGIN_FAILED;
-			}
-
-			g_variant_unref(call_result_struct[0]);
-			g_variant_unref(call_result_struct[1]);
-		}
-
-		g_variant_unref(call_result);
-	}
-
-/*	g_variant_unref(req);*/
-	free(client_info);
-
-	FUNC_END();
-	return ret;
-}
-
+ 
 int _dbus_get_plugin_list(plugin_entry_t ***plugin_list,
 						unsigned int *plugins_len,
 						service_adaptor_error_s *error)
@@ -799,113 +669,6 @@ int _dbus_get_plugin_list(plugin_entry_t ***plugin_list,
 	return ret;
 }
 
-int _dbus_is_login_required(service_plugin_h plugin,
-						bool *required,
-						service_adaptor_error_s *error)
-{
-	FUNC_START();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-	GError *g_error = NULL;
-	GVariant *call_result = NULL;
-
-	GDBusProxy *sac_interface_proxy = _dbus_get_sac_interface_proxy();
-
-	ipc_check_proxy(sac_interface_proxy);
-
-	GVariantBuilder *builder_in = NULL;
-	_create_raw_data_from_plugin_property((void *)(plugin->optional_property), &builder_in);
-
-	call_result = g_dbus_proxy_call_sync(sac_interface_proxy,
-			DBUS_IS_AUTH_METHOD,
-			g_variant_new("(" service_adaptor_is_auth_req_s_type ")",
-					plugin->plugin_uri,
-					builder_in),
-			G_DBUS_CALL_FLAGS_NONE,
-			G_MAXINT,
-			NULL,
-			&g_error);
-
-	bool is_auth = false;
-
-	_ipc_get_complex_result(MAKE_RETURN_TYPE("(b)"),
-
-		GVariant *res_info_struct = g_variant_get_child_value(call_result_struct[0], 0);
-		is_auth = g_variant_get_boolean(res_info_struct);
-		g_variant_unref(res_info_struct);
-	);
-
-	*required = !is_auth;
-
-	return ret;
-}
-
-struct __login_request_context {
-	void *callback;
-	void *user_data;
-};
-
-static void __dbus_login_result_callback(GObject *source_object,
-						GAsyncResult *res,
-						gpointer user_data)
-{
-
-	service_adaptor_error_s error = {0LL, NULL};
-	GError *g_error = NULL;
-
-	GVariant *result_obj = g_dbus_proxy_call_finish(_dbus_get_sac_interface_proxy(), res, &g_error);
-	int result = _ipc_get_simple_result(result_obj, g_error, &error);
-	if (SERVICE_ADAPTOR_ERROR_NONE != result) {
-		service_adaptor_set_last_result(error.code, error.msg);
-	}
-
-	struct __login_request_context *context = (struct __login_request_context *)user_data;
-	service_plugin_login_cb callback = (service_plugin_login_cb)(context->callback);
-
-	callback(result, context->user_data);
-
-	free(context);
-	if (g_error) {
-		g_error_free(g_error);
-	}
-}
-
-int _dbus_request_login(service_plugin_h plugin,
-						void *callback,
-						void *user_data,
-						service_adaptor_error_s *error)
-{
-	FUNC_START();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-
-	GDBusProxy *sac_interface_proxy = _dbus_get_sac_interface_proxy();
-
-	ipc_check_proxy(sac_interface_proxy);
-
-	struct __login_request_context *context = (struct __login_request_context *)calloc(1, sizeof(struct __login_request_context));
-	if (NULL == context) {
-		error->code = SERVICE_ADAPTOR_ERROR_UNKNOWN;
-		error->msg = strdup("Memory allocation failed");
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
-	}
-	context->callback = callback;
-	context->user_data = user_data;
-
-	GVariantBuilder *builder_in = NULL;
-	_create_raw_data_from_plugin_property((void *)(plugin->optional_property), &builder_in);
-
-	g_dbus_proxy_call(sac_interface_proxy,
-			DBUS_JOIN_METHOD,
-			g_variant_new("(" service_adaptor_join_req_s_type ")",
-					plugin->plugin_uri,
-					builder_in),
-			G_DBUS_CALL_FLAGS_NONE,
-			G_MAXINT,
-			NULL,
-			__dbus_login_result_callback,
-			(void *)context);
-
-	return ret;
-}
 
 int _dbus_start_service(service_plugin_h plugin,
 						int service_flag,
@@ -995,101 +758,7 @@ int _dbus_start_service(service_plugin_h plugin,
 	return ret;
 }
 
-int _dbus_external_request(const char *service_name,
-						int service_flag,
-						const char *api_uri,
-						unsigned char *input_str,
-						int input_len,
-						unsigned char **output_str,
-						int *output_len,
-						service_adaptor_error_s *error)
-{
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-	GError *g_error = NULL;
-	GVariant *call_result = NULL;
-
-	GDBusProxy *sac_interface_proxy = _dbus_get_sac_interface_proxy();
-
-	ipc_check_proxy(sac_interface_proxy);
-
-	GVariantBuilder *builder_in = g_variant_builder_new(G_VARIANT_TYPE(service_adaptor_raw_data_s_type));
-	for (int k = 0; k < input_len; k++) {
-		g_variant_builder_add(builder_in, "(y)", (guchar)input_str[k]);
-	}
-
-	sac_debug_func("input_str_len(%d)", input_len);
-	/* sac_debug_func("input_str(%s)", input_str); */
-
-	call_result = g_dbus_proxy_call_sync(sac_interface_proxy,
-			PRIVATE_DBUS_EXTERNAL_REQ_METHOD,
-			g_variant_new("(" private_service_adaptor_external_req_s_type ")",
-					service_name,
-					(int32_t) service_flag,
-					api_uri,
-					builder_in),
-			G_DBUS_CALL_FLAGS_NONE,
-			-1,
-			NULL,
-			&g_error);
-
-	g_variant_builder_unref(builder_in);
-
-	sac_debug("%s API sent", PRIVATE_DBUS_EXTERNAL_REQ_METHOD);
-
-	if (NULL == call_result) {
-		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-
-		if (NULL != g_error) {
-			error->msg = __SAFE_STRDUP(g_error->message);
-			g_error_free(g_error);
-		}
-	} else {
-		if (FALSE == g_variant_is_of_type(call_result, G_VARIANT_TYPE(MAKE_RETURN_TYPE(service_adaptor_raw_data_s_type)))) {
-			error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-			error->msg = strdup("D-Bus return type error");
-			ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-		} else {
-			FUNC_STEP();
-			GVariant *call_result_struct[3];
-			call_result_struct[0] = g_variant_get_child_value(call_result, 0);
-			call_result_struct[1] = g_variant_get_child_value(call_result, 1);
-			call_result_struct[2] = g_variant_get_child_value(call_result, 2);
-
-
-			uint64_t remote_call_result = g_variant_get_uint64(call_result_struct[1]);
-
-			if (SERVICE_ADAPTOR_ERROR_NONE != remote_call_result) {
-				error->code = remote_call_result;
-				error->msg = ipc_g_variant_dup_string(call_result_struct[2]);
-				ret = SERVICE_ADAPTOR_ERROR_PLUGIN_FAILED;
-			} else {
-
-				int raw_data_len = g_variant_n_children(call_result_struct[0]);
-				unsigned char *raw_data = (unsigned char *) calloc((raw_data_len + 1), sizeof(unsigned char));
-
-				if (NULL != raw_data) {
-					for (int k = 0; k < raw_data_len; k++) {
-						g_variant_get_child(call_result_struct[0], k, "(y)", &(raw_data[k]));
-					}
-					*output_str = raw_data;
-					*output_len = raw_data_len;
-				}
-				sac_debug_func("output_str_len(%d)", raw_data_len);
-				/* sac_debug_func("output_str(%s)", raw_data); */
-			}
-
-			g_variant_unref(call_result_struct[0]);
-			g_variant_unref(call_result_struct[1]);
-			g_variant_unref(call_result_struct[2]);
-		}
-
-		g_variant_unref(call_result);
-	}
-
-	return ret;
-}
-
+//LCOV_EXCL_START
 static void *_on_dbus_disappeared_cb(void *data)
 {
 	FUNC_START();
@@ -1126,3 +795,4 @@ static void *_on_dbus_disappeared_cb(void *data)
 	FUNC_END();
 	return NULL;
 }
+//LCOV_EXCL_STOP

@@ -108,8 +108,10 @@ int _queue_add_task(int64_t _id,
 	service_adaptor_task_h task = (service_adaptor_task_h) g_malloc0(sizeof(service_adaptor_task_s));
 
 	if (NULL == task) {
+		// LCOV_EXCL_START		
 		FUNC_STOP();
 		return -1;
+		// LCOV_EXCL_STOP
 	}
 
 	task->id = _id;
@@ -190,6 +192,7 @@ void _queue_clear_task()
  *      @return int
  *      @remarks :
  */
+ /*
 int _signal_queue_add_task(int64_t _id,
 						uint32_t _callback,
 						void *_handle,
@@ -214,6 +217,7 @@ int _signal_queue_add_task(int64_t _id,
 	FUNC_END();
 	return 0;
 }
+*/
 
 /**     @brief  Adds Task in Queue
  *      @return service_adaptor_task_h
@@ -241,6 +245,7 @@ service_adaptor_task_h _signal_queue_get_task(int64_t _id)
  *      @return int
  *      @remarks :
  */
+ /*
 int _signal_queue_del_task(service_adaptor_task_h _task)
 {
 	FUNC_START();
@@ -264,36 +269,9 @@ int _signal_queue_del_task(service_adaptor_task_h _task)
 	FUNC_END();
 	return 0;
 }
+*/
 
-/**     @brief  Adds Task in Queue
- *      @return int
- *      @remarks :
- */
-int _signal_queue_del_task_by_id(int id)
-{
-	FUNC_START();
-	service_adaptor_task_h target = NULL;
-
-	int i, len = g_list_length(g_service_adaptor_signal_queue);
-	for (i = 0; i < len; i++) {
-		for (GList *list = g_list_first(g_service_adaptor_signal_queue); list != NULL; list = g_list_next(list)) {
-			service_adaptor_task_h data = (service_adaptor_task_h) list->data;
-
-			if ((NULL != data) && (id == data->id)) {
-				target = data;
-				break;
-			}
-		}
-
-		if (NULL != target) {
-			g_service_adaptor_signal_queue = g_list_remove(g_service_adaptor_signal_queue, target);
-			g_free(target);
-		}
-	}
-
-	FUNC_END();
-	return 0;
-}
+ 
 
 /**     @brief  Clears Task in Queue
  *      @return void
@@ -309,6 +287,7 @@ void _signal_queue_clear_task()
 	FUNC_END();
 }
 
+/*
 int service_adaptor_check_handle_validate(service_adaptor_h handle)
 {
 	if ((NULL == handle) || (NULL == g_service_adaptor)) {
@@ -321,6 +300,7 @@ int service_adaptor_check_handle_validate(service_adaptor_h handle)
 		return 0;
 	}
 }
+*/
 
 void _service_adaptor_set_last_result(int code, const char *message)
 {
@@ -497,44 +477,6 @@ int service_adaptor_destroy(service_adaptor_h handle)
 	sac_api_end(ret);
 	return ret;
 }
-
-/**	@brief	Connects Service Adaptor
- *	@return	int
- *	@remarks :
- */
-int service_adaptor_set_state_changed_cb(service_adaptor_h handle,
-						service_adaptor_signal_cb callback,
-						void *user_data)
-{
-	FUNC_START();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-
-	if (NULL == handle) {
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-	}
-
-	handle->on_signal = callback;
-	_signal_queue_add_task(SIGNAL_SERVICE_ADAPTOR, (uint32_t) callback, handle, user_data);
-
-	FUNC_END();
-	return ret;
-}
-
-int service_adaptor_unset_state_changed_cb(service_adaptor_h handle)
-{
-	FUNC_START();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-
-	if (NULL == handle) {
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-	}
-
-	handle->on_signal = NULL;
-
-	FUNC_END();
-	return ret;
-}
-
 
 int service_adaptor_foreach_plugin(service_adaptor_h handle,
 						service_adaptor_plugin_cb callback,
@@ -795,361 +737,4 @@ int service_plugin_stop(service_plugin_h handle)
 
 	sac_api_end(ret);
 	return ret;
-}
-
-
-int service_plugin_is_login_required(service_plugin_h plugin,
-						bool *required)
-{
-	sac_api_start();
-	sac_check_param_null(plugin, "plugin");
-	sac_check_param_null(required, "required");
-
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-	service_adaptor_error_s error = {0ULL, NULL};
-	bool _required = false;
-
-	ret = _dbus_is_login_required(plugin, &_required, &error);
-	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
-	}
-
-	sac_api_end(ret);
-	return ret;
-}
-
-int service_plugin_request_login(service_plugin_h plugin,
-						service_plugin_login_cb callback,
-						void *user_data)
-{
-	sac_api_start();
-	sac_check_param_null(plugin, "plugin");
-	sac_check_param_null(callback, "callback");
-
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-	service_adaptor_error_s error = {0ULL, NULL};
-
-	ret = _dbus_request_login(plugin, (void *)callback, user_data, &error);
-	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
-	}
-
-	sac_api_end(ret);
-	return ret;
-}
-
-/************************* private feature */
-
-/**	@brief	Connects Service Adaptor
- *	@return	int
- *	@remarks :
- */
-SERVICE_ADAPTOR_CLIENT_PUBLIC_API
-int service_adaptor_connect(service_adaptor_h *handle,
-						service_adaptor_signal_cb callback)
-{
-	sac_api_start();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-	service_adaptor_h service = NULL;
-
-#ifdef __DEBUG_GLIB_ERROR
-	glog_handler_init();
-#endif
-
-	g_mutex_lock(&connections_counter_mutex);
-
-	if (NULL == handle) {
-		g_mutex_unlock(&connections_counter_mutex);
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-	}
-
-	if (0 < connections_counter) {
-		sac_error("Handle already connected");
-		g_mutex_unlock(&connections_counter_mutex);
-
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
-	}
-
-	service = (service_adaptor_h) calloc(1, sizeof(service_adaptor_s));
-
-	if (NULL == service) {
-		service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_UNKNOWN, "Memory allocation failed");
-		g_mutex_unlock(&connections_counter_mutex);
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
-	}
-/*
-	int trd = 0;
-	char fingerprint[50] = {0, };
-	snprintf(fingerprint, 50, "%s/%d", SERVICE_ADAPTOR_START_KEY_PATH, getpid());
-	sac_debug("Trigger open : %s", fingerprint);
-	trd = open(fingerprint, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-	if (0 > trd) {
-		sac_error("Trigger open failed (%d)", trd);
-		free(service);
-		g_mutex_unlock(&connections_counter_mutex);
-		return SERVICE_ADAPTOR_ERROR_INVALID_STATE;
-	}
-*/
-	int dbus_ret = _dbus_client_layer_init();
-
-	if (0 == dbus_ret) {
-		sac_info("Proxy creation success");
-	}
-
-	service_adaptor_error_s error;
-	error.msg = NULL;
-
-	ret = _dbus_connect_service_adaptor(&error);
-
-	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(service);
-/*
-		close(trd);
-		remove(fingerprint);
-*/
-		g_mutex_unlock(&connections_counter_mutex);
-		free(error.msg);
-		return ret;
-	}
-
-	service->service_name = NULL;
-	service->user_id = NULL;
-	service->app_id = NULL;
-	service->service_id = 0;
-	service->imsi = NULL;
-	service->on_signal = callback;
-	service->plugin = NULL;
-	g_mutex_init(&service->set_auth_mutex);
-
-	*handle = service;
-	g_service_adaptor = service;
-	sac_info("Connects success handle (%p) instance (%p)", handle, service);
-	connections_counter = connections_counter + 1;
-
-	_signal_queue_add_task(SIGNAL_SERVICE_ADAPTOR, (uint32_t) callback, *handle, NULL);
-/*
-	close(trd);
-	remove(fingerprint);
-*/
-	g_mutex_unlock(&connections_counter_mutex);
-
-	sac_api_end(ret);
-	return ret;
-}
-
-/**	@brief	Disconnects Service Adaptor
- *	@return	int
- *	@remarks :
- */
-SERVICE_ADAPTOR_CLIENT_PUBLIC_API
-int service_adaptor_disconnect(service_adaptor_h handle)
-{
-	sac_api_start();
-	if (NULL == handle) {
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-	}
-
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-
-	g_mutex_lock(&connections_counter_mutex);
-
-	if (0 >= connections_counter) {
-		connections_counter = 0;
-		g_service_adaptor = NULL;
-		g_mutex_unlock(&connections_counter_mutex);
-
-		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
-		return ret;
-	}
-
-	service_adaptor_error_s error;
-	error.msg = NULL;
-
-	ret = _dbus_disconnect_service_adaptor(&error);
-	if (ret) {
-		sac_error("disconnect error : %s", error.msg);
-		free(error.msg);
-		error.msg = NULL;
-	}
-
-	if (NULL != handle) {
-		__SAFE_FREE(handle->service_name);
-		__SAFE_FREE(handle->user_id);
-
-		__SAFE_FREE(handle->app_id);
-		__SAFE_FREE(handle->imsi);
-
-		if (NULL != handle->plugin) {
-			__SAFE_FREE(handle->plugin->name);
-		}
-
-		__SAFE_FREE(handle->plugin);
-		handle->on_signal = NULL;
-		__SAFE_FREE(handle);
-	}
-
-	connections_counter = connections_counter - 1;
-
-	if (0 == connections_counter) {
-		_dbus_client_layer_deinit();
-	}
-
-	g_service_adaptor = NULL;
-	g_mutex_unlock(&connections_counter_mutex);
-
-	sac_api_end(ret);
-	return ret;
-}
-
-/**	@brief	Sets IMSI
- *	@return	int
- *	@remarks :
- */
-SERVICE_ADAPTOR_CLIENT_PUBLIC_API
-int service_adaptor_set_imsi(service_adaptor_h handle,
-						const char *imsi)
-{
-	sac_api_start();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-
-	if ((NULL == handle) || (NULL == imsi)) {
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-	}
-
-	if (NULL != handle->imsi) {
-		free(handle->imsi);
-		handle->imsi = NULL;
-	}
-
-	handle->imsi = _safe_strdup(imsi);
-	if (NULL == handle->imsi) {
-		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
-	}
-
-	sac_api_end(ret);
-	return ret;
-}
-
-int service_adaptor_set_plugin(service_adaptor_h handle,
-						const char *plugin_uri)
-{
-	sac_api_start();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-
-	if ((NULL == handle) || (NULL == plugin_uri)) {
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-	}
-
-	service_adaptor_plugin_h plugin = NULL;
-	plugin = (service_adaptor_plugin_h) calloc(1, sizeof(service_adaptor_plugin_s));
-	char *_plugin_uri = strdup(plugin_uri);
-	if ((NULL == plugin) || (NULL == _plugin_uri)) {
-		free(plugin);
-		free(_plugin_uri);
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
-	}
-
-	plugin->name = _plugin_uri;
-	plugin->login = true;
-
-	handle->plugin = plugin;
-
-	sac_api_end(ret);
-	return ret;
-}
-
-/**	@brief	Free plugins
- *	@return	int
- *	@remarks :
- */
-SERVICE_ADAPTOR_CLIENT_PUBLIC_API
-int service_adaptor_free_plugins(service_adaptor_plugin_h * plugins,
-						unsigned int plugins_len)
-{
-	sac_api_start();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-	if ((NULL == plugins) || (0U == plugins_len)) {
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-	}
-
-	for (int i = 0; i < plugins_len; i++) {
-		if (NULL == plugins[i]) {
-			continue;
-		}
-
-		free(plugins[i]->name);
-		free(plugins[i]);
-	}
-
-	free(plugins);
-	plugins = NULL;
-
-	sac_api_end(ret);
-	return ret;
-}
-
-int service_adaptor_external_request(service_adaptor_h handle,
-						int service_flag,
-						const char *api_uri,
-						bundle *in_params,
-						bundle **out_params)
-{
-	sac_api_start();
-	int ret = SERVICE_ADAPTOR_ERROR_NONE;
-
-	service_adaptor_error_s error;
-	error.msg = NULL;
-
-	if ((NULL == handle) || (0 == service_flag) || (NULL == api_uri) || (NULL == in_params) || (NULL == out_params)) {
-		service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER,
-				"Invalid Argument : Not null params");
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-	}
-
-	if (service_adaptor_check_handle_validate(handle)) {
-		service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_INVALID_STATE, "Invalid handle (Not connected handle)");
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-	}
-/*
-	if (NULL == handle->service_name) {
-		service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_INVALID_STATE, "Invalid State");
-		return SERVICE_ADAPTOR_ERROR_INVALID_STATE;
-	}
-*/
-
-	unsigned char *input_str = NULL;
-	unsigned char *output_str = NULL;
-	int input_len = 0;
-	int output_len = 0;
-
-	ret = bundle_encode(in_params, &input_str, &input_len);
-
-	ret = _dbus_external_request(sac_safe_add_string(handle->service_name), service_flag, api_uri, input_str, input_len, &output_str, &output_len, &error);
-
-	if (ret != SERVICE_ADAPTOR_ERROR_NONE) {
-		service_adaptor_set_last_result(error.code, error.msg);
-	} else {
-		*out_params = bundle_decode(output_str, output_len);
-		if (NULL == *out_params) {
-			ret = SERVICE_ADAPTOR_ERROR_NO_DATA;
-		}
-	}
-
-	sac_api_end(ret);
-	return ret;
-}
-
-int service_adaptor_external_request_async(service_adaptor_h handle,
-						int service_flag,
-						const char *api_uri,
-						bundle *in_params,
-						service_adaptor_external_response_cb callback,
-						void *user_data)
-{
-	service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_NOT_SUPPORTED, "Not supported yet (TBD)");
-	return SERVICE_ADAPTOR_ERROR_NOT_SUPPORTED;
-}
-/************************* private feature */
+} 
