@@ -103,30 +103,6 @@ struct _service_plugin_s
 	client_app_type_e app_type;
 };
 
-
-
-
-
-/**
-* @brief Callback for getting login result
-* @since_tizen 2.4
-*
-* @param[in]    result          Result code for login request (see #service_adaptor_error_e)
-* @param[in]    user_data       Passed data from request function
-* @remarks      The @a result values #SERVICE_ADAPTOR_ERROR_NONE Successful
-* @remarks      The @a result values #SERVICE_ADAPTOR_ERROR_TIMED_OUT Timed out
-* @remarks      The @a result values #SERVICE_ADAPTOR_ERROR_PLUGIN_FAILED Failed in Plugin internal
-* @remarks	The @a result values #SERVICE_ADAPTOR_ERROR_NETWORK_UNREACHABLE Failed by network issue
-* @remarks      The @a result values #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
-* @see #service_adaptor_error_e
-* @see service_plugin_request_login()
-* @pre  #service_plugin_request_login() will invoke this callback.
-*/
-typedef void (*service_plugin_login_cb)(int result,
-						void *user_data);
-
-
-
 /**
 * @brief Set callback for changing state of Service Adaptor
 * @since_tizen 2.4
@@ -146,66 +122,6 @@ typedef void (*service_plugin_login_cb)(int result,
 */
 int service_adaptor_set_state_changed_cb(service_adaptor_h service_adaptor,
 						service_adaptor_signal_cb callback,
-						void *user_data);
-
-/**
-* @brief Set callback for changing state of Service Adaptor
-* @since_tizen 2.4
-*
-* @param[in]	service_adaptor	The handle of Service Adaptor
-* @remarks	@a service_adaptor must be released memory using service_adaptor_destroy() when you finish using service adaptor
-* @see		service_adaptor_destroy()
-* @return 0 on success, otherwise a negative error value
-* @retval #SERVICE_ADAPTOR_ERROR_NONE Successful
-* @retval #SERVICE_ADAPTOR_ERROR_INVALID_HANDLE Invalid handle
-* @retval #SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER Invalid parameter
-* @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
-* @pre	@a service_adaptor must be issued by service_adaptor_create()
-*/
-int service_adaptor_unset_state_changed_cb(service_adaptor_h service_adaptor);
-
-/**
-* @brief Gets whether a plugin is logined or not logined
-* @details 'Login' includes both authentication(sign-in by user) and authorization (allowed by user) <br>
-* If plugin does not need authentication or authorization, service_plugin_is_login_required() API's result is true on anytime.
-* @since_tizen 2.4
-*
-* @param[in]	plugin		The handle for use Plugin APIs
-* @param[out]	required	true on login required, otherwise false
-* @return 0 on success, otherwise a negative error value
-* @retval #SERVICE_ADAPTOR_ERROR_NONE Successful
-* @retval #SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER Invalid parameter
-* @retval #SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE IPC failed with Service Adaptor Daemon
-*/
-int service_plugin_is_login_required(service_plugin_h plugin,
-						bool *required);
-
-/**
-* @brief Requests login to plugin
-* @details 'Login' includes both authentication(sign-in by user) and authorization (allowed by user) <br>
-* If the plugin does not logined by user, you must request login using this API.<br>
-* You can check whether logined or not using service_plugin_is_login_required().<br>
-* If not logined, you will be failed #service_plugin_start().<br>
-* Of caurse, if plugin does not need authentication or authorization, service_plugin_is_login_required() API's result is true on anytime.
-* @since_tizen 2.4
-*
-* @param[in]    plugin          The handle for use Plugin APIs
-* @param[in]    callback        The callback for getting result this operation
-* @param[in]    user_data       The user data to be passed to the callback function
-* @see          service_plugin_start()
-* @see          service_plugin_login_cb()
-* @see          service_adaptor_get_last_result()
-* @see          service_adaptor_get_last_error_message()
-* @return 0 on success, otherwise a negative error value
-* @retval #SERVICE_ADAPTOR_ERROR_NONE Successful
-* @retval #SERVICE_ADAPTOR_ERROR_INVALID_STATE The handle's state is invalid
-* @retval #SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER Invalid parameter
-* @retval #SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE IPC failed with Service Adaptor Daemon
-* @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
-* @post #service_plugin_login_cb() will be invoked
-*/
-int service_plugin_request_login(service_plugin_h plugin,
-						service_plugin_login_cb callback,
 						void *user_data);
 
 /**

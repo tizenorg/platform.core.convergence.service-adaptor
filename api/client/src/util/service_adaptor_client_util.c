@@ -29,6 +29,7 @@
 
 #include <bundle.h>
 
+// LCOV_EXCL_START
 /**	@brief	NULL-pointer safe string duplication function
  *		This function will not crash if source string pointer is NULL. It is user's
  *		responsibility to free the result pointer.
@@ -101,7 +102,7 @@ int _get_result_code(long long int error_code)
 		return SERVICE_ADAPTOR_ERROR_PLUGIN_FAILED;
 	}
 }
-
+// LCOV_EXCL_STOP
 
 int _ipc_get_simple_result(GVariant *call_result, GError *g_error, service_adaptor_error_s *error)
 {
@@ -111,18 +112,22 @@ int _ipc_get_simple_result(GVariant *call_result, GError *g_error, service_adapt
 		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
 		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
 		if (NULL != g_error) {
+			// LCOV_EXCL_START
 			sac_error("G_IO_ERROR DEBUG (%d)", (int)(g_error->code));
 			if (g_error->code == G_IO_ERROR_TIMED_OUT) {
 				ret = SERVICE_ADAPTOR_ERROR_TIMED_OUT;
 			}
 			error->msg = __SAFE_STRDUP(g_error->message);
 			g_error_free(g_error);
+			// LCOV_EXCL_STOP
 		}
 	} else {
 		if (FALSE == g_variant_is_of_type(call_result, G_VARIANT_TYPE("(ts)"))) {
+			// LCOV_EXCL_START
 			error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
 			error->msg = strdup("D-Bus return type error");
 			ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
+			// LCOV_EXCL_STOP
 		} else {
 			GVariant *call_result_struct[2];
 			call_result_struct[0] = g_variant_get_child_value(call_result, 0);
@@ -130,9 +135,11 @@ int _ipc_get_simple_result(GVariant *call_result, GError *g_error, service_adapt
 
 			uint64_t remote_call_result = g_variant_get_uint64(call_result_struct[0]);
 			if (SERVICE_ADAPTOR_ERROR_NONE != remote_call_result) {
+				// LCOV_EXCL_START
 				error->code = remote_call_result;
 				error->msg = ipc_g_variant_dup_string(call_result_struct[1]);
 				ret = _get_result_code(remote_call_result);
+				// LCOV_EXCL_STOP
 			}
 			g_variant_unref(call_result_struct[0]);
 			g_variant_unref(call_result_struct[1]);
