@@ -27,9 +27,12 @@ ADD_DEFINITIONS("-D_SERVICE_ADAPTOR_IPC_CLIENT")
 
 SET(ADAPTOR-CLIENT-LIB "service-adaptor-client")
 FILE(GLOB ADAPTOR-CLIENT-SRCS
-        ${CMAKE_SOURCE_DIR}/api/client/src/*.c
-        ${CMAKE_SOURCE_DIR}/api/client/src/dbus/*.c
-        ${CMAKE_SOURCE_DIR}/api/client/src/util/*.c
+        ${CMAKE_SOURCE_DIR}/api/client/src/service_adaptor_client.c
+	${CMAKE_SOURCE_DIR}/api/client/src/service_adaptor_client_storage.c
+        ${CMAKE_SOURCE_DIR}/api/client/src/dbus/dbus_client.c
+        ${CMAKE_SOURCE_DIR}/api/client/src/dbus/dbus_client_layer.c
+        ${CMAKE_SOURCE_DIR}/api/client/src/dbus/dbus_client_storage.c
+        ${CMAKE_SOURCE_DIR}/api/client/src/util/service_adaptor_client_util.c
 )
 
 INCLUDE_DIRECTORIES(

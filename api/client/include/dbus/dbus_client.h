@@ -82,8 +82,6 @@ char *ipc_g_variant_dup_string(GVariant *string);
  */
 int _dbus_connect_service_adaptor(service_adaptor_error_s *error);
 
-int _dbus_disconnect_service_adaptor(service_adaptor_error_s *error);
-
 int _dbus_get_plugin_list(plugin_entry_t ***plugin_list, unsigned int *plugins_len, service_adaptor_error_s *error);
 
 int _dbus_is_login_required(service_plugin_h plugin, bool *required, service_adaptor_error_s *error);
@@ -91,14 +89,5 @@ int _dbus_is_login_required(service_plugin_h plugin, bool *required, service_ada
 int _dbus_request_login(service_plugin_h plugin, void *callback, void *user_data, service_adaptor_error_s *error);
 
 int _dbus_start_service(service_plugin_h plugin, int service_flag, const char *security_cookie, service_adaptor_error_s *error);
-
-int _dbus_external_request(const char *service_name,
-						int service_flag,
-						const char *api_uri,
-						unsigned char *input_str,
-						int input_len,
-						unsigned char **output_str,
-						int *output_len,
-						service_adaptor_error_s *error);
 
 #endif /* __TIZEN_SOCIAL_SERVICE_ADAPTOR_DBUS_CLIENT_H__ */

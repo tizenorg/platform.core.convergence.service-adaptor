@@ -46,36 +46,10 @@ void on_storage_signal(GDBusProxy *proxy,
 						GVariant *parameters,
 						gpointer user_data);
 
-/**
- * @brief
- * @param[out]
- * @param[out]
- * @return
- * @pre This function requires opened DBus connection by service-adaptor-client-storage.c
- */
-int _dbus_download_file(const char *service_name,
-						const char *server_path,
-						const char *download_path,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_download_thumbnail(const char *service_name,
-						const char *server_path,
-						const char *download_path,
-						int thumbnail_size,
-						service_adaptor_error_s *error);
-
 int _dbus_download_file_async(const char *service_name,
 						const char *server_path,
 						const char *download_path,
 						service_storage_file_h *file_handle,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_upload_file(const char *service_name,
-						const char *upload_path,
-						const char *server_path,
-						service_storage_file_h *file_info,
 						void *user_data,
 						service_adaptor_error_s *error);
 
@@ -86,38 +60,8 @@ int _dbus_upload_file_async(const char *service_name,
 						void *user_data,
 						service_adaptor_error_s *error);
 
-int _dbus_get_root_folder_path(const char *service_name,
-						char **root_folder_path,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_make_directory(const char *service_name,
-						const char *folder_path,
-						service_storage_file_h *file_info,
-						void *user_data,
-						service_adaptor_error_s *error);
-
 int _dbus_remove_file(const char *service_name,
 						const char *file_path,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_remove_directory(const char *service_name,
-						const char *folder_path,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_move_file(const char *service_name,
-						const char *src_file_path,
-						const char *dst_file_path,
-						service_storage_file_h *file_info,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_move_directory(const char *service_name,
-						const char *src_folder_path,
-						const char *dst_folder_path,
-						service_storage_file_h *file_info,
 						void *user_data,
 						service_adaptor_error_s *error);
 
@@ -184,77 +128,6 @@ int _dbus_cancel_download_file(const char *_service_name,
 int _dbus_cancel_download_thumbnail(const char *_service_name,
 						long long int _task_id,
 						service_adaptor_error_s *error);
-
-
-
-
-///////////////////// private feature
-
-
-int _private_dbus_download_file_async(const char *service_name,
-						const char *server_path,
-						const char *download_path,
-						service_adaptor_file_h *file_handle,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _private_dbus_upload_file_async(const char *service_name,
-						const char *upload_path,
-						const char *server_path,
-						service_adaptor_file_h *file_handle,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-
-
-int _dbus_download_file_publish(const char *service_name,
-						const char *server_path,
-						const char *download_path,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_download_file_publish_async(const char *service_name,
-						const char *server_path,
-						const char *download_path,
-						service_adaptor_file_h *file_handle,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_upload_file_publish(const char *service_name,
-						const char *upload_path,
-						const char *server_path,
-						char **publish_url,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_upload_file_publish_async(const char *service_name,
-						const char *upload_path,
-						const char *server_path,
-						service_adaptor_file_h *file_handle,
-						void *user_data,
-						service_adaptor_error_s *error);
-
-int _dbus_get_file_status(const char *service_name,
-						service_adaptor_file_h file_handle,
-						service_adaptor_file_status_s **status,
-						void **server_data,
-						service_adaptor_error_s *error);
-
-int _dbus_cancel_file_transfer(const char *service_name,
-						service_adaptor_file_h file_handle,
-						void **server_data,
-						service_adaptor_error_s *error);
-
-int _dbus_pause_file_transfer(const char *service_name,
-						service_adaptor_file_h file_handle,
-						void **server_data,
-						service_adaptor_error_s *error);
-
-int _dbus_resume_file_transfer(const char *service_name,
-						service_adaptor_file_h file_handle,
-						void **server_data,
-						service_adaptor_error_s *error);
-
 
 int _dbus_get_privilege_check_result(const char *service_name,
 						const char *privilege_name,
