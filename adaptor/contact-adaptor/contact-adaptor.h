@@ -28,36 +28,34 @@
 /**
 * @brief Contact Adaptor error code
 */
-typedef enum contact_error_code_e
-{
+typedef enum contact_error_code_e {
 	CONTACT_ADAPTOR_ERROR_NONE                     =  0,
 	CONTACT_ADAPTOR_ERROR_LAUNCH                    = 1,    /**< 1 ~ 99: internal error*/
-        CONTACT_ADAPTOR_ERROR_INIT                      = 2,
-        CONTACT_ADAPTOR_ERROR_DEINIT                    = 3,
-        CONTACT_ADAPTOR_ERROR_CREATE                    = 4,
-        CONTACT_ADAPTOR_ERROR_DESTROY                   = 5,
-        CONTACT_ADAPTOR_ERROR_START                     = 6,
-        CONTACT_ADAPTOR_ERROR_STOP                      = 7,
-        CONTACT_ADAPTOR_ERROR_CONNECT                   = 8,
-        CONTACT_ADAPTOR_ERROR_DISCONNECT                = 9,
-        CONTACT_ADAPTOR_ERROR_NOT_FOUND                 = 10,
-        CONTACT_ADAPTOR_ERROR_CORRUPTED                 = 11,
-        CONTACT_ADAPTOR_ERROR_UNSUPPORTED               = 12,
-        CONTACT_ADAPTOR_ERROR_INVALID_HANDLE            = 13,
-        CONTACT_ADAPTOR_ERROR_INVALID_ARGUMENT          = 14,
-        CONTACT_ADAPTOR_ERROR_INVALID_ARGUMENT_TYPE     = 15,
-        CONTACT_ADAPTOR_ERROR_NOT_AUTHORIZED            = 16,
-        CONTACT_ADAPTOR_ERROR_ADAPTOR_INTERNAL          = 17,
-        CONTACT_ADAPTOR_ERROR_PLUGIN_INTERNAL           = 18,
-        CONTACT_ADAPTOR_ERROR_SERVER_INTERNAL           = 19,
-        CONTACT_ADAPTOR_ERROR_DBUS                      = 20,
-        CONTACT_ADAPTOR_ERROR_CALLBACK_TIME_OUT         = 21,
+	CONTACT_ADAPTOR_ERROR_INIT                      = 2,
+	CONTACT_ADAPTOR_ERROR_DEINIT                    = 3,
+	CONTACT_ADAPTOR_ERROR_CREATE                    = 4,
+	CONTACT_ADAPTOR_ERROR_DESTROY                   = 5,
+	CONTACT_ADAPTOR_ERROR_START                     = 6,
+	CONTACT_ADAPTOR_ERROR_STOP                      = 7,
+	CONTACT_ADAPTOR_ERROR_CONNECT                   = 8,
+	CONTACT_ADAPTOR_ERROR_DISCONNECT                = 9,
+	CONTACT_ADAPTOR_ERROR_NOT_FOUND                 = 10,
+	CONTACT_ADAPTOR_ERROR_CORRUPTED                 = 11,
+	CONTACT_ADAPTOR_ERROR_UNSUPPORTED               = 12,
+	CONTACT_ADAPTOR_ERROR_INVALID_HANDLE            = 13,
+	CONTACT_ADAPTOR_ERROR_INVALID_ARGUMENT          = 14,
+	CONTACT_ADAPTOR_ERROR_INVALID_ARGUMENT_TYPE     = 15,
+	CONTACT_ADAPTOR_ERROR_NOT_AUTHORIZED            = 16,
+	CONTACT_ADAPTOR_ERROR_ADAPTOR_INTERNAL          = 17,
+	CONTACT_ADAPTOR_ERROR_PLUGIN_INTERNAL           = 18,
+	CONTACT_ADAPTOR_ERROR_SERVER_INTERNAL           = 19,
+	CONTACT_ADAPTOR_ERROR_DBUS                      = 20,
+	CONTACT_ADAPTOR_ERROR_CALLBACK_TIME_OUT         = 21,
 	CONTACT_ADAPTOR_ERROR_MAX
 } contact_error_code_t;
 
 
-typedef enum _contact_plugin_internal_error_code_e
-{
+typedef enum _contact_plugin_internal_error_code_e {
 	CONTACT_PLUGIN_ERROR_HTTP_BAD_REQUEST		= 400,
 	CONTACT_PLUGIN_ERROR_HTTP_UNAUTHORIZED		= 401,
 	CONTACT_PLUGIN_ERROR_HTTP_FORBIDDEN		= 403,
@@ -90,13 +88,12 @@ typedef struct contact_adaptor_s *contact_adaptor_h;
 /**
 * @brief Contact Adaptor plugin context structure
 */
-typedef struct contact_adaptor_plugin_context_s
-{
+typedef struct contact_adaptor_plugin_context_s {
 	char	*duid;		/**< header: access control >*/
 	char	*access_token;	/**< header: access control >*/
 	void	*plugin_info;	/**< plugin's own context >*/
 
-	// Adaptor define
+	/* Adaptor define */
 	char	*plugin_uri;
 	char	*service_name;
 
@@ -106,8 +103,7 @@ typedef struct contact_adaptor_plugin_context_s *contact_adaptor_plugin_context_
 /**
 * @brief Contact Adaptor error code
 */
-typedef struct contact_adaptor_error_code_s
-{
+typedef struct contact_adaptor_error_code_s {
 	int64_t	code;
 	char	*msg;
 
@@ -117,8 +113,7 @@ typedef struct contact_adaptor_error_code_s *contact_adaptor_error_code_h;
 /**
 * @brief Contact Adaptor contact API information request format
 */
-typedef struct contact_adaptor_contact_info_req_s
-{
+typedef struct contact_adaptor_contact_info_req_s {
 	char	*tp;	/**< mandatory >*/
 	char	*id;	/**< mandatory >*/
 	char	*pn;	/**< mandatory >*/
@@ -132,8 +127,7 @@ typedef struct contact_adaptor_contact_info_req_s *contact_adaptor_contact_info_
 /**
 * @brief Contact Adaptor contact API request format
 */
-typedef struct contact_adaptor_contact_req_s
-{
+typedef struct contact_adaptor_contact_req_s {
 	long long int				tt;
 	contact_adaptor_contact_info_req_h	*cts;
 	unsigned int				cts_len;
@@ -141,16 +135,14 @@ typedef struct contact_adaptor_contact_req_s
 } contact_adaptor_contact_req_t;
 typedef struct contact_adaptor_contact_req_s *contact_adaptor_contact_req_h;
 
-typedef enum
-{
+typedef enum {
 	CONTACT_ADAPTOR_REQUEST_SET	= 1,
 	CONTACT_ADAPTOR_REQUEST_DEL	= 2,
 } contact_adaptor_request_type_e;
 
-typedef struct contact_adaptor_contact_image_s
-{
+typedef struct contact_adaptor_contact_image_s {
 	int	req_type;
-	int 	no;	/**< mandatory >*/
+	int	no;	/**< mandatory >*/
 	char	*img;	/**< mandatory >*/
 } contact_adaptor_contact_image_t;
 typedef struct contact_adaptor_contact_image_s *contact_adaptor_contact_image_h;
@@ -158,8 +150,7 @@ typedef struct contact_adaptor_contact_image_s *contact_adaptor_contact_image_h;
 /**
 * @brief Contact Adaptor contact API information response format
 */
-typedef struct contact_adaptor_contact_info_res_s
-{
+typedef struct contact_adaptor_contact_info_res_s {
 	char		*duid;		/**< mandatory >*/
 	char		*id;		/**< mandatory >*/
 	char		*msisdn;	/**< mandatory >*/
@@ -180,19 +171,18 @@ typedef struct contact_adaptor_contact_info_res_s
 	char		*prsc;		/**< optional >*/
 	char		*status;	/**< optional >*/
 	unsigned int	sids;		/**< optional >*/
-	int 		type;		/**< optional >*/
-	char 		*url;		/**< optional >*/
+	int		type;		/**< optional >*/
+	char		*url;		/**< optional >*/
 } contact_adaptor_contact_info_res_t;
 typedef struct contact_adaptor_contact_info_res_s *contact_adaptor_contact_info_res_h;
 
 /**
 * @brief Contact Adaptor contact API response format
 */
-typedef struct contact_adaptor_contact_res_s
-{
-        long long int				tt;
-        contact_adaptor_contact_info_res_h	*cts;
-        unsigned int				cts_len;
+typedef struct contact_adaptor_contact_res_s {
+	long long int				tt;
+	contact_adaptor_contact_info_res_h	*cts;
+	unsigned int				cts_len;
 
 } contact_adaptor_contact_res_t;
 typedef struct contact_adaptor_contact_res_s *contact_adaptor_contact_res_h;
@@ -200,8 +190,7 @@ typedef struct contact_adaptor_contact_res_s *contact_adaptor_contact_res_h;
 /**
 * @brief Contact Adaptor profile API request format
 */
-typedef struct contact_adaptor_profile_req_s
-{
+typedef struct contact_adaptor_profile_req_s {
 	char*	cc;
 	char*	pn;
 	char*	nm;
@@ -214,7 +203,7 @@ typedef struct contact_adaptor_profile_req_s
 	unsigned int	mail_len;
 	char*	org;
 	char*	prsc;
-	char* 	status;
+	char*	status;
 
 } contact_adaptor_profile_req_t;
 typedef struct contact_adaptor_profile_req_s *contact_adaptor_profile_req_h;
@@ -222,12 +211,11 @@ typedef struct contact_adaptor_profile_req_s *contact_adaptor_profile_req_h;
 /**
 * @brief Contact Adaptor profile API response format
 */
-typedef struct contact_adaptor_profile_res_s
-{
+typedef struct contact_adaptor_profile_res_s {
 	char*	nm;
 	char*	img;
 	char*	prsc;
-	char* 	status;
+	char*	status;
 
 } contact_adaptor_profile_res_t;
 typedef struct contact_adaptor_profile_res_s *contact_adaptor_profile_res_h;
@@ -235,8 +223,7 @@ typedef struct contact_adaptor_profile_res_s *contact_adaptor_profile_res_h;
 /**
 * @brief Contact Adaptor profile API image file path format
 */
-typedef struct contact_adaptor_file_path_s
-{
+typedef struct contact_adaptor_file_path_s {
 	char**	file_paths;
 	unsigned int file_paths_len;
 
@@ -246,8 +233,7 @@ typedef struct contact_adaptor_file_path_s *contact_adaptor_file_path_h;
 /**
 * @brief Contact Adaptor privacy API information request format
 */
-typedef struct contact_adaptor_privacy_info_req_s
-{
+typedef struct contact_adaptor_privacy_info_req_s {
 	char*	cc;
 	char*	pn;
 
@@ -257,8 +243,7 @@ typedef struct contact_adaptor_privacy_info_req_s *contact_adaptor_privacy_info_
 /**
 * @brief Contact Adaptor privacy API request format
 */
-typedef struct contact_adaptor_privacy_req_s
-{
+typedef struct contact_adaptor_privacy_req_s {
 	unsigned int	lvl;
 	contact_adaptor_privacy_info_req_h*	cts;
 	unsigned int	cts_len;
@@ -269,8 +254,7 @@ typedef struct contact_adaptor_privacy_req_s *contact_adaptor_privacy_req_h;
 /**
 * @brief Contact Adaptor privacy API response format
 */
-typedef struct contact_adaptor_privacy_res_s
-{
+typedef struct contact_adaptor_privacy_res_s {
 	unsigned int	lvl;
 	unsigned int	prscon;
 
@@ -280,8 +264,7 @@ typedef struct contact_adaptor_privacy_res_s *contact_adaptor_privacy_res_h;
 /**
 * @brief Contact Adaptor presence API information format
 */
-typedef struct contact_adaptor_presence_info_s
-{
+typedef struct contact_adaptor_presence_info_s {
 	char		*prsc;
 	unsigned int	prscon;
 	char		*status;
@@ -308,9 +291,8 @@ typedef void(*contact_adaptor_plugin_on_message_received_cb)(void *user_data);
 /**
 * @brief Contact Adaptor listener for Service Adaptor
 */
-typedef struct contact_adaptor_listener_s
-{
-        contact_adaptor_service_on_message_received_cb _on_message_received;
+typedef struct contact_adaptor_listener_s {
+	contact_adaptor_service_on_message_received_cb _on_message_received;
 
 } contact_adaptor_listener_t;
 typedef struct contact_adaptor_listener_s *contact_adaptor_listener_h;
@@ -318,9 +300,8 @@ typedef struct contact_adaptor_listener_s *contact_adaptor_listener_h;
 /**
 * @brief Contact Adaptor listener for plugins
 */
-typedef struct contact_adaptor_plugin_listener_s
-{
-        contact_adaptor_plugin_on_message_received_cb _on_message_received;
+typedef struct contact_adaptor_plugin_listener_s {
+	contact_adaptor_plugin_on_message_received_cb _on_message_received;
 
 } contact_adaptor_plugin_listener_t;
 typedef struct contact_adaptor_plugin_listener_s *contact_adaptor_plugin_listener_h;
@@ -328,8 +309,7 @@ typedef struct contact_adaptor_plugin_listener_s *contact_adaptor_plugin_listene
 /**
 * @brief Contact Adaptor plugin handle
 */
-typedef struct contact_adaptor_plugin_handle_s
-{
+typedef struct contact_adaptor_plugin_handle_s {
 	/**< mandatory >*/
 	contact_error_code_t (*create_context)(contact_adaptor_plugin_context_h *context,
 						const char *duid,
@@ -356,97 +336,97 @@ typedef struct contact_adaptor_plugin_handle_s
 
 	/**< optional >*/
 	contact_error_code_t (*new_contact_list)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_contact_req_h request,
+						contact_adaptor_contact_req_h request,
 						void *user_data,
-                                                contact_adaptor_contact_res_h *response,
+						contact_adaptor_contact_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
 	/**< optional >*/
 	contact_error_code_t (*set_contact_list)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_contact_req_h request,
+						contact_adaptor_contact_req_h request,
 						void *user_data,
-                                                contact_adaptor_contact_res_h *response,
+						contact_adaptor_contact_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
 	/**< optional >*/
 	contact_error_code_t (*get_contact_infos_latest)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_contact_req_h request,
+						contact_adaptor_contact_req_h request,
 						void *user_data,
-                                                contact_adaptor_contact_res_h *response,
+						contact_adaptor_contact_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
 	/**< optional >*/
-        contact_error_code_t (*get_contact_infos_polling)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_contact_req_h request,
+	contact_error_code_t (*get_contact_infos_polling)(contact_adaptor_plugin_context_h context,
+						contact_adaptor_contact_req_h request,
 						void *user_data,
-                                                contact_adaptor_contact_res_h *response,
+						contact_adaptor_contact_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
 	/**< optional >*/
-        contact_error_code_t (*set_me_profile_with_push)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_profile_req_h request,
+	contact_error_code_t (*set_me_profile_with_push)(contact_adaptor_plugin_context_h context,
+						contact_adaptor_profile_req_h request,
 						void *user_data,
-                                                contact_adaptor_profile_res_h *response,
+						contact_adaptor_profile_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
 	/**< optional >*/
-        contact_error_code_t (*get_profile)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_profile_req_h request,
+	contact_error_code_t (*get_profile)(contact_adaptor_plugin_context_h context,
+						contact_adaptor_profile_req_h request,
 						void *user_data,
-                                                contact_adaptor_profile_res_h *response,
+						contact_adaptor_profile_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
 	/**< optional >*/
-        contact_error_code_t (*set_me_profile_image_meta_with_push)
+	contact_error_code_t (*set_me_profile_image_meta_with_push)
 						(contact_adaptor_plugin_context_h context,
 						contact_adaptor_contact_image_h	*imgs,
 						unsigned int imgs_len,
 						void *user_data,
-                                                contact_adaptor_error_code_h *error,
-						void **server_data);
-
-	/**< optional >*/
-        contact_error_code_t (*delete_me_profile_image_meta_with_push)
-						(contact_adaptor_plugin_context_h context,
-						void *user_data,
-                                                contact_adaptor_error_code_h *error,
-						void **server_data);
-
-	/**< optional >*/
-        contact_error_code_t (*set_me_profile_privacy)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_privacy_req_h request,
-						void *user_data,
-                                                contact_adaptor_privacy_res_h *response,
-                                                contact_adaptor_error_code_h *error,
-						void **server_data);
-
-	/**< optional >*/
-        contact_error_code_t (*get_me_profile_privacy)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_privacy_req_h request,
-						void *user_data,
-                                                contact_adaptor_privacy_res_h *response,
-                                                contact_adaptor_error_code_h *error,
-						void **server_data);
-
-	/**< optional >*/
-        contact_error_code_t (*set_me_presence_with_push)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_presence_info_h request,
-						void *user_data,
-                                                contact_adaptor_presence_info_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
 	/**< optional >*/
-        contact_error_code_t (*set_me_presence_on_off_with_push)(contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_presence_info_h request,
+	contact_error_code_t (*delete_me_profile_image_meta_with_push)
+						(contact_adaptor_plugin_context_h context,
 						void *user_data,
-                                                contact_adaptor_presence_info_h *response,
+						contact_adaptor_error_code_h *error,
+						void **server_data);
+
+	/**< optional >*/
+	contact_error_code_t (*set_me_profile_privacy)(contact_adaptor_plugin_context_h context,
+						contact_adaptor_privacy_req_h request,
+						void *user_data,
+						contact_adaptor_privacy_res_h *response,
+						contact_adaptor_error_code_h *error,
+						void **server_data);
+
+	/**< optional >*/
+	contact_error_code_t (*get_me_profile_privacy)(contact_adaptor_plugin_context_h context,
+						contact_adaptor_privacy_req_h request,
+						void *user_data,
+						contact_adaptor_privacy_res_h *response,
+						contact_adaptor_error_code_h *error,
+						void **server_data);
+
+	/**< optional >*/
+	contact_error_code_t (*set_me_presence_with_push)(contact_adaptor_plugin_context_h context,
+						contact_adaptor_presence_info_h request,
+						void *user_data,
+						contact_adaptor_presence_info_h *response,
+						contact_adaptor_error_code_h *error,
+						void **server_data);
+
+	/**< optional >*/
+	contact_error_code_t (*set_me_presence_on_off_with_push)(contact_adaptor_plugin_context_h context,
+						contact_adaptor_presence_info_h request,
+						void *user_data,
+						contact_adaptor_presence_info_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
@@ -458,7 +438,7 @@ typedef struct contact_adaptor_plugin_handle_s
 						void **server_data);
 
 	/**< mandatory >*/
-	char *plugin_uri;	// get from config file
+	char *plugin_uri;	/* get from config file */
 
 } contact_adaptor_plugin_handle_t;
 typedef struct contact_adaptor_plugin_handle_s *contact_adaptor_plugin_handle_h;
@@ -609,7 +589,7 @@ const char* contact_adaptor_get_plugin_name(contact_adaptor_plugin_h plugin);
  *
  * @param[in]	context			specifies Contact Adaptor Plugin Context handle
  * @param[in]	new_access_token	specifies New access token
- * @return 	contact_adaptor_error_code_h on success, otherwise NULL value
+ * @return	contact_adaptor_error_code_h on success, otherwise NULL value
 */
 EXPORT_API
 contact_error_code_t contact_adaptor_refresh_access_token(contact_adaptor_plugin_context_h context,
@@ -620,7 +600,7 @@ contact_error_code_t contact_adaptor_refresh_access_token(contact_adaptor_plugin
  *
  * @param[in]	context			specifies Contact Adaptor Plugin Context handle
  * @param[in]	new_access_token	specifies New access token
- * @return 	contact_adaptor_error_code_h on success, otherwise NULL value
+ * @return	contact_adaptor_error_code_h on success, otherwise NULL value
 */
 EXPORT_API
 contact_error_code_t contact_adaptor_refresh_uid(contact_adaptor_plugin_context_h context,
@@ -631,7 +611,7 @@ contact_error_code_t contact_adaptor_refresh_uid(contact_adaptor_plugin_context_
 *
 * @param[in]	code		specifies error code number
 * @param[in]	msg             specifies error message
-* @return 	contact_adaptor_error_code_h on success, otherwise NULL value
+* @return	contact_adaptor_error_code_h on success, otherwise NULL value
 */
 EXPORT_API
 contact_adaptor_error_code_h contact_adaptor_create_error_code(const int64_t code,
@@ -684,11 +664,11 @@ void contact_adaptor_destroy_presence_info_s(contact_adaptor_presence_info_h inf
  */
 EXPORT_API
 contact_error_code_t contact_adaptor_set_server_info(contact_adaptor_plugin_h plugin,
-					contact_adaptor_plugin_context_h context,
-					GHashTable *server_info,
-					void *user_data,
-					contact_adaptor_error_code_h *error,
-					void **server_data);
+						contact_adaptor_plugin_context_h context,
+						GHashTable *server_info,
+						void *user_data,
+						contact_adaptor_error_code_h *error,
+						void **server_data);
 
 /**
 * @brief Resets contact information in Contact server and upload native contact information of device to
@@ -707,9 +687,9 @@ contact_error_code_t contact_adaptor_set_server_info(contact_adaptor_plugin_h pl
 EXPORT_API
 contact_error_code_t contact_adaptor_new_contact_list(contact_adaptor_plugin_h plugin,
 						contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_contact_req_h request,
+						contact_adaptor_contact_req_h request,
 						void *user_data,
-                                                contact_adaptor_contact_res_h *response,
+						contact_adaptor_contact_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
@@ -730,9 +710,9 @@ contact_error_code_t contact_adaptor_new_contact_list(contact_adaptor_plugin_h p
 EXPORT_API
 contact_error_code_t contact_adaptor_set_contact_list(contact_adaptor_plugin_h plugin,
 						contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_contact_req_h request,
+						contact_adaptor_contact_req_h request,
 						void *user_data,
-                                                contact_adaptor_contact_res_h *response,
+						contact_adaptor_contact_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
@@ -752,9 +732,9 @@ contact_error_code_t contact_adaptor_set_contact_list(contact_adaptor_plugin_h p
 EXPORT_API
 contact_error_code_t contact_adaptor_get_contact_infos_latest(contact_adaptor_plugin_h plugin,
 						contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_contact_req_h request,
+						contact_adaptor_contact_req_h request,
 						void *user_data,
-                                                contact_adaptor_contact_res_h *response,
+						contact_adaptor_contact_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
@@ -775,9 +755,9 @@ contact_error_code_t contact_adaptor_get_contact_infos_latest(contact_adaptor_pl
 EXPORT_API
 contact_error_code_t contact_adaptor_get_contact_infos_polling(contact_adaptor_plugin_h plugin,
 						contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_contact_req_h request,
+						contact_adaptor_contact_req_h request,
 						void *user_data,
-                                                contact_adaptor_contact_res_h *response,
+						contact_adaptor_contact_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
@@ -796,10 +776,10 @@ contact_error_code_t contact_adaptor_get_contact_infos_polling(contact_adaptor_p
 */
 EXPORT_API
 contact_error_code_t contact_adaptor_set_me_profile_with_push(contact_adaptor_plugin_h plugin,
-                                                contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_profile_req_h request,
+						contact_adaptor_plugin_context_h context,
+						contact_adaptor_profile_req_h request,
 						void *user_data,
-                                                contact_adaptor_profile_res_h *response,
+						contact_adaptor_profile_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
@@ -818,10 +798,10 @@ contact_error_code_t contact_adaptor_set_me_profile_with_push(contact_adaptor_pl
 */
 EXPORT_API
 contact_error_code_t contact_adaptor_get_profile(contact_adaptor_plugin_h plugin,
-                                                contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_profile_req_h request,
+						contact_adaptor_plugin_context_h context,
+						contact_adaptor_profile_req_h request,
 						void *user_data,
-                                                contact_adaptor_profile_res_h *response,
+						contact_adaptor_profile_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
@@ -840,7 +820,7 @@ contact_error_code_t contact_adaptor_get_profile(contact_adaptor_plugin_h plugin
 */
 EXPORT_API
 contact_error_code_t contact_adaptor_set_me_profile_image_meta_with_push(contact_adaptor_plugin_h plugin,
-                                                contact_adaptor_plugin_context_h context,
+						contact_adaptor_plugin_context_h context,
 						contact_adaptor_contact_image_h	*imgs,
 						unsigned int imgs_len,
 						void *user_data,
@@ -863,7 +843,7 @@ contact_error_code_t contact_adaptor_set_me_profile_image_meta_with_push(contact
 EXPORT_API
 contact_error_code_t contact_adaptor_delete_me_profile_image_meta_with_push(
 						contact_adaptor_plugin_h plugin,
-                                                contact_adaptor_plugin_context_h context,
+						contact_adaptor_plugin_context_h context,
 						void *user_data,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
@@ -883,10 +863,10 @@ contact_error_code_t contact_adaptor_delete_me_profile_image_meta_with_push(
 */
 EXPORT_API
 contact_error_code_t contact_adaptor_set_me_profile_privacy(contact_adaptor_plugin_h plugin,
-                                                contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_privacy_req_h request,
+						contact_adaptor_plugin_context_h context,
+						contact_adaptor_privacy_req_h request,
 						void *user_data,
-                                                contact_adaptor_privacy_res_h *response,
+						contact_adaptor_privacy_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
@@ -905,10 +885,10 @@ contact_error_code_t contact_adaptor_set_me_profile_privacy(contact_adaptor_plug
 */
 EXPORT_API
 contact_error_code_t contact_adaptor_get_me_profile_privacy(contact_adaptor_plugin_h plugin,
-                                                contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_privacy_req_h request,
+						contact_adaptor_plugin_context_h context,
+						contact_adaptor_privacy_req_h request,
 						void *user_data,
-                                                contact_adaptor_privacy_res_h *response,
+						contact_adaptor_privacy_res_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
@@ -927,7 +907,7 @@ contact_error_code_t contact_adaptor_get_me_profile_privacy(contact_adaptor_plug
 */
 EXPORT_API
 contact_error_code_t contact_adaptor_set_me_presence_with_push(contact_adaptor_plugin_h plugin,
-                                                contact_adaptor_plugin_context_h context,
+						contact_adaptor_plugin_context_h context,
 						contact_adaptor_presence_info_h request,
 						void *user_data,
 						contact_adaptor_presence_info_h *response,
@@ -949,16 +929,16 @@ contact_error_code_t contact_adaptor_set_me_presence_with_push(contact_adaptor_p
 */
 EXPORT_API
 contact_error_code_t contact_adaptor_set_me_presence_on_off_with_push(contact_adaptor_plugin_h plugin,
-                                                contact_adaptor_plugin_context_h context,
-                                                contact_adaptor_presence_info_h request,
+						contact_adaptor_plugin_context_h context,
+						contact_adaptor_presence_info_h request,
 						void *user_data,
-                                                contact_adaptor_presence_info_h *response,
+						contact_adaptor_presence_info_h *response,
 						contact_adaptor_error_code_h *error,
 						void **server_data);
 
 EXPORT_API
 contact_error_code_t contact_adaptor_set_me_profile_type(contact_adaptor_plugin_h plugin,
-                                                contact_adaptor_plugin_context_h context,
+						contact_adaptor_plugin_context_h context,
 						int req_type,
 						void *user_data,
 						char **url,

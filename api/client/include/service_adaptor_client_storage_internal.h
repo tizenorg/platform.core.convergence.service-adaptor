@@ -41,9 +41,8 @@ extern "C" {
 /**
  * Storage adaptor content type
  */
-typedef enum _service_storage_file_content_type_e
-{
-	SERVICE_ADAPTOR_STORAGE_CONTENT_TYPE_DEFAULT               = -1,    // initalize value
+typedef enum _service_storage_file_content_type_e {
+	SERVICE_ADAPTOR_STORAGE_CONTENT_TYPE_DEFAULT               = -1,    /* initalize value */
 
 	SERVICE_ADAPTOR_STORAGE_CONTENT_TYPE_IMGAE                 = 160,
 	SERVICE_ADAPTOR_STORAGE_CONTENT_TYPE_VIDEO                 = 161,
@@ -66,8 +65,7 @@ typedef enum _service_storage_file_content_type_e
 	SERVICE_ADAPTOR_STORAGE_CONTENT_TYPE_METADATA              = 2048,
 } service_storage_content_type_e;
 
-typedef struct _service_storage_media_meta_s
-{
+typedef struct _service_storage_media_meta_s {
 	char *mime_type;
 	char *title;
 	char *album;
@@ -88,8 +86,7 @@ typedef struct _service_storage_media_meta_s
 	char *extra_media_meta;
 } service_storage_media_meta_s;
 
-typedef struct _service_storage_cloud_meta_s
-{
+typedef struct _service_storage_cloud_meta_s {
 	char *service_name;
 	unsigned long long usage_byte;
 	unsigned long long quota_byte;
@@ -99,8 +96,7 @@ typedef struct _service_storage_cloud_meta_s
 /**
 * @brief Describes file information description
 */
-struct _service_storage_file_s
-{
+struct _service_storage_file_s {
 	char    *plugin_name;		/**< specifies plugin name generated file_info */
 	char    *object_id;		/**< specifies file object id be used in storage */
 	char    *storage_path;		/**< specifies file path in storage */

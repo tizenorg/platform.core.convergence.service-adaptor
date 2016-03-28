@@ -70,8 +70,7 @@ typedef struct _service_storage_file_list_s *service_storage_file_list_h;
 /**
  * @brief Type of storage task
  */
-typedef enum
-{
+typedef enum {
 	SERVICE_STORAGE_TASK_IN_PROGRESS	= 1,	/**< The task is progressing */
 	SERVICE_STORAGE_TASK_COMPLETED		= 2,	/**< The task was completed */
 	SERVICE_STORAGE_TASK_CANCELED		= 3,	/**< The task was canceled */
@@ -331,7 +330,7 @@ int service_storage_create_download_task(service_plugin_h plugin,
 * @retval #SERVICE_ADAPTOR_ERROR_UNKNOWN Unknown error
 * @pre	API prerequires #service_plugin_start()
 */
-int service_storage_create_download_thumbnail_task (service_plugin_h plugin,
+int service_storage_create_download_thumbnail_task(service_plugin_h plugin,
 						const char *storage_path,
 						const char *download_path,
 						int thumbnail_size,

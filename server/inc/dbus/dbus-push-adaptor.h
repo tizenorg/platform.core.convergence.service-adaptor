@@ -30,14 +30,14 @@ void push_adaptor_method_call(GDBusConnection *connection,
 						gpointer user_data);
 
 void dbus_send_to_push_with_activation(int bus_type,
-                                                const char *bus_name,
-                                                const char *object_path,
-                                                const char *interface,
-                                                const char *method,
-                                                void **proxy,
-                                                long long int timestamp,
-                                                const char *data,
-                                                const char *message);
+						const char *bus_name,
+						const char *object_path,
+						const char *interface,
+						const char *method,
+						void **proxy,
+						long long int timestamp,
+						const char *data,
+						const char *message);
 
 #endif /* __DBUS_PUSH_ADAPTOR_H__ */
 

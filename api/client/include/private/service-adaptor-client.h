@@ -37,11 +37,10 @@
 /**
  * @brief Enumerations of result code for Service Adaptor
  */
-typedef enum _service_adaptor_result_e
-{
+typedef enum _service_adaptor_result_e {
 	SERVICE_ADAPTOR_RESULT_SUCCEEDED		= SERVICE_ADAPTOR_ERROR_NONE,	/**< specifies status as none*/
 	SERVICE_ADAPTOR_RESULT_FAILED			= -1,	/**< specifies status as none*/
-	SERVICE_ADAPTOR_RESULT_CANCELED			= -2 	/**< specifies status as none*/
+	SERVICE_ADAPTOR_RESULT_CANCELED			= -2	/**< specifies status as none*/
 } __service_adaptor_result_e;	/*TODO deplicate*/
 
 typedef int service_adaptor_result_e; /* For version compatibility */
@@ -49,8 +48,7 @@ typedef int service_adaptor_result_e; /* For version compatibility */
 /**
  * @brief Enumerations of error code for Service Adaptor
  */
-typedef enum _private_service_adaptor_error_e
-{
+typedef enum _private_service_adaptor_error_e {
 	SERVICE_ADAPTOR_ERROR_LAUNCH			= 1,	/**< 1 ~ 99: internal error*/
 	SERVICE_ADAPTOR_ERROR_INIT			= 2,
 	SERVICE_ADAPTOR_ERROR_DEINIT			= 3,
@@ -79,8 +77,7 @@ typedef enum _private_service_adaptor_error_e
 /**
  * @brief Type of service in plugin (ext internal)
  */
-typedef enum
-{
+typedef enum {
 	SERVICE_PLUGIN_SERVICE_CONTACT	= (0x01 << 2),		/**< Contact service type flag */
 	SERVICE_PLUGIN_SERVICE_MESSAGE	= (0x01 << 3),		/**< Message service type flag */
 	SERVICE_PLUGIN_SERVICE_SHOP	= (0x01 << 4),		/**< Shop service type flag */
@@ -90,8 +87,7 @@ typedef enum
 /**
 * @brief Describes infromation about plugin
 */
-typedef struct _service_adaptor_plugin_s
-{
+typedef struct _service_adaptor_plugin_s {
 	char *name;				/**< specifies status as none*/
 	bool login;				/**< specifies status as none*/
 } service_adaptor_plugin_s;
@@ -110,13 +106,13 @@ typedef service_adaptor_plugin_s *service_adaptor_plugin_h;
 * @pre	service_adaptor_connect() will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_signal_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_signal_cb)(service_adaptor_h handle,
 						service_adaptor_signal_code_e signal,
 						char *msg);
 
 
 /*==================================================================================================
-                                         FUNCTION PROTOTYPES
+					FUNCTION PROTOTYPES
 ==================================================================================================*/
 
 

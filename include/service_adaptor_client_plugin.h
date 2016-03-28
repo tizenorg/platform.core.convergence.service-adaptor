@@ -30,11 +30,10 @@ extern "C" {
 /**
  * @brief Type of service in plugin
  */
-typedef enum
-{
+typedef enum {
 	SERVICE_PLUGIN_SERVICE_AUTH	= (0x01 << 0),		/**< Auth service type flag */
 	SERVICE_PLUGIN_SERVICE_STORAGE	= (0x01 << 1),		/**< Storage service type flag */
-}service_plugin_service_type_e;
+} service_plugin_service_type_e;
 
 /**
 * @brief Definition for the service_plugin property: The application id be issued from service provider for 3rd party developer.

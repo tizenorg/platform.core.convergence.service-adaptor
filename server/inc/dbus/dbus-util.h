@@ -20,7 +20,7 @@
 #include <glib.h>
 #include <gio/gio.h>
 
-#define __safe_add_string(x)	(x==NULL)?"":x
+#define __safe_add_string(x)	(x == NULL) ? "" : x
 
 void free_string(gpointer data);
 void safe_g_variant_builder_add_string(GVariantBuilder *builder, const char *data);

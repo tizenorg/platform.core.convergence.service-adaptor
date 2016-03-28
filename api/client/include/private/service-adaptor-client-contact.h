@@ -38,8 +38,7 @@ typedef struct _service_adaptor_profile_image_s *service_adaptor_profile_image_h
 /**
 * @brief Describes contact infromation for request
 */
-typedef struct _service_adaptor_contact_info_req_s
-{
+typedef struct _service_adaptor_contact_info_req_s {
 	char *tp;		/**< specifies status as none*/
 	char *id;		/**< specifies status as none*/
 	char *pn;		/**< specifies status as none*/
@@ -50,8 +49,7 @@ typedef struct _service_adaptor_contact_info_req_s
 /**
 * @brief Describes request infromation about contact
 */
-typedef struct _service_adaptor_contact_req_s
-{
+typedef struct _service_adaptor_contact_req_s {
 	long long int tt;				/**< specifies status as none*/
 	service_adaptor_contact_info_req_s **cts;	/**< specifies status as none*/
 	unsigned int cts_len;				/**< specifies status as none*/
@@ -60,8 +58,7 @@ typedef struct _service_adaptor_contact_req_s
 /**
 * @brief Describes contact infromation for response
 */
-typedef struct _service_adaptor_contact_info_res_s
-{
+typedef struct _service_adaptor_contact_info_res_s {
 	char *duid;		/**< specifies status as none*/
 	char *id;		/**< specifies status as none*/
 	char *msisdn;		/**< specifies status as none*/
@@ -71,7 +68,7 @@ typedef struct _service_adaptor_contact_info_res_s
 	char *nm;		/**< specifies status as none*/
 	char **evnt;		/**< specifies status as none*/
 	unsigned int evnt_len;	/**< specifies status as none*/
-//	char *img;		/**< specifies status as none*/
+	/* char *img; */	/**< specifies status as none*/
 	service_adaptor_profile_image_h *images;
 	unsigned int images_len;
 	char **adrs;		/**< specifies status as none*/
@@ -89,8 +86,7 @@ typedef struct _service_adaptor_contact_info_res_s
 /**
 * @brief Describes response infromation about contact
 */
-typedef struct _service_adaptor_contact_res_s
-{
+typedef struct _service_adaptor_contact_res_s {
 	long long int tt;				/**< specifies status as none*/
 	service_adaptor_contact_info_res_s **cts;	/**< specifies status as none*/
 	unsigned int cts_len;				/**< specifies status as none*/
@@ -99,8 +95,7 @@ typedef struct _service_adaptor_contact_res_s
 /**
 * @brief Describes request infromation about profile
 */
-typedef struct _service_adaptor_profile_req_s
-{
+typedef struct _service_adaptor_profile_req_s {
 	char *cc;		/**< specifies status as none*/
 	char *pn;		/**< specifies status as none*/
 	char *nm;		/**< specifies status as none*/
@@ -119,8 +114,7 @@ typedef struct _service_adaptor_profile_req_s
 /**
 * @brief Describes response infromation about profile
 */
-typedef struct _service_adaptor_profile_res_s
-{
+typedef struct _service_adaptor_profile_res_s {
 	char *nm;		/**< specifies status as none*/
 	char *img;		/**< specifies status as none*/
 	char *prsc;		/**< specifies status as none*/
@@ -130,8 +124,7 @@ typedef struct _service_adaptor_profile_res_s
 /**
 * @brief Describes privacy infromation for request
 */
-typedef struct _service_adaptor_privacy_info_req_s
-{
+typedef struct _service_adaptor_privacy_info_req_s {
 	char *cc;		/**< specifies status as none*/
 	char *pn;		/**< specifies status as none*/
 } service_adaptor_privacy_info_req_s;
@@ -139,8 +132,7 @@ typedef struct _service_adaptor_privacy_info_req_s
 /**
 * @brief Describes request infromation about privacy
 */
-typedef struct _service_adaptor_privacy_req_s
-{
+typedef struct _service_adaptor_privacy_req_s {
 	unsigned int lvl;				/**< specifies status as none*/
 	service_adaptor_privacy_info_req_s **cts;	/**< specifies status as none*/
 	unsigned int cts_len;				/**< specifies status as none*/
@@ -149,8 +141,7 @@ typedef struct _service_adaptor_privacy_req_s
 /**
 * @brief Describes response infromation about privacy
 */
-typedef struct _service_adaptor_privacy_res_s
-{
+typedef struct _service_adaptor_privacy_res_s {
 	unsigned int lvl;	/**< specifies status as none*/
 	unsigned int prscon;	/**< specifies status as none*/
 } service_adaptor_privacy_res_s;
@@ -158,15 +149,14 @@ typedef struct _service_adaptor_privacy_res_s
 /**
 * @brief Describes presence infromation for request
 */
-typedef struct _service_adaptor_presence_req_s
-{
+typedef struct _service_adaptor_presence_req_s {
 	char *prsc;		/**< specifies status as none*/
 	char *status;		/**< specifies status as none*/
 	unsigned int prscon;	/**< specifies status as none*/
 } service_adaptor_presence_req_s;
 
 /*==================================================================================================
-                                         FUNCTION PROTOTYPES
+					FUNCTION PROTOTYPES
 ==================================================================================================*/
 
 /**
@@ -396,26 +386,25 @@ int service_adaptor_set_me_profile_type(service_adaptor_h handle,
 						service_adaptor_error_s **error_code,
 						void *user_data);
 
-typedef enum
-{
+typedef enum {
 	SERVICE_ADAPTOR_CONTACT_SET	= 1,
 	SERVICE_ADAPTOR_CONTACT_DELETE	= 2,
 } service_adaptor_contact_request_type_e;
 
-int service_adaptor_profile_image_create (service_adaptor_profile_image_h *image);
+int service_adaptor_profile_image_create(service_adaptor_profile_image_h *image);
 
-int service_adaptor_profile_image_set_element (service_adaptor_profile_image_h image,
+int service_adaptor_profile_image_set_element(service_adaptor_profile_image_h image,
 						service_adaptor_contact_request_type_e req_type,
 						int index,
 						const char *path);
 
-int service_adaptor_profile_image_get_index (service_adaptor_profile_image_h image, int *index);
+int service_adaptor_profile_image_get_index(service_adaptor_profile_image_h image, int *index);
 
-int service_adaptor_profile_image_get_url (service_adaptor_profile_image_h image, char **url);
+int service_adaptor_profile_image_get_url(service_adaptor_profile_image_h image, char **url);
 
-int service_adaptor_profile_image_get_req_type (service_adaptor_profile_image_h image, int *req_type);
+int service_adaptor_profile_image_get_req_type(service_adaptor_profile_image_h image, int *req_type);
 
-void service_adaptor_profile_image_destroy (service_adaptor_profile_image_h image);
+void service_adaptor_profile_image_destroy(service_adaptor_profile_image_h image);
 
 
 

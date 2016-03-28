@@ -34,4 +34,3 @@ int dbus_ipc_server_layer_init();
 void dbus_ipc_server_layer_deinit();
 
 #endif /* __DBUS_IPC_H__ */
-// EOF

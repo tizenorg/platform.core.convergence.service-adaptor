@@ -36,100 +36,100 @@ extern "C" {
 
 #include "pluginConfigTypes.h"
 
-    /**
-     * @brief ...
-     **/
-    typedef void *ConfigHandle;
+/**
+* @brief ...
+**/
+typedef void *ConfigHandle;
 
-    /**
-     * @brief General-purpose, class for loading and reading configuration from
-     * simple plaintext files.
-     **/
+/**
+* @brief General-purpose, class for loading and reading configuration from
+* simple plaintext files.
+**/
 
-    /**
-     * @brief Creates a new empty Config object and returns an opaque "handle"
-     *
-     * @return ConfigHandle an opaque pointer to Config object.
-     **/
-	API
-    ConfigHandle plugin_config_create();
+/**
+* @brief Creates a new empty Config object and returns an opaque "handle"
+*
+* @return ConfigHandle an opaque pointer to Config object.
+**/
+API
+ConfigHandle plugin_config_create();
 
-    /**
-     * @brief Destroy config object
-     *
-     * @param config_handle an opaque pointer to Config object
-     * @return void
-     **/
-	API
-    void plugin_config_delete(ConfigHandle config_handle);
+/**
+* @brief Destroy config object
+*
+* @param config_handle an opaque pointer to Config object
+* @return void
+**/
+API
+void plugin_config_delete(ConfigHandle config_handle);
 
-    /**
-    * @brief Loads the configuration from given file to memory.
-    *
-    * @param config_handle an opaque pointer to Config object
-    * @param filepath configuration will be _loaded from given filepath
-    * @param type expected type of configuration file, this value determines how
-    * the file is parsed
-    * @return void
-    **/
-	API
-    void plugin_config_load(ConfigHandle config_handle, const char *filepath, PluginConfigType type);
+/**
+* @brief Loads the configuration from given file to memory.
+*
+* @param config_handle an opaque pointer to Config object
+* @param filepath configuration will be _loaded from given filepath
+* @param type expected type of configuration file, this value determines how
+* the file is parsed
+* @return void
+**/
+API
+void plugin_config_load(ConfigHandle config_handle, const char *filepath, PluginConfigType type);
 
-    /**
-    * @brief Unloads the configuration from the memory.
-    *
-    * The configuration is automatically un_loaded when the program is exitting,
-    * so this method does not have to be executed unless you need to extremely
-    * lower memory usage and few bytes matter.
-    *
-    * @param config_handle an opaque pointer to Config object
-    * @return void
-    **/
-	API
-    void plugin_config_unload(ConfigHandle config_handle);
+/**
+* @brief Unloads the configuration from the memory.
+*
+* The configuration is automatically un_loaded when the program is exitting,
+* so this method does not have to be executed unless you need to extremely
+* lower memory usage and few bytes matter.
+*
+* @param config_handle an opaque pointer to Config object
+* @return void
+**/
+API
+void plugin_config_unload(ConfigHandle config_handle);
 
-    /**
-    * @brief From _loaded configuration, gets string value attached to given key.
-    *
-    * @param config_handle an opaque pointer to Config object
-    * @param section will return value attached to a key from this section
-    * @param key will return value attached to this key
-    * @return :string
-    **/
-	API
-    const char *plugin_config_get_string(ConfigHandle config_handle, const char *section, const char *key);
+/**
+* @brief From _loaded configuration, gets string value attached to given key.
+*
+* @param config_handle an opaque pointer to Config object
+* @param section will return value attached to a key from this section
+* @param key will return value attached to this key
+* @return :string
+**/
+API
+const char *plugin_config_get_string(ConfigHandle config_handle, const char *section, const char *key);
 
-    /**
-    * @brief From _loaded configuration, gets integer value attached to given key.
-    *
-    * @param config_handle an opaque pointer to Config object
-    * @param section will return value attached to a key from this section
-    * @param key will return value attached to this key
-    * @return int
-    **/
-	API
-    int plugin_config_get_int(ConfigHandle config_handle, const char *section, const char *key);
+/**
+* @brief From _loaded configuration, gets integer value attached to given key.
+*
+* @param config_handle an opaque pointer to Config object
+* @param section will return value attached to a key from this section
+* @param key will return value attached to this key
+* @return int
+**/
+API
+int plugin_config_get_int(ConfigHandle config_handle, const char *section, const char *key);
 
-    /**
-    * @brief From _loaded configuration, gets double value attached to given key.
-    *
-    * @param config_handle an opaque pointer to Config object
-    * @param section will return value attached to a key from this section
-    * @param key will return value attached to this key
-    * @return double
-    **/
-	API
-    double plugin_config_get_double(ConfigHandle config_handle, const char *section, const char *key);
+/**
+* @brief From _loaded configuration, gets double value attached to given key.
+*
+* @param config_handle an opaque pointer to Config object
+* @param section will return value attached to a key from this section
+* @param key will return value attached to this key
+* @return double
+**/
+API
+double plugin_config_get_double(ConfigHandle config_handle, const char *section, const char *key);
 
-    /**
-     * @brief Checks wheteher config file has been loaded.
-     *
-     * @param config_handle an opaque pointer to Config object
-     * @return 0 if config is not loaded
-     *         1 if config is loaded
-     **/
-	API
-    bool plugin_config_is_loaded(ConfigHandle config_handle);
+/**
+* @brief Checks wheteher config file has been loaded.
+*
+* @param config_handle an opaque pointer to Config object
+* @return 0 if config is not loaded
+*         1 if config is loaded
+**/
+API
+bool plugin_config_is_loaded(ConfigHandle config_handle);
 
 #ifdef __cplusplus
 }

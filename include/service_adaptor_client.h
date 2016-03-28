@@ -44,8 +44,7 @@ extern "C" {
 /**
  * @brief Enumerations of result code for Service Adaptor
  */
-typedef enum
-{
+typedef enum {
 	SERVICE_ADAPTOR_ERROR_NONE			= TIZEN_ERROR_NONE,			/**< Success */
 	SERVICE_ADAPTOR_ERROR_NOT_SUPPORTED		= TIZEN_ERROR_NOT_SUPPORTED,		/**< Service plugin does not support API */
 	SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER		= TIZEN_ERROR_INVALID_PARAMETER,	/**< The parameter is invalid */
@@ -57,7 +56,7 @@ typedef enum
 	SERVICE_ADAPTOR_ERROR_PLUGIN_FAILED		= TIZEN_ERROR_SERVICE_ADAPTOR | 0x02,	/**< The error occured from Plugin, See detail from service_adaptor_get_last_result() and Plugin SPEC */
 	SERVICE_ADAPTOR_ERROR_NOT_AUTHORIZED		= TIZEN_ERROR_SERVICE_ADAPTOR | 0x03,	/**< Need Authorization */
 	SERVICE_ADAPTOR_ERROR_INVALID_STATE		= TIZEN_ERROR_SERVICE_ADAPTOR | 0x04,	/**< The handle state is invalid for processing API */
-}service_adaptor_error_e;
+} service_adaptor_error_e;
 
 /**
 * @brief The handle for connection and managing plugin handle of Service Adaptor
@@ -88,7 +87,7 @@ typedef bool (*service_adaptor_plugin_cb)(char *plugin_uri,
 						int service_mask,
 						void *user_data);
 /*==================================================================================================
-                                         FUNCTION PROTOTYPES
+					FUNCTION PROTOTYPES
 ==================================================================================================*/
 
 /**

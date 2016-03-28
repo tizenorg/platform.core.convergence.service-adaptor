@@ -32,8 +32,7 @@ extern "C"
 /**
  * @brief Enumerations of error code for Auth Adaptor
  */
-typedef enum auth_error_code_e
-{
+typedef enum auth_error_code_e {
 	AUTH_ADAPTOR_ERROR_NONE                      = 0,
 	AUTH_ADAPTOR_ERROR_LAUNCH                    = 1,    /**< 1 ~ 99: internal error*/
 	AUTH_ADAPTOR_ERROR_INIT                      = 2,
@@ -62,42 +61,41 @@ typedef enum auth_error_code_e
 /**
  * @brief Enumerations of error code for Auth Plugin Internal Error
  */
-typedef enum _auth_plugin_internal_error_code_e
-{
-        AUTH_PLUGIN_ERROR_HTTP_BAD_REQUEST           = 400,
-        AUTH_PLUGIN_ERROR_HTTP_UNAUTHORIZED          = 401,
-        AUTH_PLUGIN_ERROR_HTTP_FORBIDDEN             = 403,
-        AUTH_PLUGIN_ERROR_HTTP_NOT_FOUND             = 404,
-        AUTH_PLUGIN_ERROR_HTTP_METHOD_NOT_ALLOWED    = 405,
-        AUTH_PLUGIN_ERROR_HTTP_BAD_GATEWAY           = 502,
-        AUTH_PLUGIN_ERROR_HTTP_SERVICE_UNAVAILBLE    = 503,
-        AUTH_PLUGIN_ERROR_HTTP_INSUFFICIENT_AUTH     = 507,
-        AUTH_PLUGIN_ERROR_HTTP_ETC                   = 598,
-        AUTH_PLUGIN_ERROR_HTTP_UNKNOWN               = 599,
+typedef enum _auth_plugin_internal_error_code_e {
+	AUTH_PLUGIN_ERROR_HTTP_BAD_REQUEST           = 400,
+	AUTH_PLUGIN_ERROR_HTTP_UNAUTHORIZED          = 401,
+	AUTH_PLUGIN_ERROR_HTTP_FORBIDDEN             = 403,
+	AUTH_PLUGIN_ERROR_HTTP_NOT_FOUND             = 404,
+	AUTH_PLUGIN_ERROR_HTTP_METHOD_NOT_ALLOWED    = 405,
+	AUTH_PLUGIN_ERROR_HTTP_BAD_GATEWAY           = 502,
+	AUTH_PLUGIN_ERROR_HTTP_SERVICE_UNAVAILBLE    = 503,
+	AUTH_PLUGIN_ERROR_HTTP_INSUFFICIENT_AUTH     = 507,
+	AUTH_PLUGIN_ERROR_HTTP_ETC                   = 598,
+	AUTH_PLUGIN_ERROR_HTTP_UNKNOWN               = 599,
 
-        AUTH_PLUGIN_ERROR_CURL_COULDNT_CONNECT       = 601,
-        AUTH_PLUGIN_ERROR_CURL_TIMEOUT               = 602,
-        AUTH_PLUGIN_ERROR_CURL_ETC                   = 698,
-        AUTH_PLUGIN_ERROR_CURL_UNKNOWN               = 699,
+	AUTH_PLUGIN_ERROR_CURL_COULDNT_CONNECT       = 601,
+	AUTH_PLUGIN_ERROR_CURL_TIMEOUT               = 602,
+	AUTH_PLUGIN_ERROR_CURL_ETC                   = 698,
+	AUTH_PLUGIN_ERROR_CURL_UNKNOWN               = 699,
 
-        AUTH_PLUGIN_ERROR_FILE_OPEN_FAILED           = 701,
-        AUTH_PLUGIN_ERROR_FILE_NOT_EXIST             = 702,
-        AUTH_PLUGIN_ERROR_FILE_ETC                   = 798,
-        AUTH_PLUGIN_ERROR_FILE_UNKNOWN               = 799,
+	AUTH_PLUGIN_ERROR_FILE_OPEN_FAILED           = 701,
+	AUTH_PLUGIN_ERROR_FILE_NOT_EXIST             = 702,
+	AUTH_PLUGIN_ERROR_FILE_ETC                   = 798,
+	AUTH_PLUGIN_ERROR_FILE_UNKNOWN               = 799,
 
-        AUTH_PLUGIN_ERROR_MEMORY_ALLOCATION_FAILED   = 801,
-        AUTH_PLUGIN_ERROR_MEMORY_ETC                 = 898,
-        AUTH_PLUGIN_ERROR_MEMORY_UNKNOWN             = 899,
+	AUTH_PLUGIN_ERROR_MEMORY_ALLOCATION_FAILED   = 801,
+	AUTH_PLUGIN_ERROR_MEMORY_ETC                 = 898,
+	AUTH_PLUGIN_ERROR_MEMORY_UNKNOWN             = 899,
 
-        AUTH_PLUGIN_ERROR_THREAD_CREATE_FAILED       = 901,
-        AUTH_PLUGIN_ERROR_THREAD_STOPPED             = 902,
-        AUTH_PLUGIN_ERROR_THREAD_ETC                 = 908,
-        AUTH_PLUGIN_ERROR_THREAD_UNNOWN              = 909,
+	AUTH_PLUGIN_ERROR_THREAD_CREATE_FAILED       = 901,
+	AUTH_PLUGIN_ERROR_THREAD_STOPPED             = 902,
+	AUTH_PLUGIN_ERROR_THREAD_ETC                 = 908,
+	AUTH_PLUGIN_ERROR_THREAD_UNNOWN              = 909,
 
 	AUTH_PLUGIN_ERROR_CALLBACK_TIME_OUT	     = 997,
-        AUTH_PLUGIN_ERROR_ETC                        = 998,
-        AUTH_PLUGIN_ERROR_UNKNOWN                    = 999,
-}auth_plugin_internal_error_code_e;
+	AUTH_PLUGIN_ERROR_ETC                        = 998,
+	AUTH_PLUGIN_ERROR_UNKNOWN                    = 999,
+} auth_plugin_internal_error_code_e;
 
 /**
 * @brief The handle for Auth Plugin
@@ -112,43 +110,41 @@ typedef struct auth_adaptor_s *auth_adaptor_h;
 /**
 * @brief Describes infromation about Plugin Context
 */
-typedef struct auth_adaptor_plugin_context_s
-{
-	// Context variables
+typedef struct auth_adaptor_plugin_context_s {
+	/* Context variables */
 	int context_id;
 	auth_adaptor_plugin_h plugin_handle;
 
-	// User define (input by service-adaptor)
-        char    *user_id;
-        char    *user_password;
-        char    *app_id;
-        char    *app_secret;
+	/* User define (input by service-adaptor) */
+	char    *user_id;
+	char    *user_password;
+	char    *app_id;
+	char    *app_secret;
 	char	*service_name;
 
-	// Plugin define (input by plugin)
-        char    *plugin_uri;	// mandatory (package id)
-	void	*plugin_data;	// optional
+	/* Plugin define (input by plugin) */
+	char    *plugin_uri;	/* mandatory (package id) */
+	void	*plugin_data;	/* optional */
 
-	// Plugin define (input by server response after autholization)
-        char    *access_token;
+	/* Plugin define (input by server response after autholization) */
+	char    *access_token;
 	char	*refresh_token;
 	char	*uid;
 
-	// For product feature
+	/* For product feature */
 	char	*msisdn;
 	char	*imsi;
-        char    *plugin_name;
-//        char    *cluster_name;
+	char    *plugin_name;
+	/* char    *cluster_name; */
 } auth_adaptor_plugin_context_t;
 typedef struct auth_adaptor_plugin_context_s *auth_adaptor_plugin_context_h;
 
 /**
 * @brief Describes infromation about error code from plugin internal
 */
-typedef struct auth_adaptor_error_code_s
-{
-        int64_t code;
-        char    *msg;
+typedef struct auth_adaptor_error_code_s {
+	int64_t code;
+	char    *msg;
 } auth_adaptor_error_code_t;
 /**
 * @brief The handle for error code
@@ -163,9 +159,8 @@ typedef struct auth_adaptor_plugin_listener_s *auth_adaptor_plugin_listener_h;
 /**
 * @brief Describes infromation about Plugin Handle
 */
-typedef struct auth_adaptor_plugin_handle_s
-{
-	// Mandatory functions to handle plugin in adaptor
+typedef struct auth_adaptor_plugin_handle_s {
+	/* Mandatory functions to handle plugin in adaptor */
 	auth_error_code_t (*create_context)(auth_adaptor_plugin_context_h *context,
 							const char *user_id,
 							const char *user_password,
@@ -177,32 +172,32 @@ typedef struct auth_adaptor_plugin_handle_s
 	auth_error_code_t (*destroy_handle)(struct auth_adaptor_plugin_handle_s *handle);
 	auth_error_code_t (*set_listener)(auth_adaptor_plugin_listener_h listener);
 	auth_error_code_t (*unset_listener)(void);
-	// Mandatory end
+	/* Mandatory end */
 
-	// Optional
-        auth_error_code_t (*is_auth)(auth_adaptor_plugin_context_h context,
+	/* Optional */
+	auth_error_code_t (*is_auth)(auth_adaptor_plugin_context_h context,
 							void *request,
 							int *is_auth,
 							auth_adaptor_error_code_h *error,
 							void *response);
 
-        auth_error_code_t (*join)(auth_adaptor_plugin_context_h context,
+	auth_error_code_t (*join)(auth_adaptor_plugin_context_h context,
 							const char *device_id,
 							void *request,
 							auth_adaptor_error_code_h *error,
 							void *response);
 
-        auth_error_code_t (*login)(auth_adaptor_plugin_context_h context,
+	auth_error_code_t (*login)(auth_adaptor_plugin_context_h context,
 							void *request,
 							auth_adaptor_error_code_h *error,
 							void *response);
 
-        auth_error_code_t (*refresh_access_token)(auth_adaptor_plugin_context_h context,
+	auth_error_code_t (*refresh_access_token)(auth_adaptor_plugin_context_h context,
 							void *request,
 							auth_adaptor_error_code_h *error,
 							void *response);
 
-        auth_error_code_t (*set_service_status)(auth_adaptor_plugin_context_h context,
+	auth_error_code_t (*set_service_status)(auth_adaptor_plugin_context_h context,
 							const int service_id,
 							const int status,
 							void *request,
@@ -215,14 +210,14 @@ typedef struct auth_adaptor_plugin_handle_s
 							auth_adaptor_error_code_h *error,
 							void *response);
 
-        auth_error_code_t (*get_service_status)(auth_adaptor_plugin_context_h context,
+	auth_error_code_t (*get_service_status)(auth_adaptor_plugin_context_h context,
 							const int service_id,
 							void *request,
 							int *status,
 							auth_adaptor_error_code_h *error,
 							void *response);
 
-        auth_error_code_t (*get_service_policy)(auth_adaptor_plugin_context_h context,
+	auth_error_code_t (*get_service_policy)(auth_adaptor_plugin_context_h context,
 							const int service_id,
 							void *request,
 							char **default_status,
@@ -245,11 +240,11 @@ typedef struct auth_adaptor_plugin_handle_s
 							unsigned char **res_bundle_raw,
 							int *res_len,
 							auth_adaptor_error_code_h *error);
-	// Optional end
+	/* Optional end */
 
-	// Mandatory
-	char *plugin_uri;	// package id
-	// Mandatory end
+	/* Mandatory */
+	char *plugin_uri;	/* package id */
+	/* Mandatory end */
 
 } auth_adaptor_plugin_handle_t;
 typedef struct auth_adaptor_plugin_handle_s *auth_adaptor_plugin_handle_h;
@@ -269,8 +264,7 @@ typedef void (*auth_adaptor_service_login_reply_cb)(char *imsi,
 /**
 * @brief Describes infromation about Callback Listener (referenced by Service Adaptor)
 */
-typedef struct auth_adaptor_listener_s
-{
+typedef struct auth_adaptor_listener_s {
 /*
 	void (*login_reply)(char *imsi,
 							char *plugin_uri,
@@ -308,8 +302,7 @@ typedef void (*auth_adaptor_plugin_login_reply_cb)(auth_adaptor_plugin_context_h
 /**
 * @brief Describes infromation about Callback Listener (referenced by Auth Plugin)
 */
-typedef struct auth_adaptor_plugin_listener_s
-{
+typedef struct auth_adaptor_plugin_listener_s {
 	/*
 	auth_adaptor_plugin_login_reply_cb		auth_adaptor_login_reply;
 	*/
@@ -323,7 +316,7 @@ int auth_adaptor_load_plugin(auth_adaptor_h adaptor,
 						const char *plugin_path);
 
 
-// For 3rd party plugin packages
+/* For 3rd party plugin packages */
 EXPORT_API
 int auth_adaptor_load_plugin_from_package(auth_adaptor_h adaptor,
 						const char *package_id,
@@ -419,9 +412,9 @@ auth_adaptor_plugin_h auth_adaptor_get_plugin_by_name(auth_adaptor_h adaptor,
 EXPORT_API
 GList *auth_adaptor_get_plugins(auth_adaptor_h adaptor);
 
-////////////////////////////////////////////////////////////
-// Adaptor get Element Functions
-////////////////////////////////////////////////////////////
+/**********************************************************/
+/* Adaptor get Element Functions                          */
+/**********************************************************/
 
 /*
  * @brief	Get Access token allocated by 'strdup'(Use after 'auth_adaptor_login' function)
@@ -444,9 +437,9 @@ char *auth_adaptor_get_uid_dup(auth_adaptor_plugin_context_h context);
 EXPORT_API
 char *auth_adaptor_get_msisdn_dup(auth_adaptor_plugin_context_h context);
 
-////////////////////////////////////////////////////////////
-// Adaptor Plugin call Functions
-////////////////////////////////////////////////////////////
+/**********************************************************/
+/* Adaptor Plugin call Functions                          */
+/**********************************************************/
 
 /**
 * @brief Check Account Registration [Sync API]

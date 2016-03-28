@@ -36,7 +36,7 @@
 
 /* These defines must be located before #include <dlog.h> */
 #define TIZEN_ENGINEER_MODE
-// TODO: Investigate why this macro is defined somewhere else
+/* TODO: Investigate why this macro is defined somewhere else */
 #ifndef TIZEN_DEBUG_ENABLE
 #define TIZEN_DEBUG_ENABLE
 #endif
@@ -86,11 +86,11 @@ extern "C"
  *  @param[out] val  Value to be returned when expression is true
  */
 #define sac_retv_if(expr, val) do { \
-            if(expr) { \
-                LOGE(FONT_COLOR_PURPLE"[%d]"FONT_COLOR_RESET, sac_gettid());    \
-                return (val); \
-            } \
-        } while (0)
+	if (expr) { \
+		LOGE(FONT_COLOR_PURPLE"[%d]"FONT_COLOR_RESET, sac_gettid());    \
+		return (val); \
+		} \
+	} while (0)
 
 /**
  * @brief Prints debug messages
@@ -98,8 +98,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define sac_debug(fmt, arg...) do { \
-            LOGD(FONT_COLOR_GREEN"[%d]"fmt""FONT_COLOR_RESET, sac_gettid(), ##arg);     \
-        } while (0)
+		LOGD(FONT_COLOR_GREEN"[%d]"fmt""FONT_COLOR_RESET, sac_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints info messages
@@ -107,8 +107,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define sac_info(fmt, arg...) do { \
-            LOGI(FONT_COLOR_BLUE"[%d]"fmt""FONT_COLOR_RESET, sac_gettid() ,##arg);     \
-        } while (0)
+		LOGI(FONT_COLOR_BLUE"[%d]"fmt""FONT_COLOR_RESET, sac_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints warning messages
@@ -116,8 +116,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define sac_warning(fmt, arg...) do { \
-            LOGW(FONT_COLOR_YELLOW"[%d]"fmt""FONT_COLOR_RESET,sac_gettid(), ##arg);     \
-        } while (0)
+		LOGW(FONT_COLOR_YELLOW"[%d]"fmt""FONT_COLOR_RESET, sac_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints error messages
@@ -125,8 +125,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define sac_error(fmt, arg...) do { \
-            LOGE(FONT_COLOR_RED"[%d]"fmt""FONT_COLOR_RESET,sac_gettid(), ##arg);     \
-        } while (0)
+		LOGE(FONT_COLOR_RED"[%d]"fmt""FONT_COLOR_RESET, sac_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints fatal messages
@@ -134,8 +134,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define sac_fatal(fmt, arg...) do { \
-            LOGF(FONT_COLOR_BOLDRED"[%d]"fmt""FONT_COLOR_RESET,sac_gettid(), ##arg);     \
-        } while (0)
+		LOGF(FONT_COLOR_BOLDRED"[%d]"fmt""FONT_COLOR_RESET, sac_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints debug message on entry to particular function
@@ -143,8 +143,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define sac_debug_func(fmt, arg...) do { \
-            LOGD(FONT_COLOR_CYAN"[%d]"fmt""FONT_COLOR_RESET, sac_gettid(), ##arg);     \
-        } while (0)
+		LOGD(FONT_COLOR_CYAN"[%d]"fmt""FONT_COLOR_RESET, sac_gettid(), ##arg);     \
+	} while (0)
 
 #define sac_api_start()	do { \
 			sac_info("API start <%s>", __FUNCTION__); \
@@ -158,10 +158,10 @@ extern "C"
 			sac_info("API end <%s> : %d", __FUNCTION__, (int)ret); \
 		} while (0)
 
-#define FUNC_START()	do{sac_debug_func(FONT_COLOR_BOLDBLACK">>>>>>>> Start\n%s"FONT_COLOR_RESET, __FUNCTION__);}while(0)
-#define FUNC_STEP()	do{sac_debug_func(FONT_COLOR_BOLDBLACK"====== Step\n%s"FONT_COLOR_RESET, __FUNCTION__);}while(0)
-#define FUNC_STOP()	do{sac_debug_func(FONT_COLOR_BOLDBLACK"<<==<<== Stop\n%s"FONT_COLOR_RESET, __FUNCTION__);}while(0)
-#define FUNC_END()	do{sac_debug_func(FONT_COLOR_BOLDBLACK"<<<<<<<< End\n%s"FONT_COLOR_RESET, __FUNCTION__);}while(0)
+#define FUNC_START()	do { sac_debug_func(FONT_COLOR_BOLDBLACK">>>>>>>> Start\n%s"FONT_COLOR_RESET, __FUNCTION__); } while (0)
+#define FUNC_STEP()	do { sac_debug_func(FONT_COLOR_BOLDBLACK"====== Step\n%s"FONT_COLOR_RESET, __FUNCTION__); } while (0)
+#define FUNC_STOP()	do { sac_debug_func(FONT_COLOR_BOLDBLACK"<<==<<== Stop\n%s"FONT_COLOR_RESET, __FUNCTION__); } while (0)
+#define FUNC_END()	do { sac_debug_func(FONT_COLOR_BOLDBLACK"<<<<<<<< End\n%s"FONT_COLOR_RESET, __FUNCTION__); } while (0)
 
 
 #ifdef __cplusplus

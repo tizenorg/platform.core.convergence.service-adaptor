@@ -31,9 +31,9 @@
 	#define DLL_LOCAL
 #else
 	#if __GNUC__ >= 4
-		#define DLL_IMPORT __attribute__ ((visibility ("default")))
-		#define DLL_EXPORT __attribute__ ((visibility ("default")))
-		#define DLL_LOCAL  __attribute__ ((visibility ("hidden")))
+		#define DLL_IMPORT __attribute__ ((visibility("default")))
+		#define DLL_EXPORT __attribute__ ((visibility("default")))
+		#define DLL_LOCAL  __attribute__ ((visibility("hidden")))
 	#else
 		#define DLL_IMPORT
 		#define DLL_EXPORT
@@ -61,14 +61,13 @@
 /**
 * @brief Describes infromation about Service Adaptor
 */
-struct _service_adaptor_s
-{
+struct _service_adaptor_s {
 	void *on_signal;
 
-//	struct _service_plugin_s **plugins; //TODO
-//	int plugin_count;	// TODO
+/*	struct _service_plugin_s **plugins;  */
+/*	int plugin_count;	/* TODO */
 
-/////////////////////// private feature
+/*  private feature start */
 	char *service_name;			/**< specifies status as none*/
 	char *user_id;				/**< specifies status as none*/
 	char *app_id;				/**< specifies status as none*/
@@ -77,23 +76,20 @@ struct _service_adaptor_s
 	GMutex set_auth_mutex;
 
 	service_adaptor_plugin_s *plugin;	/**< specifies status as none*/
-/////////////////////// private feature
+/* private feature end */
 };
 
-typedef struct _plugin_entry_s
-{
+typedef struct _plugin_entry_s {
 	char *plugin_uri;
 	int installed_mask;
-}plugin_entry_t;
+} plugin_entry_t;
 
-typedef enum _client_app_type_e
-{
+typedef enum _client_app_type_e {
 	CLIENT_APP_TYPE_APPLICATION = 1,
 	CLIENT_APP_TYPE_ETC = 0,
-}client_app_type_e;
+} client_app_type_e;
 
-struct _service_plugin_s
-{
+struct _service_plugin_s {
 	struct _service_adaptor_s *adaptor;
 
 	char *service_handle_name;
@@ -131,7 +127,7 @@ typedef struct _service_adaptor_s service_adaptor_s;
 
 typedef struct _service_plugin_s service_plugin_s;
 
-void _service_adaptor_set_last_result (int code, const char *message);
+void _service_adaptor_set_last_result(int code, const char *message);
 
 #define service_adaptor_set_last_result(code, msg)	do { \
 								sac_error("Error occured (%d)(%s)", (int)(code), (msg)); \

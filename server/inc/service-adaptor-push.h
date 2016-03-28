@@ -21,8 +21,7 @@
 #include "push-adaptor.h"
 
 
-typedef struct _push_activate_s
-{
+typedef struct _push_activate_s {
 	/* service_file_name (unique) */
 	char *file_name;
 

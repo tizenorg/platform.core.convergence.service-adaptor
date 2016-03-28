@@ -35,10 +35,9 @@ extern "C"
 /**
  * @brief Describes infromation about Plugin Handle
  */
-typedef struct _service_provider_s
-{
-	service_adaptor_error_e (*connect)(void);
-	service_adaptor_error_e (*disconnect)(void);
+typedef struct _service_provider_s {
+	service_adaptor_error_e(*connect)(void);
+	service_adaptor_error_e(*disconnect)(void);
 
 	auth_provider_h auth_provider;
 	storage_provider_h storage_provider;

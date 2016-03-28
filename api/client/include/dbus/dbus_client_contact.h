@@ -36,8 +36,7 @@
 
 #define CONTACT_PROFILE_IMAGE_PATH_LEN	2048
 
-typedef struct _service_adaptor_profile_image_s
-{
+typedef struct _service_adaptor_profile_image_s {
 	service_adaptor_contact_request_type_e type;
 	int index;
 	char path[CONTACT_PROFILE_IMAGE_PATH_LEN];

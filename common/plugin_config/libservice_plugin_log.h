@@ -36,7 +36,7 @@
 
 /* These defines must be located before #include <dlog.h> */
 #define TIZEN_ENGINEER_MODE
-// TODO: Investigate why this macro is defined somewhere else
+/* TODO: Investigate why this macro is defined somewhere else */
 #ifndef TIZEN_DEBUG_ENABLE
 #define TIZEN_DEBUG_ENABLE
 #endif
@@ -54,9 +54,9 @@ extern "C"
 {
 #endif /* __cplusplus */
 
-	/**
-	 *  Colors of font
-	 */
+/**
+ *  Colors of font
+ */
 #define FONT_COLOR_RESET      "\033[0m"
 #define FONT_COLOR_BLACK      "\033[30m"             /* Black */
 #define FONT_COLOR_RED        "\033[31m"             /* Red */
@@ -86,11 +86,11 @@ extern "C"
  *  @param[out] val  Value to be returned when expression is true
  */
 #define LSP_LOG_retv_if(expr, val) do { \
-            if(expr) { \
-                LOGE(FONT_COLOR_PURPLE"[%d]"FONT_COLOR_RESET, LSP_LOG_gettid());    \
-                return (val); \
-            } \
-        } while (0)
+		if (expr) { \
+			LOGE(FONT_COLOR_PURPLE"[%d]"FONT_COLOR_RESET, LSP_LOG_gettid());    \
+			return (val); \
+		} \
+	} while (0)
 
 /**
  * @brief Prints debug messages
@@ -98,8 +98,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define LSP_LOG_debug(fmt, arg...) do { \
-            LOGD(FONT_COLOR_GREEN"[%d]"fmt""FONT_COLOR_RESET, LSP_LOG_gettid(), ##arg);     \
-        } while (0)
+		LOGD(FONT_COLOR_GREEN"[%d]"fmt""FONT_COLOR_RESET, LSP_LOG_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints info messages
@@ -107,8 +107,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define LSP_LOG_info(fmt, arg...) do { \
-            LOGI(FONT_COLOR_BLUE"[%d]"fmt""FONT_COLOR_RESET, LSP_LOG_gettid() ,##arg);     \
-        } while (0)
+		LOGI(FONT_COLOR_BLUE"[%d]"fmt""FONT_COLOR_RESET, LSP_LOG_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints warning messages
@@ -116,8 +116,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define LSP_LOG_warning(fmt, arg...) do { \
-            LOGW(FONT_COLOR_YELLOW"[%d]"fmt""FONT_COLOR_RESET,LSP_LOG_gettid(), ##arg);     \
-        } while (0)
+		LOGW(FONT_COLOR_YELLOW"[%d]"fmt""FONT_COLOR_RESET, LSP_LOG_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints error messages
@@ -125,8 +125,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define LSP_LOG_error(fmt, arg...) do { \
-            LOGE(FONT_COLOR_RED"[%d]"fmt""FONT_COLOR_RESET,LSP_LOG_gettid(), ##arg);     \
-        } while (0)
+		LOGE(FONT_COLOR_RED"[%d]"fmt""FONT_COLOR_RESET, LSP_LOG_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints fatal messages
@@ -134,8 +134,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define LSP_LOG_fatal(fmt, arg...) do { \
-            LOGF(FONT_COLOR_BOLDRED"[%d]"fmt""FONT_COLOR_RESET,LSP_LOG_gettid(), ##arg);     \
-        } while (0)
+		LOGF(FONT_COLOR_BOLDRED"[%d]"fmt""FONT_COLOR_RESET, LSP_LOG_gettid(), ##arg);     \
+	} while (0)
 
 /**
  * @brief Prints debug message on entry to particular function
@@ -143,8 +143,8 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define LSP_LOG_debug_func(fmt, arg...) do { \
-            LOGD(FONT_COLOR_CYAN"[%d]"fmt""FONT_COLOR_RESET, LSP_LOG_gettid(), ##arg);     \
-        } while (0)
+		LOGD(FONT_COLOR_CYAN"[%d]"fmt""FONT_COLOR_RESET, LSP_LOG_gettid(), ##arg);     \
+	} while (0)
 
 #ifdef __cplusplus
 }

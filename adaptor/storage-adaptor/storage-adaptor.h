@@ -36,8 +36,7 @@ extern "C"
 /**
  * Storage adaptor error code
  */
-typedef enum storage_error_code_e
-{
+typedef enum storage_error_code_e {
 	STORAGE_ADAPTOR_ERROR_NONE			= 0,
 	STORAGE_ADAPTOR_ERROR_LAUNCH                    = 1,    /**< 1 ~ 99: internal error*/
 	STORAGE_ADAPTOR_ERROR_INIT                      = 2,
@@ -66,16 +65,15 @@ typedef enum storage_error_code_e
 /**
  * Storage adaptor error code
  */
-typedef enum _storage_plugin_internal_error_code_e
-{
-	STORAGE_PLUGIN_ERROR_HTTP_BAD_REQUEST	 	= 400,
-	STORAGE_PLUGIN_ERROR_HTTP_UNAUTHORIZED	 	= 401,
+typedef enum _storage_plugin_internal_error_code_e {
+	STORAGE_PLUGIN_ERROR_HTTP_BAD_REQUEST		= 400,
+	STORAGE_PLUGIN_ERROR_HTTP_UNAUTHORIZED		= 401,
 	STORAGE_PLUGIN_ERROR_HTTP_FORBIDDEN		= 403,
 	STORAGE_PLUGIN_ERROR_HTTP_NOT_FOUND		= 404,
 	STORAGE_PLUGIN_ERROR_HTTP_METHOD_NOT_ALLOWED	= 405,
-	STORAGE_PLUGIN_ERROR_HTTP_BAD_GATEWAY	 	= 502,
+	STORAGE_PLUGIN_ERROR_HTTP_BAD_GATEWAY		= 502,
 	STORAGE_PLUGIN_ERROR_HTTP_SERVICE_UNAVAILBLE	= 503,
-	STORAGE_PLUGIN_ERROR_HTTP_INSUFFICIENT_STORAGE 	= 507,
+	STORAGE_PLUGIN_ERROR_HTTP_INSUFFICIENT_STORAGE	= 507,
 	STORAGE_PLUGIN_ERROR_HTTP_ETC			= 598,
 	STORAGE_PLUGIN_ERROR_HTTP_UNKNOWN		= 599,
 
@@ -87,8 +85,8 @@ typedef enum _storage_plugin_internal_error_code_e
 	STORAGE_PLUGIN_ERROR_FILE_OPEN_FAILED		= 701,
 	STORAGE_PLUGIN_ERROR_FILE_NOT_EXIST		= 702,
 	STORAGE_PLUGIN_ERROR_FILE_TRANSFER_CANCELED	= 703,
-	STORAGE_PLUGIN_ERROR_FILE_AREADY_EXIST		= 704, // EEXIST
-	STORAGE_PLUGIN_ERROR_FILE_ACCESS_DENIED		= 705, // EACCES
+	STORAGE_PLUGIN_ERROR_FILE_AREADY_EXIST		= 704, /* EEXIST */
+	STORAGE_PLUGIN_ERROR_FILE_ACCESS_DENIED		= 705, /* EACCES */
 	STORAGE_PLUGIN_ERROR_FILE_ETC			= 798,
 	STORAGE_PLUGIN_ERROR_FILE_UNKNOWN		= 799,
 
@@ -107,29 +105,27 @@ typedef enum _storage_plugin_internal_error_code_e
 /**
  * Storage adaptor status code
  */
-typedef enum _storage_adaptor_transfer_state_e
-{
+typedef enum _storage_adaptor_transfer_state_e {
 	STORAGE_ADAPTOR_TRANSFER_STATE_IN_PROGRESS	= 1,
 	STORAGE_ADAPTOR_TRANSFER_STATE_FINISHED		= 2,
-	STORAGE_ADAPTOR_TRANSFER_STATE_CANCELED		= 3,	// canceled by request
-	STORAGE_ADAPTOR_TRANSFER_STATE_FAILED		= 4,	// canceled by system
+	STORAGE_ADAPTOR_TRANSFER_STATE_CANCELED		= 3,	/* canceled by request */
+	STORAGE_ADAPTOR_TRANSFER_STATE_FAILED		= 4,	/* canceled by system */
 
-	STORAGE_ADAPTOR_TRANSFER_STATE_RESUME,	// not use this version yet (Next feature)
-	STORAGE_ADAPTOR_TRANSFER_STATE_PAUSED,	// not use this version yet (Next feature)
+	STORAGE_ADAPTOR_TRANSFER_STATE_RESUME,	/* not use this version yet (Next feature) */
+	STORAGE_ADAPTOR_TRANSFER_STATE_PAUSED,	/* not use this version yet (Next feature) */
 
-	// Private feature
+	/* Private feature */
 	STORAGE_ADAPTOR_TRANSFER_STATUS_PROGRESS	= 1,
 	STORAGE_ADAPTOR_TRANSFER_STATUS_RESUME		= 1,
 	STORAGE_ADAPTOR_TRANSFER_STATUS_PAUSE		= 2,
-	STORAGE_ADAPTOR_TRANSFER_STATUS_CANCEL		= 3,	// canceled by request
-	STORAGE_ADAPTOR_TRANSFER_STATUS_STOPPED		= 4,	// canceled by system
+	STORAGE_ADAPTOR_TRANSFER_STATUS_CANCEL		= 3,	/* canceled by request */
+	STORAGE_ADAPTOR_TRANSFER_STATUS_STOPPED		= 4,	/* canceled by system */
 	STORAGE_ADAPTOR_TRANSFER_STATUS_FINISHED	= 5
 } storage_adaptor_transfer_state_e;
 
 typedef storage_adaptor_transfer_state_e storage_adaptor_transfer_status_e;
 
-typedef enum
-{
+typedef enum {
 	STORAGE_ADAPTOR_FILE_ACCESS_READ	= O_RDONLY,
 	STORAGE_ADAPTOR_FILE_ACCESS_WRITE	= O_WRONLY|O_CREAT|O_EXCL,
 } storage_adaptor_file_access_mode_e;
@@ -137,9 +133,8 @@ typedef enum
 /**
  * Storage adaptor content type
  */
-typedef enum _storage_adaptor_content_type_e
-{
-	STORAGE_ADAPTOR_CONTENT_TYPE_DEFAULT		= -1,	// initalize value
+typedef enum _storage_adaptor_content_type_e {
+	STORAGE_ADAPTOR_CONTENT_TYPE_DEFAULT		= -1,	/* initalize value */
 
 	STORAGE_ADAPTOR_CONTENT_TYPE_IMGAE		= 160,
 	STORAGE_ADAPTOR_CONTENT_TYPE_VIDEO		= 161,
@@ -176,13 +171,12 @@ typedef struct storage_adaptor_s *storage_adaptor_h;
 /**
  * Storage adaptor plugin context structure
  */
-typedef struct storage_adaptor_plugin_context_s
-{
-	// Context variables
+typedef struct storage_adaptor_plugin_context_s {
+	/* Context variables */
 	int context_id;
 	storage_adaptor_plugin_h plugin_handle;
 
-	// User define (input by service-adaptor)
+	/* User define (input by service-adaptor) */
 	char *app_id;
 	char *app_secret;
 	char *access_token;
@@ -190,24 +184,22 @@ typedef struct storage_adaptor_plugin_context_s
 	char *uid;
 	char *service_name;
 
-	// Plugin define (input by plugin)
-	char *plugin_uri;	// mandatory (package id)
-	void *plugin_data;	// optional
+	/* Plugin define (input by plugin) */
+	char *plugin_uri;	/* mandatory (package id) */
+	void *plugin_data;	/* optional */
 } storage_adaptor_plugin_context_t;
 typedef struct storage_adaptor_plugin_context_s *storage_adaptor_plugin_context_h;
 
 /**
  * Structure for error code from server
  */
-typedef struct storage_adaptor_error_code_s
-{
+typedef struct storage_adaptor_error_code_s {
 	int64_t	code;
 	char	*msg;
 } storage_adaptor_error_code_t;
 typedef struct storage_adaptor_error_code_s *storage_adaptor_error_code_h;
 
-typedef struct _storage_adaptor_media_meta_s
-{
+typedef struct _storage_adaptor_media_meta_s {
 	char *mime_type;
 	char *title;
 	char *album;
@@ -228,20 +220,18 @@ typedef struct _storage_adaptor_media_meta_s
 	char *extra_media_meta;
 } storage_adaptor_media_meta_s;
 
-typedef struct _storage_adaptor_cloud_meta_s
-{
+typedef struct _storage_adaptor_cloud_meta_s {
 	char *service_name;
 	unsigned long long usage_byte;
 	unsigned long long quota_byte;
 	char *extra_cloud_meta;
 } storage_adaptor_cloud_meta_s;
 
-// private only!!
+/* private only!! */
 /**
  * Structure Storage File Share token Infomation
  */
-typedef struct storage_adaptor_file_share_token_s
-{
+typedef struct storage_adaptor_file_share_token_s {
 	char *public_token;
 	char *auth_code;
 } storage_adaptor_file_share_token_t;
@@ -250,16 +240,15 @@ typedef struct storage_adaptor_file_share_token_s *storage_adaptor_file_share_to
 /**
  * Structure Storage File Infomation
  */
-typedef struct storage_adaptor_file_info_s
-{
-	// Common
+typedef struct storage_adaptor_file_info_s {
+	/* Common */
 	char    *plugin_uri;		/**< specifies plugin name generated file_info */
 	char    *object_id;		/**< specifies file object id be used in storage */
 	char    *storage_path;		/**< specifies file path in storage */
 	unsigned long long file_size;	/**< specifies file size (recomend byte)*/
 	int     file_info_index;	/**< specifies file info index (wide use; e.g : chunk upload, multi download)*/
 
-	// private only!!
+	/* private only!! */
 	int	revision;
 	unsigned long long timestamp;
 	char	*type;
@@ -271,7 +260,7 @@ typedef struct storage_adaptor_file_info_s
 	storage_adaptor_file_share_token_h file_share_token;
 
 
-	// public defined
+	/* public defined */
 	unsigned long long created_time;	/**< specifies timestamp */
 	unsigned long long modified_time;	/**< specifies timestamp */
 	storage_adaptor_content_type_e content_type;
@@ -290,9 +279,8 @@ typedef struct storage_adaptor_plugin_listener_s *storage_adaptor_plugin_listene
 /**
  * Storage adaptor plugin handle
  */
-typedef struct storage_adaptor_plugin_handle_s
-{
-	// Mandatory functions to handle plugin in adaptor
+typedef struct storage_adaptor_plugin_handle_s {
+	/* Mandatory functions to handle plugin in adaptor */
 	storage_error_code_t (*create_context)(storage_adaptor_plugin_context_h *context,
 							const char *app_id,
 							const char *app_secret,
@@ -303,22 +291,22 @@ typedef struct storage_adaptor_plugin_handle_s
 	storage_error_code_t (*destroy_handle)(struct storage_adaptor_plugin_handle_s *handle);
 	storage_error_code_t (*set_listener)(storage_adaptor_plugin_listener_h listener);
 	storage_error_code_t (*unset_listener)(void);
-	// Mandatory end
+	/* Mandatory end */
 
-	// Optional
+	/* Optional */
 
-	storage_error_code_t (*open_file) (storage_adaptor_plugin_context_h context,		// Do Not define from plugin (TBD)
+	storage_error_code_t (*open_file) (storage_adaptor_plugin_context_h context,		/* Do Not define from plugin (TBD) */
 							const char *file_path,
 							storage_adaptor_file_access_mode_e mode,
 							int *file_descriptor,
 							storage_adaptor_error_code_h *error);
 
-	storage_error_code_t (*close_file) (storage_adaptor_plugin_context_h context,		// Do Not define from plugin (TBD)
+	storage_error_code_t (*close_file) (storage_adaptor_plugin_context_h context,		/* Do Not define from plugin (TBD) */
 							int file_descriptor,
 							storage_adaptor_error_code_h *error);
 
 	storage_error_code_t (*start_upload_task)(storage_adaptor_plugin_context_h context,
-							int src_file_descriptor,		// read only opened
+							int src_file_descriptor,		/* read only opened */
 							const char *upload_dir_path,
 							const char *file_name,
 							bool need_progress,
@@ -328,7 +316,7 @@ typedef struct storage_adaptor_plugin_handle_s
 	storage_error_code_t (*start_download_task)(storage_adaptor_plugin_context_h context,
 							const char *storage_dir_path,
 							const char *file_name,
-							int dst_file_descriptor,		// write only opened
+							int dst_file_descriptor,		/* write only opened */
 							bool need_progress,
 							storage_adaptor_error_code_h *error,
 							void *user_data);
@@ -336,8 +324,8 @@ typedef struct storage_adaptor_plugin_handle_s
 	storage_error_code_t (*start_download_thumb_task)(storage_adaptor_plugin_context_h context,
 							const char *storage_dir_path,
 							const char *file_name,
-							int dst_file_descriptor,		// write only opened
-							int thumbnail_size,			// level (defined plugin SPEC)
+							int dst_file_descriptor,		/* write only opened */
+							int thumbnail_size,			/* level (defined plugin SPEC) */
 							bool need_progress,
 							storage_adaptor_error_code_h *error,
 							void *user_data);
@@ -354,21 +342,21 @@ typedef struct storage_adaptor_plugin_handle_s
 							int file_descriptor,
 							storage_adaptor_error_code_h *error);
 
-	// common (yet)
+	/* common (yet) */
 	storage_error_code_t (*set_server_info)(storage_adaptor_plugin_context_h context,
 							GHashTable *server_info,
 							void *request,
 							storage_adaptor_error_code_h *error,
 							void *response);
-	// Optional end
-	// common
+	/* Optional end */
+	/* common */
 	storage_error_code_t (*get_root_folder_path)(storage_adaptor_plugin_context_h context,
 							void *request,
 							char **root_folder_path,
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*list)(storage_adaptor_plugin_context_h context,
 							const char *parent_folder_storage_path,
 							const char *folder_name,
@@ -378,7 +366,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*make_directory)(storage_adaptor_plugin_context_h context,
 							const char *parent_folder_storage_path,
 							const char *folder_name,
@@ -387,7 +375,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*upload_file_sync)(storage_adaptor_plugin_context_h context,
 							const char *parent_folder_storage_path,
 							const char *file_name,
@@ -398,7 +386,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*download_file_sync)(storage_adaptor_plugin_context_h context,
 							const char *parent_folder_storage_path,
 							const char *file_name,
@@ -407,7 +395,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*download_thumbnail)(storage_adaptor_plugin_context_h context,
 							const char *folder_path,
 							const char *file_name,
@@ -417,7 +405,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*delete_file)(storage_adaptor_plugin_context_h context,
 							const char *parent_folder_storage_path,
 							const char *file_name,
@@ -426,7 +414,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*remove_directory)(storage_adaptor_plugin_context_h context,
 							const char *parent_folder_storage_path,
 							const char *folder_name,
@@ -435,7 +423,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*move_file)(storage_adaptor_plugin_context_h context,
 							const char *parent_folder_storage_path,
 							const char *file_name,
@@ -446,7 +434,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*move_directory)(storage_adaptor_plugin_context_h context,
 							const char *parent_folder_storage_path,
 							const char *folder_name,
@@ -457,7 +445,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*set_transfer_state)(storage_adaptor_plugin_context_h context,
 							void *transfer_request_id,
 							storage_adaptor_transfer_state_e state,
@@ -465,7 +453,7 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// common
+	/* common */
 	storage_error_code_t (*get_transfer_state)(storage_adaptor_plugin_context_h context,
 							void *transfer_request_id,
 							void *request,
@@ -740,11 +728,11 @@ typedef struct storage_adaptor_plugin_handle_s
 							storage_adaptor_error_code_h *error,
 							void *response);
 
-	// Optional end
+	/* Optional end */
 
-	// Mandatory
-	char *plugin_uri;	// get from config file
-	// Mandatory end
+	/* Mandatory */
+	char *plugin_uri;	/* get from config file */
+	/* Mandatory end */
 
 } storage_adaptor_plugin_handle_t;
 typedef struct storage_adaptor_plugin_handle_s *storage_adaptor_plugin_handle_h;
@@ -753,7 +741,7 @@ typedef struct storage_adaptor_plugin_handle_s *storage_adaptor_plugin_handle_h;
  * Callback function variable for service adaptor
  */
 
-// private feature
+/* private feature */
 typedef void (*storage_adaptor_service_download_file_async_reply_cb)(void *transfer_request_id,
 						char *download_file_local_path,
 						storage_adaptor_error_code_h error,
@@ -770,7 +758,7 @@ typedef void (*storage_adaptor_service_file_transfer_progress_reply_cb)(void *tr
 						storage_adaptor_error_code_h error,
 						void *response);
 
-// public feature
+/* public feature */
 typedef void (*storage_adaptor_service_download_state_changed_reply_cb)(long long int file_descriptor,
 						storage_adaptor_transfer_state_e state,
 						storage_adaptor_error_code_h error,
@@ -792,9 +780,8 @@ typedef void (*storage_adaptor_service_task_progress_reply_cb)(long long int fil
  * Storage adaptor listener for service adaptor
  * Listener is used by service adaptor
  */
-typedef struct storage_adaptor_listener_s
-{
-// private feature
+typedef struct storage_adaptor_listener_s {
+/*/ private feature */
 	void (*download_file_async_reply)(void *transfer_request_id,
 							char *download_file_local_path,
 							storage_adaptor_error_code_h error,
@@ -811,7 +798,7 @@ typedef struct storage_adaptor_listener_s
 							storage_adaptor_error_code_h error,
 							void *response);
 
-// public feature
+/* public feature */
 	void (*download_state_changed_reply)(long long int file_descriptor,
 						storage_adaptor_transfer_state_e state,
 						storage_adaptor_error_code_h error,
@@ -834,7 +821,7 @@ typedef struct storage_adaptor_listener_s *storage_adaptor_listener_h;
  * Callback function variables for plugins
  * These callbacks are expected to be support by plugins
  */
-// private feature
+/* private feature */
 typedef void (*storage_adaptor_plugin_download_file_async_reply_cb)(void *transfer_request_id,
 						char *download_file_local_path,
 						storage_adaptor_error_code_h error,
@@ -851,7 +838,7 @@ typedef void (*storage_adaptor_plugin_file_transfer_progress_reply_cb)(void *tra
 						storage_adaptor_error_code_h error,
 						void *response);
 
-// public feature
+/* public feature */
 typedef void (*storage_adaptor_plugin_download_state_changed_reply_cb)(int file_descriptor,
 						storage_adaptor_transfer_state_e state,
 						storage_adaptor_error_code_h error,
@@ -873,17 +860,16 @@ typedef void (*storage_adaptor_plugin_task_progress_reply_cb)(int file_descripto
  * Storage adaptor listener for plugins
  * Listener is used by plugins
  */
-typedef struct storage_adaptor_plugin_listener_s
-{
-// private feature
+typedef struct storage_adaptor_plugin_listener_s {
+/* private feature */
 	storage_adaptor_plugin_download_file_async_reply_cb	storage_adaptor_download_file_async_reply;
-	storage_adaptor_plugin_upload_file_async_reply_cb 	storage_adaptor_upload_file_async_reply;
-	storage_adaptor_plugin_file_transfer_progress_reply_cb 	storage_adaptor_file_transfer_progress_reply;
+	storage_adaptor_plugin_upload_file_async_reply_cb	storage_adaptor_upload_file_async_reply;
+	storage_adaptor_plugin_file_transfer_progress_reply_cb	storage_adaptor_file_transfer_progress_reply;
 
-// public feature
+/* public feature */
 	storage_adaptor_plugin_download_state_changed_reply_cb	storage_adaptor_download_state_changed_reply;
-	storage_adaptor_plugin_upload_state_changed_reply_cb 	storage_adaptor_upload_state_changed_reply;
-	storage_adaptor_plugin_task_progress_reply_cb 	storage_adaptor_task_progress_reply;
+	storage_adaptor_plugin_upload_state_changed_reply_cb	storage_adaptor_upload_state_changed_reply;
+	storage_adaptor_plugin_task_progress_reply_cb	storage_adaptor_task_progress_reply;
 } storage_adaptor_plugin_listener_t;
 
 /**
@@ -893,7 +879,7 @@ EXPORT_API
 int storage_adaptor_load_plugin(storage_adaptor_h,
 						const char *plugin_path);
 
-// For 3rd party plugin packages
+/* For 3rd party plugin packages */
 EXPORT_API
 int storage_adaptor_load_plugin_from_package(storage_adaptor_h adaptor,
 						const char *package_id,
@@ -1013,9 +999,9 @@ storage_adaptor_plugin_h storage_adaptor_get_plugin_by_name(storage_adaptor_h ad
 EXPORT_API
 GList *storage_adaptor_get_plugins(storage_adaptor_h adaptor);
 
-////////////////////////////////////////////////////////////
-// Adaptor Util Functions
-////////////////////////////////////////////////////////////
+/**********************************************************/
+/* Adaptor Util Functions                                 */
+/**********************************************************/
 EXPORT_API
 storage_adaptor_file_info_h storage_adaptor_create_file_info(void);
 
@@ -1023,9 +1009,9 @@ EXPORT_API
 int storage_adaptor_destroy_file_info(storage_adaptor_file_info_h *file_info);
 
 
-////////////////////////////////////////////////////////////
-// Adaptor Plugin call Functions
-////////////////////////////////////////////////////////////
+/**********************************************************/
+/* Adaptor Plugin call Functions                          */
+/**********************************************************/
 
 
 EXPORT_API
@@ -1045,7 +1031,7 @@ storage_error_code_t storage_adaptor_close_file(storage_adaptor_plugin_h plugin,
 EXPORT_API
 storage_error_code_t storage_adaptor_start_upload_task(storage_adaptor_plugin_h plugin,
 						storage_adaptor_plugin_context_h context,
-						long long int src_file_descriptor,		// read only opened
+						long long int src_file_descriptor,		/* read only opened */
 						const char *upload_dir_path,
 						const char *file_name,
 						bool need_progress,
@@ -1057,7 +1043,7 @@ storage_error_code_t storage_adaptor_start_download_task(storage_adaptor_plugin_
 						storage_adaptor_plugin_context_h context,
 						const char *storage_dir_path,
 						const char *file_name,
-						long long int dst_file_descriptor,		// write only opened
+						long long int dst_file_descriptor,		/* write only opened */
 						bool need_progress,
 						storage_adaptor_error_code_h *error,
 						void *user_data);
@@ -1067,8 +1053,8 @@ storage_error_code_t storage_adaptor_start_download_thumb_task(storage_adaptor_p
 						storage_adaptor_plugin_context_h context,
 						const char *storage_dir_path,
 						const char *file_name,
-						long long int dst_file_descriptor,		// write only opened
-						int thumbnail_size,			// level (defined plugin SPEC)
+						long long int dst_file_descriptor,		/* write only opened */
+						int thumbnail_size,			/* level (defined plugin SPEC) */
 						bool need_progress,
 						storage_adaptor_error_code_h *error,
 						void *user_data);

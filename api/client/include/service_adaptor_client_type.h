@@ -28,40 +28,38 @@ extern "C" {
 #define TASK_MESSAGE_FORWARD_UNREAD_MESSAGE	-101
 #define TASK_MESSAGE_CHANNEL_DISCONNECTED_MESSAGE	-102
 
-///////////////// private feature
+/* private feature start */
 #define PRIVATE_SIGNAL_FILE_PROGRESS_ID			11000
 #define PRIVATE_SIGNAL_FILE_TRANSFER_COMPLETION_ID	11001
-///////////////// private feature
+/* private feature end */
 
 #define SIGNAL_STORAGE_FILE_PROGRESS_ID		1000
 #define SIGNAL_STORAGE_FILE_STATE_CHANGED_ID	1001
 #define SIGNAL_SERVICE_ADAPTOR			9000
 
-//////////////////////////////////////////////////////////////////////////////////
-///// Signal Task area
-//////////////////////
+/***************************************/
+/* Signal Task area start              */
+/***************************************/
 
-typedef struct _service_storage_task_s
-{
+typedef struct _service_storage_task_s {
 	char *service_handle_name;
-	long long int task_id;	// file_uid (matched fd)
+	long long int task_id;	/* file_uid (matched fd) */
 	void *param1;
 	void *param2;
 	void *param3;
 
-	int operation;		// 1: upload, 2: download, 3:thumbnail (TEMP)
+	int operation;		/* 1: upload, 2: download, 3:thumbnail (TEMP) */
 	int state;
 	service_storage_task_state_cb state_callback;
 	void *state_user_data;
 	service_storage_task_progress_cb progress_callback;
 	void *progress_user_data;
-}service_storage_task_t;
+} service_storage_task_t;
 
 /**
 * @brief Describes infromation about task
 */
-typedef struct _service_adaptor_task_s
-{
+typedef struct _service_adaptor_task_s {
 	int64_t id;			/**< specifies status as none*/
 	uint32_t callback;		/**< specifies status as none*/
 	void *handle;			/**< specifies status as none*/
@@ -72,8 +70,7 @@ typedef struct _service_adaptor_task_s
 * @brief Describes infromation about Service Adaptor's error
 * @remarks 'msg' is need free()
 */
-typedef struct _service_adaptor_error_s
-{
+typedef struct _service_adaptor_error_s {
 	long long int code;			/**< specifies status as none*/
 	char *msg;				/**< specifies status as none*/
 } service_adaptor_error_s;
@@ -124,29 +121,16 @@ int service_adaptor_check_handle_validate(service_adaptor_h handle);
 /**
  * @brief Enumerations of signal code for Service Adaptor
  */
-typedef enum _service_adaptor_signal_code_e
-{
+typedef enum _service_adaptor_signal_code_e {
 	SERVICE_ADAPTOR_SIGNAL_INITIALIZED		= 1,	/* Service adaptor finished initalization */
 	SERVICE_ADAPTOR_SIGNAL_NEW_PLUGIN		= 2,	/* New Plugins loaded in a running time */
 	SERVICE_ADAPTOR_SIGNAL_ACTIVATE_PLUGIN		= 3,	/* Some Plugins be activated by policy or user atholization or etc */
 	SERVICE_ADAPTOR_SIGNAL_SHUTDOWN                 = 4,    /* Service adaptor was shutdowned by unsuspected issue */
 } service_adaptor_signal_code_e;
 
-//////////////////////
-///// Signal Task area
-//////////////////////////////////////////////////////////////////////////////////
-
-
-//////////////////////////////////////////////////////////////////////////////////
-///// Storage Task area
-//////////////////////
-
-
-//////////////////////
-///// Storage Task area
-//////////////////////////////////////////////////////////////////////////////////
-
-
+/***************************************/
+/* Signal Task area end                */
+/***************************************/
 
 #ifdef __cplusplus
 }

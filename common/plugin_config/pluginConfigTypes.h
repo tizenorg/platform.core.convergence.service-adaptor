@@ -27,46 +27,45 @@
 /**
  * @brief Types of supported configuration files.
  **/
-typedef enum PluginConfigType
-{
-    /**
-    * @brief INI file format, as defined here: https://en.wikipedia.org/wiki/INI_file#Format
-    **/
-    CCT_INI = 1,
+typedef enum PluginConfigType {
+	/**
+	* @brief INI file format, as defined here: https://en.wikipedia.org/wiki/INI_file#Format
+	**/
+	CCT_INI = 1,
 
-    /**
-    * @brief Git config file format, as defined here:
-    **/
-    CCT_GIT = 1 << 1,
+	/**
+	* @brief Git config file format, as defined here:
+	**/
+	CCT_GIT = 1 << 1,
 
-    /**
-    * @brief Three column CSV file, columns are: section, key, value.
-    * They are separated with commas.
-    **/
-    CCT_CSV_COMMA = 1 << 2,
+	/**
+	* @brief Three column CSV file, columns are: section, key, value.
+	* They are separated with commas.
+	**/
+	CCT_CSV_COMMA = 1 << 2,
 
-    /**
-    * @brief Three column CSV file, columns are: section, key, value.
-    * They are separated with tabs.
-    **/
-    CCT_CSV_TAB = 1 << 3,
+	/**
+	* @brief Three column CSV file, columns are: section, key, value.
+	* They are separated with tabs.
+	**/
+	CCT_CSV_TAB = 1 << 3,
 
-    /**
-    * @brief Three column CSV file, columns are: section, key, value.
-    * They are separated with colons.
-    **/
-    CCT_CSV_COLON = 1 << 4,
+	/**
+	* @brief Three column CSV file, columns are: section, key, value.
+	* They are separated with colons.
+	**/
+	CCT_CSV_COLON = 1 << 4,
 
-    /**
-    * @brief Three column CSV file, columns are: section, key, value.
-    * They are separated with semicolons.
-    **/
-    CCT_CSV_SEMICOLON = 1 << 5,
+	/**
+	* @brief Three column CSV file, columns are: section, key, value.
+	* They are separated with semicolons.
+	**/
+	CCT_CSV_SEMICOLON = 1 << 5,
 
-    /**
-    * @brief As the name suggessts.
-    **/
-    CCT_INVALID = 0
+	/**
+	* @brief As the name suggessts.
+	**/
+	CCT_INVALID = 0
 } PluginConfigType;
 
 #endif /* PLUGIN_CONFIG_TYPES */

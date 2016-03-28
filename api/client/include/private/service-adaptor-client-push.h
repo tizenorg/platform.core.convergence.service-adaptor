@@ -36,8 +36,7 @@
 /**
 * @brief Describes push information
 */
-typedef struct _service_adaptor_push_notification_s
-{
+typedef struct _service_adaptor_push_notification_s {
 	char *data;			/**< specifies status as none*/
 	char *message;			/**< specifies status as none*/
 	long long int time;		/**< specifies status as none*/
@@ -54,13 +53,13 @@ typedef struct _service_adaptor_push_notification_s
 * @pre	service_adaptor_connect_push_service will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_push_notification_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_push_notification_cb)(service_adaptor_h handle,
 						service_adaptor_push_notification_s *noti_info,
 						service_adaptor_error_s *error_code,
 						void *user_data);
 
 /*==================================================================================================
-                                         FUNCTION PROTOTYPES
+					FUNCTION PROTOTYPES
 ==================================================================================================*/
 
 /**

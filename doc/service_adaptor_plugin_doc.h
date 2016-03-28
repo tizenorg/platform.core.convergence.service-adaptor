@@ -30,11 +30,11 @@
  * <br>It means kind of plugin set, the APIs can set property for using service and handling service plugin.
  * <table>
  * <tr>
- * 	<th>API</th>
+ *	<th>API</th>
  *	<th>Description</th>
  * </tr>
  * <tr>
- * 	<td>@ref SERVICE_ADAPTOR_STORAGE_MODULE</td>
+ *	<td>@ref SERVICE_ADAPTOR_STORAGE_MODULE</td>
  *	<td> Provide functions for access and manage storage service</td>
  * </tr>
  * </table>

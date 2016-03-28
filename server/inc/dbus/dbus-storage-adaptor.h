@@ -26,7 +26,7 @@ void storage_adaptor_method_call(GDBusConnection *connection,
 						GDBusMethodInvocation *invocation,
 						gpointer user_data);
 
-// private feature
+/* private feature */
 service_adaptor_internal_error_code_e private_dbus_storage_file_progress_callback(int32_t fd,
 						uint64_t progress_size,
 						uint64_t total_size,
@@ -38,7 +38,7 @@ service_adaptor_internal_error_code_e private_dbus_storage_file_transfer_complet
 						storage_adaptor_error_code_h error_code,
 						void *server_data);
 
-// public feature
+/* public feature */
 service_adaptor_internal_error_code_e dbus_storage_file_progress_callback(long long int file_uid,
 						unsigned long long progress_size,
 						unsigned long long total_size);

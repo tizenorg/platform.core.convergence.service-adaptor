@@ -29,8 +29,7 @@ extern "C"
 {
 #endif
 
-typedef enum
-{
+typedef enum {
 	PLUGIN_MESSAGE_TYPE_FUNCTION = 1,
 	PLUGIN_MESSAGE_TYPE_CALLBACK = 2,
 } plugin_message_type_e;
@@ -40,7 +39,7 @@ typedef enum
 #define	PLUGIN_DATA_TYPE_LONG		'l'
 */
 
-// INT/LONG -> NUM (64bit)
+/* INT/LONG -> NUM (64bit) */
 #define PLUGIN_DATA_TYPE_NUM		'n'
 #define	PLUGIN_DATA_TYPE_STRING		's'
 #define	PLUGIN_DATA_TYPE_BOOL		'b'
@@ -51,8 +50,7 @@ typedef char plugin_data_type;
 
 
 /*
-typedef enum
-{
+typedef enum {
 	PM_TYPE_FALSE = 0,
 	PM_TYPE_TRUE = 1,
 } pmbool_type_e;
@@ -62,8 +60,7 @@ typedef long long int pmnumber;
 typedef char *pmstring;
 typedef bool pmbool;
 
-typedef enum
-{
+typedef enum {
 	PLUGIN_MESSAGE_ELEMENT_CONTEXT_ID,
 	PLUGIN_MESSAGE_ELEMENT_FUNCTION_NAME,
 	PLUGIN_MESSAGE_ELEMENT_PARAMETER_MANDATORY,

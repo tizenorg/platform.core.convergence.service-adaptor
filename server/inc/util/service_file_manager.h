@@ -17,8 +17,7 @@
 #ifndef __SERVICE_FILE_MANAGER_H__
 #define __SERVICE_FILE_MANAGER_H__
 
-typedef enum
-{
+typedef enum {
 	SERVICE_FILE_DIRECTORY_AUTH	= (0x01 << 0),
 	SERVICE_FILE_DIRECTORY_STORAGE	= (0x01 << 1),
 	SERVICE_FILE_DIRECTORY_CONTACT	= (0x01 << 2),
@@ -30,8 +29,7 @@ typedef enum
 	SERVICE_FILE_DIRECTORY_PLUGINS	= (0x01 << 10) & 0x02,
 } service_file_directory_e;
 
-typedef enum
-{
+typedef enum {
 	SERVICE_FILE_SECTION_GENERAL	= 1,
 	SERVICE_FILE_SECTION_PUSH	= 2,
 	SERVICE_FILE_SECTION_BUS	= 3,

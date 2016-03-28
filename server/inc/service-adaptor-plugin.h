@@ -20,9 +20,9 @@
 #include <tizen.h>
 #include "service-adaptor-type.h"
 
-// TODO It will be re-define another header
+/* TODO It will be re-define another header */
 #define SERVICE_ADAPTOR_3RD_PARTY_METADATA_KEY_VERSION	"http://tizen.org/service-adaptor/version"
-#define SERVICE_ADAPTOR_3RD_PARTY_METADATA_KEY_AUTH		"http://tizen.org/service-adaptor/auth"
+#define SERVICE_ADAPTOR_3RD_PARTY_METADATA_KEY_AUTH	"http://tizen.org/service-adaptor/auth"
 #define SERVICE_ADAPTOR_3RD_PARTY_METADATA_KEY_STORAGE	"http://tizen.org/service-adaptor/storage"
 
 

@@ -34,8 +34,7 @@
 #include "service-adaptor-client.h"
 #include "service_adaptor_client_type.h"
 
-typedef enum _service_adaptor_connection_policy_e
-{
+typedef enum _service_adaptor_connection_policy_e {
 	SERVICE_ADAPTOR_CONNECTION_POLICY_AUTO		= 0,
 	SERVICE_ADAPTOR_CONNECTION_POLICY_CONNECT	= 1,
 	SERVICE_ADAPTOR_CONNECTION_POLICY_DISCONNECT	= 2,
@@ -43,8 +42,7 @@ typedef enum _service_adaptor_connection_policy_e
 /**
 * @brief Describes infromation about violation users of wrong receivers
 */
-typedef struct _service_adaptor_did_violation_users_s
-{
+typedef struct _service_adaptor_did_violation_users_s {
 	long long int usera;
 	long long int userb;
 } service_adaptor_did_violation_users_s;
@@ -52,8 +50,7 @@ typedef struct _service_adaptor_did_violation_users_s
 /**
 * @brief Describes infromation about wrong receivers
 */
-typedef struct _service_adaptor_wrong_receiver_s
-{
+typedef struct _service_adaptor_wrong_receiver_s {
 	long long int *invalid_receivers;		/**< specifies status as none*/
 	unsigned int invalid_receivers_len;		/**< specifies status as none*/
 	long long int *interrupted_receivers;		/**< specifies status as none*/
@@ -72,8 +69,7 @@ typedef struct _service_adaptor_wrong_receiver_s
 /**
 * @brief Describes infromation about chat message
 */
-typedef struct _service_adaptor_chat_msg_s
-{
+typedef struct _service_adaptor_chat_msg_s {
 	long long int msg_id;		/**< specifies status as none*/
 	int msg_type;			/**< specifies status as none*/
 	char *chatmsg;			/**< specifies status as none*/
@@ -83,8 +79,7 @@ typedef struct _service_adaptor_chat_msg_s
 /**
 * @brief Describes infromation about processed message
 */
-typedef struct _service_adaptor_processed_msg_s
-{
+typedef struct _service_adaptor_processed_msg_s {
 	long long int msg_id;		/**< specifies status as none*/
 	long long int sent_time;	/**< specifies status as none*/
 } service_adaptor_processed_msg_s;
@@ -92,8 +87,7 @@ typedef struct _service_adaptor_processed_msg_s
 /**
 * @brief Describes infromation about delivery ack
 */
-typedef struct _service_adaptor_delivery_ack_s
-{
+typedef struct _service_adaptor_delivery_ack_s {
 	long long int user_id;
 	long long int msg_id;
 	long long int timestamp;
@@ -102,8 +96,7 @@ typedef struct _service_adaptor_delivery_ack_s
 /**
 * @brief Describes infromation about read_ack
 */
-typedef struct _service_adaptor_read_ack_s
-{
+typedef struct _service_adaptor_read_ack_s {
 	long long int user_id;		/**< specifies status as none*/
 	long long int msg_id;		/**< specifies status as none*/
 	long long int timestamp;	/**< specifies status as none*/
@@ -112,8 +105,7 @@ typedef struct _service_adaptor_read_ack_s
 /**
 * @brief Describes infromation about ordered chat member
 */
-typedef struct _service_adaptor_ordered_chat_member_s
-{
+typedef struct _service_adaptor_ordered_chat_member_s {
 	long long int user_id;		/**< specifies status as none*/
 	bool available;			/**< specifies status as none*/
 	char *name;			/**< specifies status as none*/
@@ -122,8 +114,7 @@ typedef struct _service_adaptor_ordered_chat_member_s
 /**
 * @brief Describes infromation about inbox message
 */
-typedef struct _service_adaptor_inbox_message_s
-{
+typedef struct _service_adaptor_inbox_message_s {
 	long long int msg_id;		/**< specifies status as none*/
 	int msg_type;			/**< specifies status as none*/
 	long long int sender;		/**< specifies status as none*/
@@ -138,8 +129,7 @@ typedef struct _service_adaptor_inbox_message_s
 /**
 * @brief Describes infromation about end chat
 */
-typedef struct _service_adaptor_end_chat_s
-{
+typedef struct _service_adaptor_end_chat_s {
 	long long int chatroom_id;	/**< specifies status as none*/
 	bool deny_invitation;
 } service_adaptor_end_chat_s;
@@ -147,8 +137,7 @@ typedef struct _service_adaptor_end_chat_s
 /**
 * @brief Describes infromation about phone number
 */
-typedef struct _service_adaptor_phone_number_s
-{
+typedef struct _service_adaptor_phone_number_s {
 	char *phonenumber;		/**< specifies status as none*/
 	char *ccc;			/**< specifies status as none*/
 } service_adaptor_phone_number_s;
@@ -156,8 +145,7 @@ typedef struct _service_adaptor_phone_number_s
 /**
 * @brief Describes infromation about chat id
 */
-typedef struct _service_adaptor_chat_id_s
-{
+typedef struct _service_adaptor_chat_id_s {
 	long long int chatid;		/**< specifies status as none*/
 	char *msisdn;			/**< specifies status as none*/
 } service_adaptor_chat_id_s;
@@ -175,7 +163,7 @@ typedef struct _service_adaptor_chat_id_s
 * @pre	service_adaptor_request_channel_auth will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_channel_auth_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_channel_auth_cb)(service_adaptor_h handle,
 						long long int request_id,
 						service_adaptor_error_s *error_code,
 						void *server_data);
@@ -191,7 +179,7 @@ typedef void(* service_adaptor_reply_channel_auth_cb)(service_adaptor_h handle,
 * @pre	service_adaptor_request_client_echo will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_client_echo_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_client_echo_cb)(service_adaptor_h handle,
 						long long int request_id,
 						service_adaptor_error_s *error_code,
 						void *server_data);
@@ -215,7 +203,7 @@ typedef void (*service_adaptor_reply_channel_disconnected_cb)(service_adaptor_h 
 * @pre	service_adaptor_request_create_chatroom will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_create_chatroom_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_create_chatroom_cb)(service_adaptor_h handle,
 						long long int request_id,
 						long long int chatroom_id,
 						int default_message_ttl,
@@ -224,10 +212,10 @@ typedef void(* service_adaptor_reply_create_chatroom_cb)(service_adaptor_h handl
 						void *server_data);
 
 typedef void (*service_adaptor_reply_change_chatroom_meta_cb)(service_adaptor_h handle,
-                                                        long long int request_id,
-                                                        long long int chatroom_id,
-							service_adaptor_error_s *error_code,
-                                                        void *server_data);
+						long long int request_id,
+						long long int chatroom_id,
+						service_adaptor_error_s *error_code,
+						void *server_data);
 
 
 /**
@@ -244,7 +232,7 @@ typedef void (*service_adaptor_reply_change_chatroom_meta_cb)(service_adaptor_h 
 * @pre	service_adaptor_request_chat will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_chat_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_chat_cb)(service_adaptor_h handle,
 						long long int request_id,
 						long long int chatroom_id,
 						service_adaptor_processed_msg_s **processed_msgs,
@@ -268,7 +256,7 @@ typedef void(* service_adaptor_reply_chat_cb)(service_adaptor_h handle,
 * @pre	service_adaptor_request_allow_chat will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_allow_chat_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_allow_chat_cb)(service_adaptor_h handle,
 						long long int request_id,
 						long long int chatroom_id,
 						service_adaptor_delivery_ack_s **delivery_acks,
@@ -295,7 +283,7 @@ typedef void(* service_adaptor_reply_allow_chat_cb)(service_adaptor_h handle,
 * @pre	service_adaptor_request_all_unread_message will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_all_unread_message_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_all_unread_message_cb)(service_adaptor_h handle,
 						long long int request_id,
 						service_adaptor_error_s *error_code,
 						void *server_data);
@@ -314,7 +302,7 @@ typedef void(* service_adaptor_reply_all_unread_message_cb)(service_adaptor_h ha
 * @pre	service_adaptor_register_forward_online_message_listener will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_request_forward_online_message_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_request_forward_online_message_cb)(service_adaptor_h handle,
 						long long int request_id,
 						long long int chatroom_id,
 						int chat_type,
@@ -337,7 +325,7 @@ typedef void(* service_adaptor_request_forward_online_message_cb)(service_adapto
 * @pre	service_adaptor_register_forward_online_message_listener will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_request_forward_unread_message_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_request_forward_unread_message_cb)(service_adaptor_h handle,
 						long long int request_id,
 						service_adaptor_inbox_message_s **inbox_msgs,
 						unsigned int inbox_msgs_len,
@@ -357,7 +345,7 @@ typedef void(* service_adaptor_request_forward_unread_message_cb)(service_adapto
 * @pre	service_adaptor_request_read_message will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_read_message_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_read_message_cb)(service_adaptor_h handle,
 						long long int request_id,
 						long long int chatroom_id,
 						service_adaptor_error_s *error_code,
@@ -377,7 +365,7 @@ typedef void(* service_adaptor_reply_read_message_cb)(service_adaptor_h handle,
 * @pre	service_adaptor_request_invite_chat will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_invite_chat_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_invite_chat_cb)(service_adaptor_h handle,
 						long long int request_id,
 						long long int chatroom_id,
 						long long int sent_time,
@@ -396,7 +384,7 @@ typedef void(* service_adaptor_reply_invite_chat_cb)(service_adaptor_h handle,
 * @pre	service_adaptor_request_end_chat will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_end_chat_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_end_chat_cb)(service_adaptor_h handle,
 						long long int request_id,
 						service_adaptor_error_s *error_code,
 						void *server_data);
@@ -413,7 +401,7 @@ typedef void(* service_adaptor_reply_end_chat_cb)(service_adaptor_h handle,
 * @pre	service_adaptor_request_unseal_message will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_unseal_message_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_unseal_message_cb)(service_adaptor_h handle,
 						long long int request_id,
 						long long int chatroom_id,
 						service_adaptor_error_s *error_code,
@@ -431,7 +419,7 @@ typedef void(* service_adaptor_reply_unseal_message_cb)(service_adaptor_h handle
 * @pre	service_adaptor_request_save_call_log will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_save_call_log_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_save_call_log_cb)(service_adaptor_h handle,
 						long long int request_id,
 						service_adaptor_error_s *error_code,
 						void *server_data);
@@ -448,14 +436,14 @@ typedef void(* service_adaptor_reply_save_call_log_cb)(service_adaptor_h handle,
 * @pre	service_adaptor_request_current_time will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_reply_current_time_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_reply_current_time_cb)(service_adaptor_h handle,
 						long long int request_id,
 						long long int current_time_millis,
 						service_adaptor_error_s *error_code,
 						void *server_data);
 
 /*==================================================================================================
-                                         FUNCTION PROTOTYPES
+					FUNCTION PROTOTYPES
 ==================================================================================================*/
 
 #ifdef NOT_IN_USE

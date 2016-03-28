@@ -28,8 +28,7 @@
 /**
 * @brief Push Adaptor error code
 */
-typedef enum push_error_code_e
-{
+typedef enum push_error_code_e {
 	PUSH_ADAPTOR_ERROR_NONE                     =  0,
 	PUSH_ADAPTOR_ERROR_LAUNCH                    = 1,    /**< 1 ~ 99: internal error*/
 	PUSH_ADAPTOR_ERROR_INIT                      = 2,
@@ -68,18 +67,16 @@ typedef struct push_adaptor_s *push_adaptor_h;
 /**
 * @brief Push Adaptor plugin context structure
 */
-typedef struct push_adaptor_plugin_context_s
-{
+typedef struct push_adaptor_plugin_context_s {
 	char	*push_app_id;	/**< unique key >*/
 	char	*plugin_uri;
-        void	*plugin_info;
+	void	*plugin_info;
 
 	int	state;		/* Adaptor defined and share with plugin (getter: adaptor, setter: plugin) */
 } push_adaptor_plugin_context_t;
 typedef struct push_adaptor_plugin_context_s *push_adaptor_plugin_context_h;
 
-typedef enum
-{
+typedef enum {
 	PUSH_ADAPTOR_STATE_DISCONNECTED	= 0,
 	PUSH_ADAPTOR_STATE_CONNECTED	= 1,
 } push_adaptor_connection_state_e;
@@ -87,10 +84,9 @@ typedef enum
 /**
 * @brief Push Adaptor error code
 */
-typedef struct push_adaptor_error_code_s
-{
-        int64_t code;
-        char	*msg;
+typedef struct push_adaptor_error_code_s {
+	int64_t	code;
+	char	*msg;
 
 } push_adaptor_error_code_t;
 typedef struct push_adaptor_error_code_s *push_adaptor_error_code_h;
@@ -98,11 +94,10 @@ typedef struct push_adaptor_error_code_s *push_adaptor_error_code_h;
 /**
 * @brief Push Adaptor notification data
 */
-typedef struct push_adaptor_notification_data_s
-{
-        char		*data;
-        char		*msg;
-        long long int   time_stamp;
+typedef struct push_adaptor_notification_data_s {
+	char		*data;
+	char		*msg;
+	long long int	time_stamp;
 	char		*sender;
 	char		*app_id;
 	char		*session_info;
@@ -121,7 +116,7 @@ typedef struct push_adaptor_notification_data_s *push_adaptor_notification_data_
 * @see
 */
 typedef void(*push_adaptor_service_on_notification_received_cb)
-                        (push_adaptor_notification_data_h notification, void *user_data);
+			(push_adaptor_notification_data_h notification, void *user_data);
 
 /**
 * @brief Callback for service_adaptor_connect_push_service API for push plugin
@@ -133,14 +128,13 @@ typedef void(*push_adaptor_service_on_notification_received_cb)
 * @see
 */
 typedef void(*push_adaptor_plugin_on_notification_received_cb)
-                        (push_adaptor_notification_data_h notification, void *user_data);
+			(push_adaptor_notification_data_h notification, void *user_data);
 
 /**
 * @brief Push Adaptor listener for Service Adaptor
 */
-typedef struct push_adaptor_listener_s
-{
-        push_adaptor_service_on_notification_received_cb        _on_notification_received;
+typedef struct push_adaptor_listener_s {
+	push_adaptor_service_on_notification_received_cb        _on_notification_received;
 
 } push_adaptor_listener_t;
 typedef struct push_adaptor_listener_s *push_adaptor_listener_h;
@@ -148,9 +142,8 @@ typedef struct push_adaptor_listener_s *push_adaptor_listener_h;
 /**
 * @brief Push Adaptor listener for plugins
 */
-typedef struct push_adaptor_plugin_listener_s
-{
-        push_adaptor_plugin_on_notification_received_cb         _on_notification_received;
+typedef struct push_adaptor_plugin_listener_s {
+	push_adaptor_plugin_on_notification_received_cb         _on_notification_received;
 
 } push_adaptor_plugin_listener_t;
 typedef struct push_adaptor_plugin_listener_s *push_adaptor_plugin_listener_h;
@@ -158,8 +151,7 @@ typedef struct push_adaptor_plugin_listener_s *push_adaptor_plugin_listener_h;
 /**
  * @brief Push Adaptor plugin handle
  */
-typedef struct push_adaptor_plugin_handle_s
-{
+typedef struct push_adaptor_plugin_handle_s {
 	/**< mandatory >*/
 	push_error_code_t (*create_context)(push_adaptor_plugin_context_h *context,
 							const char *push_app_id);
@@ -184,7 +176,7 @@ typedef struct push_adaptor_plugin_handle_s
 	push_error_code_t (*connect)(push_adaptor_plugin_context_h context);
 
 	/**< optional >*/
-        push_error_code_t (*disconnect)(push_adaptor_plugin_context_h context);
+	push_error_code_t (*disconnect)(push_adaptor_plugin_context_h context);
 
 	/**< optional >*/
 	push_error_code_t (*request_unread_notification)(push_adaptor_plugin_context_h context);
@@ -396,7 +388,7 @@ push_error_code_t push_adaptor_is_connected(push_adaptor_plugin_h plugin,
 /**
 * @brief Asynchronous request to get unread notifications
 *
-* @param[in]	plugin	 	specifies push adaptor plugin handle
+* @param[in]	plugin		specifies push adaptor plugin handle
 * @param[in]    context		specifies push adaptor plugin context handle
 * @param[out]	error		specifies error code
 * @return	0 on success, otherwise a positive error value
@@ -411,35 +403,35 @@ push_error_code_t push_adaptor_request_unread_notification(push_adaptor_plugin_h
 /*
 EXPORT_API
 push_error_code_t push_adaptor_register(push_adaptor_plugin_h, push_adaptor_plugin_context_h,
-                                        void *svc_in, void *opt_in, void **svc_out, void **opt_out);
+					void *svc_in, void *opt_in, void **svc_out, void **opt_out);
 
 EXPORT_API
 push_error_code_t push_adaptor_deregister(push_adaptor_plugin_h, push_adaptor_plugin_context_h,
-                                        void *svc_in, void *opt_in, void **svc_out, void **opt_out);
+					void *svc_in, void *opt_in, void **svc_out, void **opt_out);
 
 EXPORT_API
 push_error_code_t push_adaptor_get_notification_data(push_adaptor_plugin_h, push_adaptor_plugin_context_h,
-                                        void *svc_in, void *opt_in, void **svc_out, void **opt_out);
+					void *svc_in, void *opt_in, void **svc_out, void **opt_out);
 
 EXPORT_API
 push_error_code_t push_adaptor_get_notification_message(push_adaptor_plugin_h, push_adaptor_plugin_context_h,
-                                        void *svc_in, void *opt_in, void **svc_out, void **opt_out);
+					void *svc_in, void *opt_in, void **svc_out, void **opt_out);
 
 EXPORT_API
 push_error_code_t push_adaptor_get_notification_time(push_adaptor_plugin_h, push_adaptor_plugin_context_h,
-                                        void *svc_in, void *opt_in, void **svc_out, void **opt_out);
+					void *svc_in, void *opt_in, void **svc_out, void **opt_out);
 
 EXPORT_API
 push_error_code_t push_adaptor_get_unread_notification(push_adaptor_plugin_h, push_adaptor_plugin_context_h,
-                                        void *svc_in, void *opt_in, void **svc_out, void **opt_out);
+					void *svc_in, void *opt_in, void **svc_out, void **opt_out);
 
 EXPORT_API
 push_error_code_t push_adaptor_get_registration_id(push_adaptor_plugin_h, push_adaptor_plugin_context_h,
-                                        void *svc_in, void *opt_in, void **svc_out, void **opt_out);
+					void *svc_in, void *opt_in, void **svc_out, void **opt_out);
 
 EXPORT_API
 push_error_code_t push_adaptor_free_notification(push_adaptor_plugin_h, push_adaptor_plugin_context_h,
-                                        void *svc_in, void *opt_in, void **svc_out, void **opt_out);
+					void *svc_in, void *opt_in, void **svc_out, void **opt_out);
 */
 
 #endif /* __PUSH_ADAPTOR_H__ */

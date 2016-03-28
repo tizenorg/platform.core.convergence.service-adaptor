@@ -39,8 +39,7 @@
 /**
  * @ brief Shop adaptor error code
  */
-typedef enum shop_error_code_e
-{
+typedef enum shop_error_code_e {
 	SHOP_ADAPTOR_ERROR_NONE                     =  0,
 	SHOP_ADAPTOR_ERROR_LAUNCH                    = 1,    /**< 1 ~ 99: internal error*/
 	SHOP_ADAPTOR_ERROR_INIT                      = 2,
@@ -80,8 +79,7 @@ typedef struct shop_adaptor_s *shop_adaptor_h;
 /**
 * @brief Describes infromation about shop
 */
-typedef struct _service_adaptor_shop_info_s
-{
+typedef struct _service_adaptor_shop_info_s {
 	int category_id;		/**< specifies category id of item*/
 	long item_id;			/**< specifies item id*/
 	long sticker_id;		/**< specifies sticker id*/
@@ -96,8 +94,7 @@ typedef struct _service_adaptor_shop_info_s
 /**
 * @ brief Describes infromation about item
 */
-typedef struct _service_adaptor_shop_item_s
-{
+typedef struct _service_adaptor_shop_item_s {
 	long item_id;			/**< specifies item id*/
 	int category_id;		/**< specifies category id of item*/
 	long *sticker_ids;		/**< specifies sticker id*/
@@ -121,8 +118,7 @@ typedef struct _service_adaptor_shop_item_s
 /**
  * @ brief Shop adaptor plugin context structure
  */
-typedef struct shop_adaptor_plugin_context_s
-{
+typedef struct shop_adaptor_plugin_context_s {
 	char *duid;
 	char *access_token;
 	char *appid;
@@ -134,8 +130,7 @@ typedef struct shop_adaptor_plugin_context_s
 typedef struct shop_adaptor_plugin_context_s *shop_adaptor_plugin_context_h;
 
 
-typedef enum shop_plugin_result_code_e
-{
+typedef enum shop_plugin_result_code_e {
 	SHOP_PLUGIN_RESULT_SUCCEDED = 0,
 	SHOP_PLUGIN_RESULT_FAILED = -1,
 	SHOP_PLUGIN_RESULT_CANCELED = -2
@@ -144,8 +139,7 @@ typedef enum shop_plugin_result_code_e
 /**
  * @brief Enumerations of signal code for Service Adaptor
  */
-typedef enum _shop_adaptor_error_e
-{
+typedef enum _shop_adaptor_error_e {
 	SERVICE_ADAPTOR_ERROR_NONE = 0,
 	SERVICE_ADAPTOR_ERROR_INTERNAL = -1,
 	SERVICE_ADAPTOR_ERROR_DBUS = -2,
@@ -155,21 +149,18 @@ typedef enum _shop_adaptor_error_e
 /**
 * @brief Describes infromation about Service Adaptor's error
 */
-typedef struct shop_adaptor_error_code_s
-{
+typedef struct shop_adaptor_error_code_s {
 	int64_t code;
-        char *msg;
+	char *msg;
 } shop_adaptor_error_code_t;
 typedef struct shop_adaptor_error_code_s *shop_adaptor_error_code_h;
 
-typedef struct shop_plugin_error_s
-{
-        char *code;
-        char *msg;
+typedef struct shop_plugin_error_s {
+	char *code;
+	char *msg;
 } shop_plugin_error_t;
 
-typedef struct shop_adaptor_listener_s
-{
+typedef struct shop_adaptor_listener_s {
 } shop_adaptor_listener_t;
 typedef struct shop_adaptor_listener_s *shop_adaptor_listener_h;
 
@@ -178,18 +169,16 @@ typedef struct shop_adaptor_listener_s *shop_adaptor_listener_h;
  * Shop adaptor listener for plugins (example)
  * Listener is used by plugins
  */
-typedef struct shop_adaptor_plugin_listener_s
-{
+typedef struct shop_adaptor_plugin_listener_s {
 } shop_adaptor_plugin_listener_t;
 typedef struct shop_adaptor_plugin_listener_s *shop_adaptor_plugin_listener_h;
 
 /**
  * @ brief Shop adaptor plugin handle
  */
-typedef struct shop_adaptor_plugin_handle_s
-{
-	// Mandatory functions to handle plugin in adaptor
-	//struct shop_adaptor_plugin_handle_s * (*create_plugin_handle)(void);
+typedef struct shop_adaptor_plugin_handle_s {
+	/* Mandatory functions to handle plugin in adaptor */
+	/* struct shop_adaptor_plugin_handle_s * (*create_plugin_handle)(void); */
 
 	shop_error_code_t (*create_context)(shop_adaptor_plugin_context_h *context,
 						char *duid,
@@ -202,8 +191,8 @@ typedef struct shop_adaptor_plugin_handle_s
 	shop_error_code_t (*destroy_handle)(struct shop_adaptor_plugin_handle_s *handle);
 	shop_error_code_t (*set_listener)(shop_adaptor_plugin_listener_h listener);
 	shop_error_code_t (*unset_listener)(void);
-	// Mandatory end
-	// Optional
+	/* Mandatory end */
+	/* Optional */
 	shop_error_code_t (*get_item_list_v1) (shop_adaptor_plugin_context_h handle,
 						shop_adaptor_shop_info_s *info,
 						void *user_data,
@@ -236,11 +225,11 @@ typedef struct shop_adaptor_plugin_handle_s
 	shop_error_code_t (*set_server_info)(shop_adaptor_plugin_context_h handle,
 						GHashTable *server_info,
 						shop_adaptor_error_code_h *error_code);
-	// Optional end
+	/* Optional end */
 
-	// Mandatory
-	char *plugin_uri;		// get from config file
-	// Mandatory end
+	/* Mandatory */
+	char *plugin_uri;		/* get from config file */
+	/* Mandatory end */
 
 } shop_adaptor_plugin_handle_t;
 typedef struct shop_adaptor_plugin_handle_s *shop_adaptor_plugin_handle_h;
@@ -361,9 +350,9 @@ shop_error_code_t shop_adaptor_set_server_info(shop_adaptor_plugin_h plugin,
 						GHashTable *server_info,
 						shop_adaptor_error_code_h *error_code);
 
-////////////////////////////////////////////////////////////
-// Adaptor Plugin call Functions
-////////////////////////////////////////////////////////////
+/**********************************************************/
+/* Adaptor Plugin call Functions                          */
+/**********************************************************/
 
 /**
 * @brief Get List of Item
@@ -380,7 +369,7 @@ shop_error_code_t shop_adaptor_set_server_info(shop_adaptor_plugin_h plugin,
 * @retval error code defined in shop_error_code_e - SHOP_ADAPTOR_ERROR_NONE if Successful
 */
 EXPORT_API
-shop_error_code_t shop_adaptor_get_item_list_v1 (shop_adaptor_plugin_h plugin,
+shop_error_code_t shop_adaptor_get_item_list_v1(shop_adaptor_plugin_h plugin,
 						shop_adaptor_plugin_context_h context,
 						shop_adaptor_shop_info_s *info,
 						void *user_data,

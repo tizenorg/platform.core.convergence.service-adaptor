@@ -31,11 +31,11 @@
  * <br>Service adaptor provides functions kind of Auth, Storage and it will provides more kinds of service infra.
  * <table>
  * <tr>
- * 	<th>API</th>
+ *	<th>API</th>
  *	<th>Description</th>
  * </tr>
  * <tr>
- * 	<td>@ref SERVICE_PLUGIN_MODULE</td>
+ *	<td>@ref SERVICE_PLUGIN_MODULE</td>
  *	<td> Provide functions for handling service plugin</td>
  * </tr>
  * </table>

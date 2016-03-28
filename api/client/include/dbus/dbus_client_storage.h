@@ -36,9 +36,9 @@
 #include "service_adaptor_client_storage.h"
 #include "service_adaptor_client_storage_internal.h"
 
-//////////////////////// private feature
+/* private feature */
 #include "private/service-adaptor-client-storage.h"
-//////////////////////// private feature
+/* private feature */
 
 void on_storage_signal(GDBusProxy *proxy,
 						gchar *sender_name,

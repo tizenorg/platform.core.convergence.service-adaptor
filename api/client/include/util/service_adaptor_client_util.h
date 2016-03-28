@@ -94,10 +94,10 @@ int _ipc_get_simple_result(GVariant *call_result, GError *g_error, service_adapt
 
 #define sac_check_param_null(val, val_name) {\
 	if (NULL == (val)) {\
-		sac_error ("\"%s\" is NULL, return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER(%d)", \
+		sac_error("\"%s\" is NULL, return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER(%d)", \
 				(const char *)val_name, (int)SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER);\
 		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;\
-	}\
+	} \
 }
 
 #ifdef __cplusplus

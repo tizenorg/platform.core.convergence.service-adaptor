@@ -20,9 +20,8 @@
 #include <stdbool.h>
 #include <glib.h>
 
-typedef enum
-{
-        SERVICE_ADAPTOR_INTERNAL_ERROR_NONE                     =  0,
+typedef enum {
+	SERVICE_ADAPTOR_INTERNAL_ERROR_NONE			= 0,
 	SERVICE_ADAPTOR_INTERNAL_ERROR_LAUNCH                    = 1,    /**< 1 ~ 99: internal error*/
 	SERVICE_ADAPTOR_INTERNAL_ERROR_INIT                      = 2,
 	SERVICE_ADAPTOR_INTERNAL_ERROR_DEINIT                    = 3,
@@ -46,12 +45,10 @@ typedef enum
 	SERVICE_ADAPTOR_INTERNAL_ERROR_CALLBACK_TIME_OUT         = 21,
 	SERVICE_ADAPTOR_INTERNAL_ERROR_INTERNAL_MAX              = 99,
 	SERVICE_ADAPTOR_INTERNAL_ERROR_NO_DATA,
-        SERVICE_ADAPTOR_INTERNAL_ERROR_MAX
-
+	SERVICE_ADAPTOR_INTERNAL_ERROR_MAX
 } service_adaptor_internal_error_code_e;
 
-typedef enum
-{
+typedef enum {
 	SERVICE_ADAPTOR_INTERNAL_RESULT_SUCCEEDED		= 0,
 	SERVICE_ADAPTOR_INTERNAL_RESULT_FAILED			= -1,
 	SERVICE_ADAPTOR_INTERNAL_RESULT_CANCELED		= -2,
@@ -59,29 +56,26 @@ typedef enum
 
 } service_adaptor_internal_result_e;
 
-typedef enum
-{
+typedef enum {
 	SERVICE_ADAPTOR_INTERNAL_SIGNAL_NONE                     = 0,    /**< specifies status as none*/
 	SERVICE_ADAPTOR_INTERNAL_SIGNAL_INITIALIZED              = 1,    /**< specifies status as none*/
 	SERVICE_ADAPTOR_INTERNAL_SIGNAL_NEW_PLUGIN               = 2,    /**< specifies status as none*/
 	SERVICE_ADAPTOR_INTERNAL_SIGNAL_ACTIVATE_PLUGIN          = 3,    /**< specifies status as none*/
-	SERVICE_ADAPTOR_INTERNAL_SIGNAL_SHUTDOWN 	         = 4,    /**< specifies status as none*/
+	SERVICE_ADAPTOR_INTERNAL_SIGNAL_SHUTDOWN                 = 4,    /**< specifies status as none*/
 	SERVICE_ADAPTOR_INTERNAL_SIGNAL_OTHER                    = 99,   /**< specifies status as none*/
 	SERVICE_ADAPTOR_INTERNAL_SIGNAL_UNKNOWN                  = 999,  /**< specifies status as none*/
 	SERVICE_ADAPTOR_INTERNAL_SIGNAL_MAX,
 
 } service_adaptor_internal_signal_code_e;
 
-typedef struct service_adaptor_internal_error_s
-{
+typedef struct service_adaptor_internal_error_s {
 	long long int code;
 	char *msg;
 
 } service_adaptor_internal_error_t;
 typedef struct service_adaptor_internal_error_s *service_adaptor_internal_error_h;
 
-typedef struct service_adaptor_internal_plugin_s
-{
+typedef struct service_adaptor_internal_plugin_s {
 	char *name;
 	bool login;
 } service_adaptor_internal_plugin_t;

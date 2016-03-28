@@ -32,18 +32,16 @@
 
 #include "service-adaptor-client.h"
 
-typedef enum _service_adaptor_file_status_code_e
-{
+typedef enum _service_adaptor_file_status_code_e {
 	SERVICE_ADAPTOR_TRANSFER_STATUS_PROGRESS        = 1,
 	SERVICE_ADAPTOR_TRANSFER_STATUS_RESUME          = 1,
 	SERVICE_ADAPTOR_TRANSFER_STATUS_PAUSE           = 2,
-	SERVICE_ADAPTOR_TRANSFER_STATUS_CANCEL          = 3,    // canceled by request
-	SERVICE_ADAPTOR_TRANSFER_STATUS_STOPPED         = 4,    // canceled by system
+	SERVICE_ADAPTOR_TRANSFER_STATUS_CANCEL          = 3,    /* canceled by request */
+	SERVICE_ADAPTOR_TRANSFER_STATUS_STOPPED         = 4,    /* canceled by system */
 	SERVICE_ADAPTOR_TRANSFER_STATUS_FINISHED        = 5
 } service_adaptor_file_status_code_e;
 
-typedef enum _service_adaptor_thumbnail_size_e
-{
+typedef enum _service_adaptor_thumbnail_size_e {
 	SERVICE_ADAPTOR_THUMBNAIL_XSMALL		= 96,
 	SERVICE_ADAPTOR_THUMBNAIL_SMALL			= 200,
 	SERVICE_ADAPTOR_THUMBNAIL_MEDIUM		= 500,
@@ -53,16 +51,14 @@ typedef enum _service_adaptor_thumbnail_size_e
 /**
 * @brief Describes file description about download and upload
 */
-typedef struct _service_adaptor_file_s
-{
+typedef struct _service_adaptor_file_s {
 	int file_description;		/**< specifies status as none*/
 } service_adaptor_file_s;
 
 /**
 * @brief Describes file infromation about download and upload
 */
-typedef struct _service_adaptor_file_path_s
-{
+typedef struct _service_adaptor_file_path_s {
 	char **file_paths;		/**< specifies status as none*/
 	unsigned int file_paths_len;	/**< specifies status as none*/
 } service_adaptor_file_path_s;
@@ -70,8 +66,7 @@ typedef struct _service_adaptor_file_path_s
 /**
 * @brief Describes file status about transfer
 */
-typedef struct _service_adaptor_file_status_s
-{
+typedef struct _service_adaptor_file_status_s {
 	long long int total_size;			/**< specifies status as none*/
 	long long int transferred_size;			/**< specifies status as none*/
 	service_adaptor_file_status_code_e status;	/**< specifies status as none*/
@@ -95,7 +90,7 @@ typedef service_adaptor_file_s *service_adaptor_file_h;
 * @pre	service_adaptor_request_channel_auth will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_file_progress_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_file_progress_cb)(service_adaptor_h handle,
 						service_adaptor_file_h file_handle,
 						unsigned long long transferred_size,
 						unsigned long long total_size,
@@ -114,14 +109,14 @@ typedef void(* service_adaptor_file_progress_cb)(service_adaptor_h handle,
 * @pre	service_adaptor_request_channel_auth will invoke this callback.
 * @see
 */
-typedef void(* service_adaptor_file_transfer_completion_cb)(service_adaptor_h handle,
+typedef void(*service_adaptor_file_transfer_completion_cb)(service_adaptor_h handle,
 						service_adaptor_file_h file_handle,
 						char *publish_url,
 						service_adaptor_error_s *error_code,
 						void *user_data);
 
 /*==================================================================================================
-                                         FUNCTION PROTOTYPES
+					FUNCTION PROTOTYPES
 ==================================================================================================*/
 
 

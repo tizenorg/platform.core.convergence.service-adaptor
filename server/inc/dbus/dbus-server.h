@@ -39,12 +39,8 @@
  */
 #define SERVICE_ADAPTOR_START_KEY_PATH		tzplatform_mkpath(TZ_SYS_SHARE, "/service-adaptor/.fingerprint")
 
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-///////////////////
-///////////////////               private feature
-///////////////////
-
+/***********************************************************************/
+/*                                private feature                      */
 #define private_service_adaptor_essential_s_type_length 1
 #define private_service_adaptor_essential_s_type \
 	"(" \
@@ -746,18 +742,11 @@
 	"s" /* char *service_file_name */ \
 	")"
 
-///////////////////
-///////////////////               private feature
-///////////////////
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+/*                                private feature                      */
+/***********************************************************************/
 
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-///////////////////
-///////////////////               public feature
-///////////////////
-
+/***********************************************************************/
+/*                                public feature                       */
 
 #define service_adaptor_essential_s_type_length 1
 #define service_adaptor_essential_s_type \
@@ -985,7 +974,6 @@
 	"s" /* char * service_name */ \
 	service_adaptor_file_descriptor_s_type \
 	")"
-// jwkim async5
 #define service_adaptor_start_upload_file_req_s_type_length 5
 #define service_adaptor_start_upload_file_req_s_type \
 	"(" \
@@ -1059,18 +1047,12 @@
 	"x" /* int64 time_stamp */ \
 	")"
 
-///////////////////
-///////////////////               public feature
-///////////////////
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+/*                                public feature                       */
+/***********************************************************************/
 
+/***********************************************************************/
+/*                                private feature                      */
 
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-///////////////////
-///////////////////               private feature
-///////////////////
 
 /**
  * array of structures
@@ -1088,33 +1070,23 @@
 #define private_message_inbox_message_list_type		"a" private_service_adaptor_inbox_message_s_type
 
 
-///////////////////
-///////////////////               private feature
-///////////////////
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+/*                                private feature                      */
+/***********************************************************************/
 
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-///////////////////
-///////////////////               public feature
-///////////////////
+/***********************************************************************/
+/*                                public feature                       */
+
 
 
 #define plugin_list_type			"a" service_adaptor_plugin_s_type
 #define storage_file_info_list_type		"a" service_adaptor_file_info_s_type
 
-///////////////////
-///////////////////               public feature
-///////////////////
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+/*                                public feature                       */
+/***********************************************************************/
 
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-///////////////////
-///////////////////               common
-///////////////////
+/***********************************************************************/
+/*                                common                               */
+
 
 
 /**
@@ -1126,27 +1098,22 @@
  * DBus APIs
  */
 #define DBUS_SERVICE_ADAPTOR	"dbus_00"
-#define DBUS_AUTH_ADAPTOR 	"dbus_01"
-#define DBUS_CONTACT_ADAPTOR 	"dbus_02"
-#define DBUS_MESSAGE_ADAPTOR 	"dbus_03"
-#define DBUS_DISCOVERY_ADAPTOR 	"dbus_04"
-#define DBUS_SHOP_ADAPTOR 	"dbus_05"
-#define DBUS_STORAGE_ADAPTOR 	"dbus_06"
-#define DBUS_PUSH_ADAPTOR 	"dbus_07"
+#define DBUS_AUTH_ADAPTOR	"dbus_01"
+#define DBUS_CONTACT_ADAPTOR	"dbus_02"
+#define DBUS_MESSAGE_ADAPTOR	"dbus_03"
+#define DBUS_DISCOVERY_ADAPTOR	"dbus_04"
+#define DBUS_SHOP_ADAPTOR	"dbus_05"
+#define DBUS_STORAGE_ADAPTOR	"dbus_06"
+#define DBUS_PUSH_ADAPTOR	"dbus_07"
 #define DBUS_NAME_LENGTH	7
 
 
-///////////////////
-///////////////////               common
-///////////////////
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+/*                                common                               */
+/***********************************************************************/
 
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-///////////////////
-///////////////////               private feature
-///////////////////
+/***********************************************************************/
+/*                                private feature                      */
+
 
 
 #define PRIVATE_DBUS_CONNECT_SERVICE_ADAPTOR_METHOD		DBUS_SERVICE_ADAPTOR "_private""_connect_service_adaptor"
@@ -1231,17 +1198,12 @@
 #define PRIVATE_DBUS_SERVICE_ADAPTOR_SIGNAL			DBUS_SERVICE_ADAPTOR "_private" "_service_adaptor_signal"
 
 
-///////////////////
-///////////////////               private feature
-///////////////////
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+/*                                private feature                      */
+/***********************************************************************/
 
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-///////////////////
-///////////////////               public feature
-///////////////////
+/***********************************************************************/
+/*                                public feature                       */
+
 
 #define DBUS_CONNECT_SERVICE_ADAPTOR_METHOD		DBUS_SERVICE_ADAPTOR "_connect_service_adaptor"
 #define DBUS_DISCONNECT_SERVICE_ADAPTOR_METHOD		DBUS_SERVICE_ADAPTOR "_disconnect_service_adaptor"
@@ -1289,22 +1251,13 @@
 #define SERVICE_ADAPTOR_FILE_TRANSFER_STATE_CANCELED 3
 #define SERVICE_ADAPTOR_FILE_TRANSFER_STATE_FAILED 4
 
+/*                                public feature                       */
+/***********************************************************************/
 
-///////////////////
-///////////////////               public feature
-///////////////////
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+/***********************************************************************/
+/*                                private feature                      */
 
-
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
-///////////////////
-///////////////////               private feature
-///////////////////
-
-typedef enum
-{
+typedef enum {
 	SERVICE_ADAPTOR_PROTOCOL_RETURN_CODE_NONE			= 0,
 	SERVICE_ADAPTOR_PROTOCOL_RETURN_CODE_COMMON_NO_DATA		= 101,
 	SERVICE_ADAPTOR_PROTOCOL_RETURN_CODE_COMMON_TIMED_OUT		= 102,
@@ -1314,8 +1267,7 @@ typedef enum
 	SERVICE_ADAPTOR_PROTOCOL_RETURN_CODE_MESSAGE_NETWORK		= 601,
 } service_adaptor_protocol_return_code_e;
 
-typedef enum
-{
+typedef enum {
 	SERVICE_ADAPTOR_PROTOCOL_SERVICE_TYPE_AUTH		= (0x01 << 0),
 	SERVICE_ADAPTOR_PROTOCOL_SERVICE_TYPE_STORAGE		= (0x01 << 1),
 	SERVICE_ADAPTOR_PROTOCOL_SERVICE_TYPE_CONTACT		= (0x01 << 2),
@@ -1324,10 +1276,7 @@ typedef enum
 	SERVICE_ADAPTOR_PROTOCOL_SERVICE_TYPE_PUSH		= (0x01 << 5),
 } service_adaptor_protocol_service_type_e;
 
-///////////////////
-///////////////////               private feature
-///////////////////
-/////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////
+/*                                private feature                       */
+/***********************************************************************/
 
 #endif /* __DBUS_SERVER_H__ */

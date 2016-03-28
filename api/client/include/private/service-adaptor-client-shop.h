@@ -36,8 +36,7 @@
 /**
 * @brief Describes infromation about shop
 */
-typedef struct _service_adaptor_shop_info_s
-{
+typedef struct _service_adaptor_shop_info_s {
 	int category_id;		/**< specifies category id of item*/
 	long item_id;			/**< specifies item id*/
 	long sticker_id;		/**< specifies sticker id*/
@@ -52,8 +51,7 @@ typedef struct _service_adaptor_shop_info_s
 /**
 * @brief Describes infromation about item
 */
-typedef struct _service_adaptor_shop_item_s
-{
+typedef struct _service_adaptor_shop_item_s {
 	long item_id;			/**< specifies category id of item*/
 	int category_id;		/**< specifies category id of item*/
 	long *sticker_ids;		/**< specifies category id of item*/
@@ -74,7 +72,7 @@ typedef struct _service_adaptor_shop_item_s
 } service_adaptor_shop_item_s;
 
 /*==================================================================================================
-                                         FUNCTION PROTOTYPES
+					FUNCTION PROTOTYPES
 ==================================================================================================*/
 
 /**

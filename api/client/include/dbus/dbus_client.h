@@ -35,12 +35,12 @@
 #include "service_adaptor_client_type.h"
 #include "service_adaptor_client_private.h"
 
-#define __safe_add_string(x)	(x==NULL)?"":x
+#define __safe_add_string(x)	(x == NULL) ? "" : x
 
 #define SECURITY_SERVER_COOKIE_BUFFER_SIZE	21
 
 /*==================================================================================================
-                                         FUNCTION PROTOTYPES
+					FUNCTION PROTOTYPES
 ==================================================================================================*/
 
 GDBusProxy *_dbus_get_sac_interface_proxy();

@@ -33,8 +33,7 @@
 /**
  * Message adaptor error code
  */
-typedef enum message_error_code_e
-{
+typedef enum message_error_code_e {
 	MESSAGE_ADAPTOR_ERROR_NONE                     =  0,
 	MESSAGE_ADAPTOR_ERROR_LAUNCH                    = 1,    /**< 1 ~ 99: internal error*/
 	MESSAGE_ADAPTOR_ERROR_INIT                      = 2,
@@ -53,10 +52,10 @@ typedef enum message_error_code_e
 	MESSAGE_ADAPTOR_ERROR_INVALID_ARGUMENT_TYPE     = 15,
 	MESSAGE_ADAPTOR_ERROR_NOT_AUTHORIZED            = 16,
 	MESSAGE_ADAPTOR_ERROR_ADAPTOR_INTERNAL          = 17,
-	MESSAGE_ADAPTOR_ERROR_PLUGIN_INTERNAL           = 18,	// input error code and message issued from curl or http or message_plugin_internal_error_code_e(defined by developer manually)
-	MESSAGE_ADAPTOR_ERROR_SERVER_INTERNAL           = 19,	// input error code and message issued from server.
+	MESSAGE_ADAPTOR_ERROR_PLUGIN_INTERNAL           = 18,	/* input error code and message issued from curl or http or message_plugin_internal_error_code_e(defined by developer manually) */
+	MESSAGE_ADAPTOR_ERROR_SERVER_INTERNAL           = 19,	/* input error code and message issued from server. */
 	MESSAGE_ADAPTOR_ERROR_DBUS                      = 20,
-	MESSAGE_ADAPTOR_ERROR_TIME_OUT	 	        = 21,
+	MESSAGE_ADAPTOR_ERROR_TIME_OUT			= 21,
 	MESSAGE_ADAPTOR_ERROR_MAX
 } message_error_code_t;
 
@@ -64,8 +63,7 @@ typedef enum message_error_code_e
  * @ brief Message plugin internal error code
  * @ details When a plugin returns MESSAGE_ADAPTOR_ERROR_PLUGIN_INTERNAL, input this number to message_adaptor_error_code_s.code
  */
-typedef enum _message_plugin_internal_error_code_e
-{
+typedef enum _message_plugin_internal_error_code_e {
 	MESSAGE_PLUGIN_ERROR_HTTP_BAD_REQUEST           = 400,
 	MESSAGE_PLUGIN_ERROR_HTTP_UNAUTHORIZED          = 401,
 	MESSAGE_PLUGIN_ERROR_HTTP_FORBIDDEN             = 403,
@@ -80,7 +78,7 @@ typedef enum _message_plugin_internal_error_code_e
 	MESSAGE_PLUGIN_ERROR_NETWORK_DEVICE_OFFLINE	= 601,
 	MESSAGE_PLUGIN_ERROR_NETWORK_DEVICE_CONFUSED	= 602,
 	MESSAGE_PLUGIN_ERROR_NETWORK_SOCKET_ISSUE	= 603,
-	MESSAGE_PLUGIN_ERROR_NETWORK_SERVER_NOT_RESPONSE= 604,
+	MESSAGE_PLUGIN_ERROR_NETWORK_SERVER_NOT_RESPONSE = 604,
 	MESSAGE_PLUGIN_ERROR_NEWTORK_ETC		= 648,
 	MESSAGE_PLUGIN_ERROR_NEWTORK_UNKNOWN		= 649,
 
@@ -101,8 +99,7 @@ typedef enum _message_plugin_internal_error_code_e
 	MESSAGE_PLUGIN_ERROR_UNKNOWN                    = 999,
 } message_plugin_internal_error_code_e;
 
-typedef enum _message_connection_policy_e
-{
+typedef enum _message_connection_policy_e {
 	MESSAGE_CONNECTION_POLICY_AUTO		= 0,
 	MESSAGE_CONNECTION_POLICY_CONNECT	= 1,
 	MESSAGE_CONNECTION_POLICY_DISCONNECT	= 2,
@@ -111,13 +108,12 @@ typedef enum _message_connection_policy_e
 /**
  * @ brief Message plugin's TCP connection state flag
  */
-typedef enum message_connection_state_e
-{
-	MESSAGE_CONNECTION_STATE_INIT		= 0,	// init value (after create_context)
-	MESSAGE_CONNECTION_STATE_READY		= 1,	// thread running (after connect) before channel_auth
-	MESSAGE_CONNECTION_STATE_CONNECT	= 2,	// connection authenticated (after channel_auth_reply)
-	MESSAGE_CONNECTION_STATE_DISCONNECTED	= 3,	// connection was stopped explicitly (after disconnect)
-	MESSAGE_CONNECTION_STATE_INTERRUPTED	= 4,	// connection was stopped inadventently (by network/server/etc issue)
+typedef enum message_connection_state_e {
+	MESSAGE_CONNECTION_STATE_INIT		= 0,	/* init value (after create_context) */
+	MESSAGE_CONNECTION_STATE_READY		= 1,	/* thread running (after connect) before channel_auth */
+	MESSAGE_CONNECTION_STATE_CONNECT	= 2,	/* connection authenticated (after channel_auth_reply) */
+	MESSAGE_CONNECTION_STATE_DISCONNECTED	= 3,	/* connection was stopped explicitly (after disconnect) */
+	MESSAGE_CONNECTION_STATE_INTERRUPTED	= 4,	/* connection was stopped inadventently (by network/server/etc issue) */
 	MESSAGE_CONNECTION_STATE_MAX		= 5,
 } message_connection_state_t;
 
@@ -134,8 +130,7 @@ typedef struct message_adaptor_s *message_adaptor_h;
 /**
  * @ brief Message adaptor error code
  */
-typedef struct message_adaptor_error_code_s
-{
+typedef struct message_adaptor_error_code_s {
 	char *code;
 	char *msg;
 } message_adaptor_error_code_t;
@@ -144,8 +139,7 @@ typedef struct message_adaptor_error_code_s *message_adaptor_error_code_h;
 /**
  * @ brief Message adaptor violated user structure
  */
-typedef struct message_adaptor_did_violation_users_s
-{
+typedef struct message_adaptor_did_violation_users_s {
 	long long int usera;
 	long long int userb;
 } message_adaptor_did_violation_users_t;
@@ -154,8 +148,7 @@ typedef struct message_adaptor_did_violation_users_s *message_adaptor_did_violat
 /**
  * @ brief Message adaptor wrong receiver structure
  */
-typedef struct
-{
+typedef struct {
 	long long int *invalid_receivers;
 	unsigned int invalid_receivers_len;
 	long long int *interrupted_receivers;
@@ -173,8 +166,7 @@ typedef struct
 /**
  * @ brief Message adaptor chat message structure
  */
-typedef struct
-{
+typedef struct {
 	long long int msg_id;
 	int msg_type;
 	char *chatmsg;
@@ -184,8 +176,7 @@ typedef struct
 /**
  * @ brief Message adaptor processed message structure
  */
-typedef struct
-{
+typedef struct {
 	long long int msg_id;
 	long long int sent_time;
 } message_adaptor_processed_msg_s;
@@ -193,8 +184,7 @@ typedef struct
 /**
  * @ brief Message adaptor deliveryAck structure
  */
-typedef struct
-{
+typedef struct {
 	long long int userId;
 	long long int msgId;
 	long long int timestamp;
@@ -203,8 +193,7 @@ typedef struct
 /**
  * @ brief Message adaptor read_ack structure
  */
-typedef struct
-{
+typedef struct {
 	long long int userId;
 	long long int msgId;
 	long long int timestamp;
@@ -213,8 +202,7 @@ typedef struct
 /**
  * @ brief Message adaptor ordered chat member structure
  */
-typedef struct
-{
+typedef struct {
 	long long int userId;
 	long long int available;
 	char *name;
@@ -223,8 +211,7 @@ typedef struct
 /**
  * @ brief Message adaptor inbox entry structure
  */
-typedef struct _message_inboxentry
-{
+typedef struct _message_inboxentry {
 	long long int msgId;
 	int msgType;
 	long long int sender;
@@ -241,8 +228,7 @@ typedef message_inboxentry_t message_adaptor_inbox_message_s;
 /**
  * @ brief Message adaptor plugin context structure
  */
-typedef struct message_adaptor_plugin_context_s
-{
+typedef struct message_adaptor_plugin_context_s {
 	long long int duid;
 	char *access_token;
 	char *app_id;
@@ -256,16 +242,16 @@ typedef struct message_adaptor_plugin_context_s
 	message_connection_state_t connection_state;
 	message_connection_policy_e connection_policy;
 
-	// Encryption
+	/* Encryption */
 	unsigned char enc_key[32];
 	unsigned char enc_vec[16];
-	//bool enc_key_updated;
+	/* bool enc_key_updated; */
 	unsigned char gpb_key[32];
 	unsigned char gpb_vec[16];
-	//bool gpb_key_updated;
+	/* bool gpb_key_updated; */
 	unsigned char exp_key[32];
 	unsigned char exp_vec[16];
-	//bool exp_key_updated;
+	/* bool exp_key_updated; */
 
 	char *plugin_uri;
 
@@ -278,15 +264,13 @@ typedef struct message_adaptor_plugin_context_s *message_adaptor_plugin_context_
 /**
  * @ brief Message adaptor result code for internal use
  */
-typedef enum message_plugin_result_code_e
-{
+typedef enum message_plugin_result_code_e {
 	MESSAGE_PLUGIN_RESULT_SUCCEDED = 0,
 	MESSAGE_PLUGIN_RESULT_FAILED = -1,
 	MESSAGE_PLUGIN_RESULT_CANCELED = -2
 } message_plugin_result_code_t;
 
-typedef struct curl_cb_data_s
-{
+typedef struct curl_cb_data_s {
 	char *data;
 	int size;
 } curl_cb_data_t;
@@ -294,8 +278,7 @@ typedef struct curl_cb_data_s
 /**
  * @ brief Message adaptor phone number structure
  */
-typedef struct
-{
+typedef struct {
 	char *phonenumber;
 	char *ccc;
 } message_adaptor_phone_number_s;
@@ -303,8 +286,7 @@ typedef struct
 /**
  * @ brief Message adaptor chat id structure
  */
-typedef struct
-{
+typedef struct {
 	long long int chatid;
 	char *msisdn;
 } message_adaptor_chat_id_s;
@@ -335,10 +317,9 @@ typedef struct message_adaptor_plugin_listener_s *message_adaptor_plugin_listene
 /**
  * @ brief Message adaptor plugin handle
  */
-typedef struct message_adaptor_plugin_handle_s
-{
-	// Mandatory functions to handle plugin in adaptor
-	//struct message_adaptor_plugin_handle_s * (*create_plugin_handle)(void);
+typedef struct message_adaptor_plugin_handle_s {
+	/* Mandatory functions to handle plugin in adaptor */
+	/* struct message_adaptor_plugin_handle_s * (*create_plugin_handle)(void); */
 	message_error_code_t (*create_context)(message_adaptor_plugin_context_h *context,
 							char *duid,
 							char *access_token,
@@ -372,10 +353,10 @@ typedef struct message_adaptor_plugin_handle_s
 							message_adaptor_phone_number_s **phone_numbers,
 							unsigned int phone_numbers_len,
 							void *user_data,
-						        message_adaptor_chat_id_s ***chat_ids,
-						        unsigned int *chat_ids_len,
-						        message_adaptor_error_code_t **error_code,
-						        void **server_data);
+							message_adaptor_chat_id_s ***chat_ids,
+							unsigned int *chat_ids_len,
+							message_adaptor_error_code_t **error_code,
+							void **server_data);
 
 	message_error_code_t (*request_msisdn) (message_adaptor_plugin_context_h handle,
 							char *uid,
@@ -400,8 +381,8 @@ typedef struct message_adaptor_plugin_handle_s
 
 	message_error_code_t (*client_echo_reply) (message_adaptor_plugin_context_h context,
 							long long int *request_id,
-  							message_adaptor_error_code_t **error_code,
-  							void *user_data);
+							message_adaptor_error_code_t **error_code,
+							void *user_data);
 
 	message_error_code_t (*create_chatroom_request)(message_adaptor_plugin_context_h context,
 							long long int *request_id,
@@ -424,8 +405,8 @@ typedef struct message_adaptor_plugin_handle_s
 							long long int *request_id,
 							long long int *chatroom_id,
 							message_adaptor_chat_msg_s *msgs,
- 							message_adaptor_error_code_t **error_code,
- 							void *user_data);
+							message_adaptor_error_code_t **error_code,
+							void *user_data);
 
 	message_error_code_t (*allow_chat_request)(message_adaptor_plugin_context_h context,
 							long long int *request_id,
@@ -480,8 +461,8 @@ typedef struct message_adaptor_plugin_handle_s
 							long long int *request_id,
 							message_adaptor_end_chat_s **end_chats,
 							int *end_chats_len,
-  							message_adaptor_error_code_t **error_code,
-  							void *user_data);
+							message_adaptor_error_code_t **error_code,
+							void *user_data);
 
 	message_error_code_t (*unseal_message_request)(message_adaptor_plugin_context_h context,
 							long long int *request_id,
@@ -489,8 +470,8 @@ typedef struct message_adaptor_plugin_handle_s
 							long long int *sender_id,
 							long long int *message_id,
 							const char *message_detail,
-  							message_adaptor_error_code_t **error_code,
-  							void *user_data);
+							message_adaptor_error_code_t **error_code,
+							void *user_data);
 
 	message_error_code_t (*save_call_log_request)(message_adaptor_plugin_context_h context,
 							long long int *request_id,
@@ -500,13 +481,13 @@ typedef struct message_adaptor_plugin_handle_s
 							long long int *call_sender_id,
 							long long int *call_receiver_id,
 							int *conversaction_second,
-  							message_adaptor_error_code_t **error_code,
-  							void *user_data);
+							message_adaptor_error_code_t **error_code,
+							void *user_data);
 
 	message_error_code_t (*current_time_request)(message_adaptor_plugin_context_h context,
 							long long int *request_id,
- 							message_adaptor_error_code_t **error_code,
- 							void *user_data);
+							message_adaptor_error_code_t **error_code,
+							void *user_data);
 
 	message_error_code_t (*is_typing)(message_adaptor_plugin_context_h context,
 							long long int *request_id,
@@ -514,16 +495,16 @@ typedef struct message_adaptor_plugin_handle_s
 							char **state,
 							int *chat_type,
 							int *refreshtime,
- 							message_adaptor_error_code_t **error_code,
- 							void *user_data);
+							message_adaptor_error_code_t **error_code,
+							void *user_data);
 
-	//message_error_code_t (*message_set_key)(message_adaptor_plugin_context_h context, char *key, bool is_gpb);
+	/* message_error_code_t (*message_set_key)(message_adaptor_plugin_context_h context, char *key, bool is_gpb); */
 	message_error_code_t (*connect_to_server)(message_adaptor_plugin_context_h context);
 	message_error_code_t (*decode_push_message)(message_adaptor_plugin_context_h context, char *in_msg, char **out_msg);
 	message_error_code_t (*disconnect_to_server)(message_adaptor_plugin_context_h context);
 	message_error_code_t (*get_connection_state)(message_adaptor_plugin_context_h context,
 							message_connection_state_t *state);
-	char *plugin_uri;		// get from config file
+	char *plugin_uri;	/* get from config file  */
 
 } message_adaptor_plugin_handle_t;
 typedef struct message_adaptor_plugin_handle_s *message_adaptor_plugin_handle_h;
@@ -791,9 +772,8 @@ typedef void (*message_adaptor_service_completion_cb)(message_adaptor_plugin_con
 
 
 
-typedef struct message_adaptor_listener_s
-{
-  	void (*client_echo_cb)(message_adaptor_plugin_context_h context,
+typedef struct message_adaptor_listener_s {
+	void (*client_echo_cb)(message_adaptor_plugin_context_h context,
 							long long int request_id,
 							message_adaptor_error_code_t **error_code,
 							void *server_data);
@@ -909,7 +889,7 @@ typedef struct message_adaptor_listener_s
 	void (*completion_cb)(message_adaptor_plugin_context_h context,
 							message_connection_state_t state,
 							message_adaptor_error_code_t **error_code,
-							void *server_data );
+							void *server_data);
 
 
 } message_adaptor_listener_t;
@@ -1182,8 +1162,7 @@ typedef void (*message_adaptor_plugin_completion_cb)(message_adaptor_plugin_cont
  * Message adaptor listener for plugins
  * Listener is used by plugins
  */
-typedef struct message_adaptor_plugin_listener_s
-{
+typedef struct message_adaptor_plugin_listener_s {
 	message_adaptor_plugin_client_echo_cb message_adaptor_client_echo;
 	message_adaptor_plugin_create_chatroom_reply_cb message_adaptor_create_chatroom_reply;
 	message_adaptor_plugin_change_chatroom_meta_reply_cb message_adaptor_change_chatroom_meta_reply;
@@ -1206,25 +1185,25 @@ typedef struct message_adaptor_plugin_listener_s
 /**
  * Loads plugin from selected path
  */
- EXPORT_API
+EXPORT_API
 int message_adaptor_load_plugin(message_adaptor_h adaptor, const char *plugin_path);
 
 /**
  * Unloads selected plugin
  */
- EXPORT_API
+EXPORT_API
 int message_adaptor_unload_plugin(message_adaptor_h adaptor, message_adaptor_plugin_h plugin);
 
- EXPORT_API
+EXPORT_API
 message_error_code_t message_adaptor_set_connected(message_adaptor_plugin_h plugin, int connected);
 
- EXPORT_API
+EXPORT_API
 message_error_code_t message_adaptor_wait_connected(message_adaptor_plugin_h plugin);
 
 /**
  * Gets plugin name
  */
- EXPORT_API
+EXPORT_API
 const char *message_adaptor_get_plugin_uri(message_adaptor_plugin_h plugin);
 
 /**
@@ -1315,9 +1294,9 @@ void message_adaptor_destroy_plugin_context(message_adaptor_plugin_h plugin, mes
 EXPORT_API
 message_adaptor_plugin_h message_adaptor_get_plugin_by_name(message_adaptor_h adaptor, const char *plugin_uri);
 
-////////////////////////////////////////////////////////////
-// Adaptor Plugin call Functions
-////////////////////////////////////////////////////////////
+/**********************************************************/
+/* Adaptor Plugin call Functions                          */
+/**********************************************************/
 
 /**
 * @brief Set server information for Message Plugin
@@ -1356,12 +1335,12 @@ EXPORT_API
 message_error_code_t message_adaptor_get_key(message_adaptor_plugin_h plugin,
 						message_adaptor_plugin_context_h context,
 						char **in_gcmid,
-	   					char **in_del_gcm_id,
-	   					char **key,
-	   					char **expiredkey,
-	   					char **gpbauthkey,
-	   					message_adaptor_error_code_t **error_code,
-	   					void **server_data);
+						char **in_del_gcm_id,
+						char **key,
+						char **expiredkey,
+						char **gpbauthkey,
+						message_adaptor_error_code_t **error_code,
+						void **server_data);
 
 /**
 * @brief Request Chat ID corresponds to MSISDN to remote server
@@ -1403,7 +1382,7 @@ message_error_code_t message_adaptor_request_chat_id(message_adaptor_plugin_h pl
 * @retval error code defined in message_error_code_e - MESSAGE_ADAPTOR_ERROR_NONE if Successful
 */
 EXPORT_API
-message_error_code_t message_adaptor_request_msisdn (message_adaptor_plugin_h plugin,
+message_error_code_t message_adaptor_request_msisdn(message_adaptor_plugin_h plugin,
 						message_adaptor_plugin_context_h handle,
 						long long int *chat_ids,
 						unsigned int chat_ids_len,
@@ -1448,7 +1427,7 @@ message_error_code_t message_adaptor_channel_auth_request(message_adaptor_plugin
 * @retval error code defined in message_error_code_t
 */
 EXPORT_API
-message_error_code_t message_adaptor_client_echo_reply (message_adaptor_plugin_h plugin,
+message_error_code_t message_adaptor_client_echo_reply(message_adaptor_plugin_h plugin,
 						message_adaptor_plugin_context_h context,
 						long long int request_id,
 						message_adaptor_error_code_t **error_code,
@@ -1535,10 +1514,10 @@ message_error_code_t message_adaptor_chat_request(message_adaptor_plugin_h plugi
 * @param[in]	chatroom_id					specifies chatroom ID
 * @param[in]	max_count					specifies the max number of ForwardUnreadMessage (default : 500)
 * @param[in]	need_delivery_ack				specifies whether receive delivery ack data or not (0 - do not receive delivery ack data, 1 - receive delivery ack data)
-* @param[in]	need_delivery_ack_timestamp	specifies 	latest receipt time of delivery ack data
-* @param[in]	need_read_ack				specifies whether receive water mark data or not (0 - do not receive water mark data, 1 - receive read_ack data)
-* @param[in]	last_read_ack_timestamp		specifies time of last read_ack
-* @param[in]	need_ordered_chat_member_list	specifies whether need odered chat memebr list or not
+* @param[in]	need_delivery_ack_timestamp			specifies latest receipt time of delivery ack data
+* @param[in]	need_read_ack					specifies whether receive water mark data or not (0 - do not receive water mark data, 1 - receive read_ack data)
+* @param[in]	last_read_ack_timestamp				specifies time of last read_ack
+* @param[in]	need_ordered_chat_member_list			specifies whether need odered chat memebr list or not
 * @param[in]	user_data					specifies additional user input data (unused)
 * @param[out]	error_code					specifies error code
 * @return MESSAGE_ADAPTOR_ERROR_NONE (0) on success, otherwise a positive error value

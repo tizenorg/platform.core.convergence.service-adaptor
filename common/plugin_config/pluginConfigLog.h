@@ -36,7 +36,7 @@
 
 /* These defines must be located before #include <dlog.h> */
 #define TIZEN_ENGINEER_MODE
-// TODO: Investigate why this macro is defined somewhere else
+/* TODO: Investigate why this macro is defined somewhere else */
 #ifndef TIZEN_DEBUG_ENABLE
 #define TIZEN_DEBUG_ENABLE
 #endif
@@ -86,7 +86,7 @@ extern "C"
 	 *  @param[out] val  Value to be returned when expression is true
 	 */
 #define plugin_config_retv_if(expr, val) do { \
-	if(expr) { \
+	if (expr) { \
 		LOGE(FONT_COLOR_PURPLE"[%d]"FONT_COLOR_RESET, plugin_config_gettid());    \
 		return (val); \
 	} \
@@ -107,7 +107,7 @@ extern "C"
  * @param[in]  args Arguments to be displayed
  */
 #define plugin_config_info(fmt, arg...) do { \
-	LOGI(FONT_COLOR_BLUE"[%d]"fmt""FONT_COLOR_RESET, plugin_config_gettid() ,##arg);     \
+	LOGI(FONT_COLOR_BLUE"[%d]"fmt""FONT_COLOR_RESET, plugin_config_gettid(), ##arg);     \
 } while (0)
 
 /**

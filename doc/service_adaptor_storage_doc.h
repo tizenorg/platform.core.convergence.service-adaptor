@@ -22,9 +22,9 @@
  * @ingroup	SERVICE_PLUGIN_MODULE
  * @defgroup	SERVICE_ADAPTOR_STORAGE_MODULE Storage
  * @brief	Provide functions for access and managing storage service
- * @section 	SERVICE_ADAPTOR_STORAGE_MODULE_HEADER Require Header
+ * @section	SERVICE_ADAPTOR_STORAGE_MODULE_HEADER Require Header
  * \#include <service_adaptor_client.h>
- * @section 	SERVICE_ADAPTOR_STORAGE_MODULE_OVERVIEW Overview
+ * @section	SERVICE_ADAPTOR_STORAGE_MODULE_OVERVIEW Overview
  * It privides common APIs for using various service infra
  * <div>
  * In this APIs, there are needed two kind of path types.

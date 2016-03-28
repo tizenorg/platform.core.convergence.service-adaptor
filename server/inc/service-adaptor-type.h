@@ -30,8 +30,7 @@
 
 #define SERVICE_ADAPTOR_OPERATION_PUSH_NOTI_TO_APPCONTROL "http://tizen.org/serviceadaptor/operation/v1/push"
 
-typedef struct _service_adaptor_context_info_s
-{
+typedef struct _service_adaptor_context_info_s {
 	char *user_id;
 	char *app_id;
 	unsigned int service_id;
@@ -43,9 +42,8 @@ typedef struct _service_adaptor_context_info_s
 	void *property;
 } service_adaptor_context_info_s;
 
-typedef struct _service_adaptor_service_context_s
-{
-	char *service_name;		// com.serviceadaptor.service1
+typedef struct _service_adaptor_service_context_s {
+	char *service_name;		/* com.serviceadaptor.service1 */
 	char *plugin_uri;
 
 	int authenticated;
@@ -66,8 +64,7 @@ typedef struct _service_adaptor_service_context_s
 } service_adaptor_service_context_s;
 typedef struct _service_adaptor_service_context_s *service_adaptor_service_context_h;
 
-typedef struct _service_adaptor_s
-{
+typedef struct _service_adaptor_s {
 	int started;
 
 	GMutex service_adaptor_mutex;
@@ -87,17 +84,17 @@ typedef struct _service_adaptor_s
 	storage_adaptor_listener_h	storage_listener;
 	push_adaptor_listener_h		push_listener;
 
-	GList *service_list;		// service_adaptor_service_context_h
+	GList *service_list;		/* service_adaptor_service_context_h */
 } service_adaptor_s;
 typedef struct _service_adaptor_s *service_adaptor_h;
 
-// Gets service adaptor handle
+/* Gets service adaptor handle */
 service_adaptor_h service_adaptor_get_handle();
 
 service_adaptor_internal_error_code_e service_adaptor_init();
 void service_adaptor_deinit();
 
-// Gets adaptor context
+/* Gets adaptor context */
 service_adaptor_service_context_h service_adaptor_get_service_context(service_adaptor_h service_adaptor,
 						const char *service_name);
 
@@ -116,11 +113,11 @@ service_adaptor_internal_error_code_e service_adaptor_bind_push_context(service_
 						service_adaptor_service_context_h service_src,
 						service_adaptor_service_context_h service_dst);
 
-// Create / Destroy adaptors (Internal function)
+/* Create / Destroy adaptors (Internal function) */
 service_adaptor_h service_adaptor_create();
 void service_adaptor_destroy(service_adaptor_h service_adaptor);
 
-// Connects / Disconnects adaptors
+/* Connects / Disconnects adaptors */
 service_adaptor_internal_error_code_e service_adaptor_connect(service_adaptor_h service_adaptor,
 						service_adaptor_context_info_s *context_info,
 						const char *service_name,
@@ -153,15 +150,14 @@ int service_adaptor_is_service_binded(service_adaptor_h service_adaptor,
 void debug_service_context(GList *service_list);
 #endif
 
-typedef enum
-{
+typedef enum {
 	SA_TIME_CHECK_FLAG_AUTH,
 	SA_TIME_CHECK_FLAG_STORAGE,
 	SA_TIME_CHECK_FLAG_CONTACT,
 	SA_TIME_CHECK_FLAG_MESSAGE,
 	SA_TIME_CHECK_FLAG_PUSH,
 	SA_TIME_CHECK_FLAG_SHOP,
-}sa_time_check_flag_e;
+} sa_time_check_flag_e;
 
 void SERVICE_ADAPTOR_API_TIME_CHECK_START();
 void SERVICE_ADAPTOR_API_TIME_CHECK_PAUSE();
