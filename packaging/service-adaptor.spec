@@ -52,9 +52,7 @@ export FFLAGS="$FFLAGS -DTIZEN_DEBUG_ENABLE"
 %endif
 
 cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix} \
-        -DLIB_INSTALL_DIR:PATH=%{_libdir} \
-	-DTZ_SYS_USER_GROUP=%TZ_SYS_USER_GROUP \
-	-DTZ_SYS_DEFAULT_USER=%TZ_SYS_DEFAULT_USER
+        -DLIB_INSTALL_DIR:PATH=%{_libdir}
 
 make %{?_smp_mflags}
 
@@ -89,7 +87,6 @@ cp LICENSE.APLv2 %{buildroot}/%{TZ_SYS_RO_SHARE}/license/service-adaptor-devel
 %manifest service-adaptor.manifest
 %defattr(-,root,root,-)
 %{_libdir}/lib*.so.*
-%{_libdir}/service-provider
 %{_libdir}/service-provider/*
 %{_bindir}/service-adaptor-server
 %{_unitdir}/service-adaptor.service

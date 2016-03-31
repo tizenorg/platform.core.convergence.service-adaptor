@@ -65,7 +65,7 @@ struct _service_adaptor_s {
 	void *on_signal;
 
 /*	struct _service_plugin_s **plugins;  */
-/*	int plugin_count;	/* TODO */
+/*	int plugin_count;	TODO */
 
 /*  private feature start */
 	char *service_name;			/**< specifies status as none*/
