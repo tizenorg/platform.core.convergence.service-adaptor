@@ -7,8 +7,6 @@ Requires=dbus.socket
 Type=dbus
 BusName=org.tizen.serviceadaptor.client
 ExecStart=/usr/bin/service-adaptor-server
-#Restart=on-failure
-#RestartSec=0
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target

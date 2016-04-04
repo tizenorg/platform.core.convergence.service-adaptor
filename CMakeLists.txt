@@ -42,7 +42,7 @@ ADD_SUBDIRECTORY(server)
 ##########################################################
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/packaging/org.tizen.serviceadaptor.client.conf.in ${CMAKE_CURRENT_SOURCE_DIR}/org.tizen.serviceadaptor.client.conf)
-INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/org.tizen.serviceadaptor.client.conf DESTINATION /etc/dbus-1/system.d)
+INSTALL(FILES ${CMAKE_CURRENT_SOURCE_DIR}/org.tizen.serviceadaptor.client.conf DESTINATION /etc/dbus-1/session.d)
 
 CONFIGURE_FILE(service-adaptor.pc.in service-adaptor.pc @ONLY)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/service-adaptor.pc DESTINATION ${LIB_INSTALL_DIR}/pkgconfig)

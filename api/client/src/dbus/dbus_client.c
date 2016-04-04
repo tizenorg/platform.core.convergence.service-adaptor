@@ -209,7 +209,7 @@ static int __dbus_connection_init(dbus_service_adaptor_client_thread_data_s *thr
 		return -1;
 	}
 
-	connection = g_bus_get_sync(G_BUS_TYPE_SYSTEM, NULL, &error);
+	connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
 
 	if (NULL == connection) {
 		g_error_free(error);
@@ -237,7 +237,7 @@ static int __dbus_connection_init(dbus_service_adaptor_client_thread_data_s *thr
 		}
 	}
 
-	watcher_id = g_bus_watch_name(G_BUS_TYPE_SYSTEM,
+	watcher_id = g_bus_watch_name(G_BUS_TYPE_SESSION,
 			SERVICE_ADAPTOR_BUS_NAME,
 			G_BUS_NAME_WATCHER_FLAGS_NONE,
 			on_name_appeared,

@@ -901,7 +901,7 @@ int dbus_server_init()
 	}
 
 	service_adaptor_debug("[Step] thread pool (%p)", thread_pool);
-	owner_id = g_bus_own_name(G_BUS_TYPE_SYSTEM,
+	owner_id = g_bus_own_name(G_BUS_TYPE_SESSION,
 			SERVICE_ADAPTOR_BUS_NAME,
 			G_BUS_NAME_OWNER_FLAGS_NONE,
 			on_bus_acquired,

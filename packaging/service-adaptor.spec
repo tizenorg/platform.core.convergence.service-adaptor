@@ -67,12 +67,12 @@ mkdir -p %{buildroot}%{_libdir}/service-provider/message
 mkdir -p %{buildroot}%{_libdir}/service-provider/push
 mkdir -p %{buildroot}%{_libdir}/service-provider/shop
 
-mkdir -p %{buildroot}%{_datadir}/dbus-1/system-services
-install -m 0644 %SOURCE2 %{buildroot}%{_datadir}/dbus-1/system-services/org.tizen.serviceadaptor.client.service
+mkdir -p %{buildroot}%{_unitdir_user}/default.target.wants
+install -m 0644 %SOURCE1 %{buildroot}%{_unitdir_user}/service-adaptor.service
+ln -s ../service-adaptor.service %{buildroot}%{_unitdir_user}/default.target.wants/service-adaptor.service
 
-mkdir -p %{buildroot}%{_unitdir}/multi-user.target.wants
-install -m 0644 %SOURCE1 %{buildroot}%{_unitdir}/service-adaptor.service
-%install_service multi-user.target.wants service-adaptor.service
+mkdir -p %{buildroot}%{_datadir}/dbus-1/services
+install -m 0644 %SOURCE2 %{buildroot}%{_datadir}/dbus-1/services/org.tizen.serviceadaptor.client.service
 
 mkdir -p %{buildroot}/%{TZ_SYS_RO_SHARE}/license
 cp LICENSE.APLv2 %{buildroot}/%{TZ_SYS_RO_SHARE}/license/service-adaptor
@@ -89,10 +89,10 @@ cp LICENSE.APLv2 %{buildroot}/%{TZ_SYS_RO_SHARE}/license/service-adaptor-devel
 %{_libdir}/lib*.so.*
 %{_libdir}/service-provider/*
 %{_bindir}/service-adaptor-server
-%{_unitdir}/service-adaptor.service
-%{_unitdir}/multi-user.target.wants/service-adaptor.service
-%{_datadir}/dbus-1/system-services/org.tizen.serviceadaptor.client.service
-%{_sysconfdir}/dbus-1/system.d/org.tizen.serviceadaptor.client.conf
+%{_unitdir_user}/service-adaptor.service
+%{_unitdir_user}/default.target.wants/service-adaptor.service
+%{_datadir}/dbus-1/services/org.tizen.serviceadaptor.client.service
+%{_sysconfdir}/dbus-1/session.d/org.tizen.serviceadaptor.client.conf
 %{TZ_SYS_RO_SHARE}/license/%{name}
 %{_includedir}/*.h
 
