@@ -871,6 +871,8 @@ static void on_name_lost(GDBusConnection *connection,
 		dbus_connection = NULL;
 	}
 
+	dbus_server_deinit();
+
 	service_adaptor_warning("Unexpected D-bus bus name lost.");
 	service_adaptor_info("Service-adaptor Safe Shutdown");
 

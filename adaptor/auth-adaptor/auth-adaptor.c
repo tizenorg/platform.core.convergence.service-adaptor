@@ -1587,6 +1587,7 @@ void *_auth_adaptor_plugin_message_collector(void *data)
 	fd_set read_set;
 	struct timeval tv;
 	tv.tv_sec = 10L;		/* TODO change to define or meaningful value */
+	tv.tv_usec = 0L;		/* TODO change to define or meaningful value */
 	char msg_buf[PLUGIN_MESSAGE_PROTOCOL_MAX_BUF_SIZE] = {0, };
 	int buf_size, rcv_len;
 	GList *dead_list = NULL;
