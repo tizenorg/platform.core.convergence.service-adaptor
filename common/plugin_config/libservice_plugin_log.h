@@ -57,6 +57,7 @@ extern "C"
 /**
  *  Colors of font
  */
+#ifdef SERVICE_ADAPTOR_COLOR_LOG
 #define FONT_COLOR_RESET      "\033[0m"
 #define FONT_COLOR_BLACK      "\033[30m"             /* Black */
 #define FONT_COLOR_RED        "\033[31m"             /* Red */
@@ -74,6 +75,25 @@ extern "C"
 #define FONT_COLOR_BOLDPURPLE "\033[1m\033[35m"      /* Bold Purple */
 #define FONT_COLOR_BOLDCYAN   "\033[1m\033[36m"      /* Bold Cyan */
 #define FONT_COLOR_BOLDWHITE  "\033[1m\033[37m"      /* Bold White */
+#else
+#define FONT_COLOR_RESET      ""
+#define FONT_COLOR_BLACK      ""
+#define FONT_COLOR_RED        ""
+#define FONT_COLOR_GREEN      ""
+#define FONT_COLOR_YELLOW     ""
+#define FONT_COLOR_BLUE       ""
+#define FONT_COLOR_PURPLE     ""
+#define FONT_COLOR_CYAN       ""
+#define FONT_COLOR_WHITE      ""
+#define FONT_COLOR_BOLDBLACK  ""
+#define FONT_COLOR_BOLDRED    ""
+#define FONT_COLOR_BOLDGREEN  ""
+#define FONT_COLOR_BOLDYELLOW ""
+#define FONT_COLOR_BOLDBLUE   ""
+#define FONT_COLOR_BOLDPURPLE ""
+#define FONT_COLOR_BOLDCYAN   ""
+#define FONT_COLOR_BOLDWHITE  ""
+#endif
 
 	/**
 	 *  Gets thread ID

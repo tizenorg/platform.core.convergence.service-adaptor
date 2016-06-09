@@ -39,8 +39,8 @@
 #define PRINT_LOG LSP_LOG_debug
 #endif
 
-#define FUNC_START() do {PRINT_LOG("\033[1m\033[32m""Start >>%s>>\n""\033[0m", __FUNCTION__); } while (0)
-#define FUNC_END() do {PRINT_LOG("\033[1m\033[36m""End <<%s<<\n""\033[0m", __FUNCTION__); } while (0)
+#define FUNC_START() do {PRINT_LOG("Start >>%s>>\n", __FUNCTION__); } while (0)
+#define FUNC_END() do {PRINT_LOG("End <<%s<<\n", __FUNCTION__); } while (0)
 
 
 #define PLUGIN_MESSAGE_ELEMENT_KEY_CONTEXT_ID		"ctx_id"
