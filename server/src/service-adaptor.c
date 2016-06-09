@@ -492,6 +492,10 @@ CONNECT_API_CHECK_RESULT:
 		free(service->context_info->user_id);
 		free(service->context_info->app_id);
 		free(service->context_info->imsi);
+		if ((service->context_info->property) && (NULL == context_info->property)) {
+			context_info->property = service->context_info->property;
+			// return and it will be free in caller function
+		}
 
 		free(service->context_info);
 

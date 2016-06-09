@@ -539,6 +539,10 @@ FUNC_STEP();
 		free(new_context_info.msisdn);
 		free(new_context_info.access_token);
 		free(new_context_info.refresh_token);
+		if (new_context_info.property) {
+			bundle_free((bundle *)new_context_info.property);
+			new_context_info.property = NULL;
+		}
 	} else if ((0 == g_strcmp0(method_name, DBUS_IS_AUTH_METHOD)) || (0 == g_strcmp0(method_name, DBUS_JOIN_METHOD))) {
 		service_adaptor_debug("[START] Is auth / join");
 		GVariant *in_parameters = g_variant_get_child_value(parameters, 0);
