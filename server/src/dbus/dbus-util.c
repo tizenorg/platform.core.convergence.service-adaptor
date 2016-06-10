@@ -75,10 +75,23 @@ char *ipc_g_variant_dup_string(GVariant *string)
 int sa_cynara_init()
 {
 	int ret;
+	cynara_configuration *p_conf;
+	size_t cache_size = 100;
+
+	if (CYNARA_API_SUCCESS != cynara_configuration_create(&p_conf)) {
+		service_adaptor_error("cynara_configuration_create() failed");
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+	}
+	if (CYNARA_API_SUCCESS != cynara_configuration_set_cache_size(p_conf, cache_size)) {
+		service_adaptor_error("cynara_configuration_set_cache_size() failed");
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+	}
+
 	ret = cynara_initialize(&_cynara, NULL);
 
 	if (CYNARA_API_SUCCESS != ret) {
 		service_adaptor_error("cynara_initialize() Fail(%d)", ret);
+		cynara_configuration_destroy(p_conf);
 		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
 	}
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
