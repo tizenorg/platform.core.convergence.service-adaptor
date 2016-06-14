@@ -2114,15 +2114,22 @@ GVariant *__create_create_chatroom_res_type(int64_t request_id,
 						void *server_data)
 {
 	message_adaptor_wrong_receiver_s _wrong_receiver;
+	_wrong_receiver.invalid_receivers = NULL;
+	_wrong_receiver.invalid_receivers_len = 0;
+	_wrong_receiver.interrupted_receivers = NULL;
+	_wrong_receiver.interrupted_receivers_len = 0;
+	_wrong_receiver.disabled_receivers = NULL;
+	_wrong_receiver.disabled_receivers_len = 0;
+	_wrong_receiver.existing_chatmember = NULL;
+	_wrong_receiver.existing_chatmembers_len = 0;
+	_wrong_receiver.did_violation_users = NULL;
+	_wrong_receiver.did_violation_users_len = 0;
+	_wrong_receiver.invitation_denieds = NULL;
+	_wrong_receiver.invitation_denieds_len = 0;
+	
 	if (NULL == wrong_receiver) {
 		wrong_receiver = &_wrong_receiver;
-		wrong_receiver->invalid_receivers_len = 0;
-		wrong_receiver->interrupted_receivers_len = 0;
-		wrong_receiver->disabled_receivers_len = 0;
-		wrong_receiver->existing_chatmembers_len = 0;
-		wrong_receiver->did_violation_users_len = 0;
-		wrong_receiver->invitation_denieds_len = 0;
-	}
+	}	
 
 	GVariantBuilder *builder_invalid = g_variant_builder_new(G_VARIANT_TYPE("a(x)"));
 
@@ -2393,14 +2400,21 @@ GVariant *__create_invite_chat_res_type(int64_t request_id,
 						void *server_data)
 {
 	message_adaptor_wrong_receiver_s _wrong_receiver;
+	_wrong_receiver.invalid_receivers = NULL;
+	_wrong_receiver.invalid_receivers_len = 0;
+	_wrong_receiver.interrupted_receivers = NULL;
+	_wrong_receiver.interrupted_receivers_len = 0;
+	_wrong_receiver.disabled_receivers = NULL;
+	_wrong_receiver.disabled_receivers_len = 0;
+	_wrong_receiver.existing_chatmember = NULL;
+	_wrong_receiver.existing_chatmembers_len = 0;
+	_wrong_receiver.did_violation_users = NULL;
+	_wrong_receiver.did_violation_users_len = 0;
+	_wrong_receiver.invitation_denieds = NULL;
+	_wrong_receiver.invitation_denieds_len = 0;
+	
 	if (NULL == wrong_receiver) {
 		wrong_receiver = &_wrong_receiver;
-		wrong_receiver->invalid_receivers_len = 0;
-		wrong_receiver->interrupted_receivers_len = 0;
-		wrong_receiver->disabled_receivers_len = 0;
-		wrong_receiver->existing_chatmembers_len = 0;
-		wrong_receiver->did_violation_users_len = 0;
-		wrong_receiver->invitation_denieds_len = 0;
 	}
 
 	GVariantBuilder *builder_invalid = g_variant_builder_new(G_VARIANT_TYPE("a(x)"));
