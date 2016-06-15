@@ -11,7 +11,7 @@
         <allow send_destination="org.tizen.serviceadaptor.client"/>
         <allow send_interface="org.tizen.serviceadaptor.client"/>
         <allow receive_sender="org.tizen.serviceadaptor.client"/>
-    <policy>
+    </policy>
     <policy at_console="true">
     	<allow send_destination="org.tizen.serviceadaptor.client"/>
     </policy>
