@@ -97,6 +97,7 @@
 		} \
 	} while (0)
 
+//LCOV_EXCL_START
 void __get_file_transfer_req_type(GVariant *parameters,
 						char **service_name,
 						char **server_path,
@@ -3456,3 +3457,4 @@ service_adaptor_internal_error_code_e dbus_storage_file_transfer_state_changed_c
 
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
+//LCOV_EXCL_STOP

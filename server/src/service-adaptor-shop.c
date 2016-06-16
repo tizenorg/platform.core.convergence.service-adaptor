@@ -27,6 +27,7 @@
 /*#define SHOP_PLUGIN_PATH	"/usr/lib/shop-adaptor/plugins"*/
 #define APP_TYPE		"FM"
 
+//LCOV_EXCL_START
 shop_adaptor_h service_adaptor_get_shop_adaptor(service_adaptor_h service_adaptor)
 {
 	service_adaptor_debug("Get shop adaptor");
@@ -128,14 +129,15 @@ service_adaptor_internal_error_code_e service_adaptor_disconnect_shop_plugin(ser
 
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
+//LCOV_EXCL_STOP
 
 shop_adaptor_h service_adaptor_create_shop()
 {
 	shop_adaptor_h shop_adaptor = shop_adaptor_create(SHOP_PLUGIN_PATH);
 
 	if (NULL == shop_adaptor) {
-		service_adaptor_error("Could not create shop adaptor");
-		return NULL;
+		service_adaptor_error("Could not create shop adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("Shop adaptor created");
@@ -146,8 +148,8 @@ shop_adaptor_h service_adaptor_create_shop()
 shop_adaptor_listener_h service_adaptor_register_shop_listener(shop_adaptor_h shop_adaptor)
 {
 	if (NULL == shop_adaptor) {
-		service_adaptor_error("Could not create shop adaptor");
-		return NULL;
+		service_adaptor_error("Could not create shop adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	shop_adaptor_listener_h shop_listener =

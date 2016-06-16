@@ -83,7 +83,7 @@ static void __peer_info_destroy(void *info);
 /*************************************************
  *               Internal function definition
  *************************************************/
-
+//LCOV_EXCL_START
 static void __remove_peer_info(peer_info_t pinfo)
 {
 	G_LOCK(locker);
@@ -145,6 +145,7 @@ void _print_info_cb(gpointer data, gpointer user_data)
 	#endif
 }
 #endif
+//LCOV_EXCL_STOP
 
 static int __get_peers_length()
 {
@@ -268,6 +269,7 @@ void ping_manager_deinit(void)
 	G_UNLOCK(locker);
 }
 
+//LCOV_EXCL_START
 int ping_manager_peer_connected(peer_info_t info)
 {
 	service_adaptor_info("Func start <%s> [%d]", __FUNCTION__, (int)info);
@@ -294,4 +296,5 @@ int ping_manager_get_connected_count(void)
 	service_adaptor_info("peers length : %d", ret);
 	return ret;
 }
+//LCOV_EXCL_STOP
 

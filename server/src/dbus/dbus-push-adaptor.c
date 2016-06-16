@@ -35,6 +35,7 @@
 #define RET_MSG_LEN	2048
 #define __SAFE_STRDUP(x)	(x) ? strdup(x) : strdup("")
 
+//LCOV_EXCL_START
 void push_adaptor_method_call(GDBusConnection *connection,
 						const gchar *sender,
 						const gchar *object_path,
@@ -195,3 +196,4 @@ void dbus_send_to_push_with_activation(int bus_type,
 
 	service_adaptor_debug("[End] Push dbus activation message send");
 }
+//LCOV_EXCL_STOP

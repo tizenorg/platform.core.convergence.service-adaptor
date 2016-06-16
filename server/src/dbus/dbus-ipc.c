@@ -92,13 +92,13 @@ void dbus_ipc_server_layer_deinit()
 		dbusServerThread = NULL;
 	}
 	if (dbusServerMainLoop != NULL) {
-		g_main_loop_unref(dbusServerMainLoop);
-		dbusServerMainLoop = NULL;
+		g_main_loop_unref(dbusServerMainLoop); //LCOV_EXCL_LINE
+		dbusServerMainLoop = NULL; //LCOV_EXCL_LINE
 	}
 	if (dbusServerMainContext != NULL) {
-		g_main_context_pop_thread_default(dbusServerMainContext);
-		g_main_context_unref(dbusServerMainContext);
-		dbusServerMainContext = NULL;
+		g_main_context_pop_thread_default(dbusServerMainContext); //LCOV_EXCL_LINE
+		g_main_context_unref(dbusServerMainContext); //LCOV_EXCL_LINE
+		dbusServerMainContext = NULL; //LCOV_EXCL_LINE
 	}
 }
 

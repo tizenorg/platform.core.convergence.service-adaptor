@@ -31,6 +31,7 @@
 #include "dbus-server.h"
 #include "dbus-util.h"
 
+//LCOV_EXCL_START
 char *ipc_g_variant_dup_contact_string(GVariant *string)
 {
 	char *ret = g_variant_dup_string(string, NULL);
@@ -1712,3 +1713,4 @@ FUNC_STEP();
 	}
 FUNC_END();
 }
+//LCOV_EXCL_STOP

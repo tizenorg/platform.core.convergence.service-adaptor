@@ -27,6 +27,7 @@
 /*#define AUTH_PLUGIN_PATH	"/usr/lib/auth-adaptor/plugins"*/
 #define MAX_RETRY		2
 
+//LCOV_EXCL_START
 auth_adaptor_h service_adaptor_get_auth_adaptor(service_adaptor_h service_adaptor)
 {
 	service_adaptor_debug("Get auth adaptor");
@@ -186,14 +187,15 @@ service_adaptor_internal_error_code_e service_adaptor_disconnect_auth_plugin(ser
 
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
+//LCOV_EXCL_STOP
 
 auth_adaptor_h service_adaptor_create_auth()
 {
 	auth_adaptor_h auth_adaptor = auth_adaptor_create(AUTH_PLUGIN_PATH);
 
 	if ((void *) NULL == auth_adaptor) {
-		service_adaptor_error("Could not create auth adaptor");
-		return NULL;
+		service_adaptor_error("Could not create auth adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("Auth adaptor created");
@@ -204,16 +206,16 @@ auth_adaptor_h service_adaptor_create_auth()
 auth_adaptor_listener_h service_adaptor_register_auth_listener(auth_adaptor_h auth_adaptor)
 {
 	if ((void *) NULL == auth_adaptor) {
-		service_adaptor_error("Could not create auth adaptor");
-		return NULL;
+		service_adaptor_error("Could not create auth adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	auth_adaptor_listener_h auth_listener =
 			(auth_adaptor_listener_h) malloc(sizeof(auth_adaptor_listener_t));
 
 	if ((void *) NULL == auth_listener) {
-		service_adaptor_error("Could not create auth listener");
-		return NULL;
+		service_adaptor_error("Could not create auth listener"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("Auth adaptor listener created");

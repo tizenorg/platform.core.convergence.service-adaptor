@@ -53,6 +53,7 @@
 
 #define _PLUGIN_PROPERTY_KEY_BASE	"http://tizen.org/service-adaptor/plugin/property/"
 
+//LCOV_EXCL_START
 void auth_adaptor_method_call(GDBusConnection *connection,
 						const gchar *sender,
 						const gchar *object_path,
@@ -732,3 +733,4 @@ void auth_external_method_call(const char *service_name,
 	}
 	service_adaptor_debug("<End> Auth External request");
 }
+//LCOV_EXCL_STOP

@@ -28,6 +28,7 @@
 #include "dbus-server.h"
 #include "dbus-util.h"
 
+//LCOV_EXCL_START
 void __destroy_shop_info_s(shop_adaptor_shop_info_s *info)
 {
 	if (NULL == info) {
@@ -515,3 +516,4 @@ void shop_adaptor_method_call(GDBusConnection *connection,
 		free(item);
 	}
 }
+//LCOV_EXCL_STOP

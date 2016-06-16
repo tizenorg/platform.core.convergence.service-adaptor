@@ -634,6 +634,7 @@ typedef struct _method_call_s {
 	gpointer user_data;
 } method_call_s;
 
+//LCOV_EXCL_START
 GDBusConnection *dbus_get_connection()
 {
 	return dbus_connection;
@@ -802,6 +803,7 @@ static gboolean handle_set_property(GDBusConnection *connection,
 {
 	return *error == NULL;
 }
+//LCOV_EXCL_STOP
 
 /**
  * D-Bus handlers vtable.
@@ -854,6 +856,7 @@ static void on_name_acquired(GDBusConnection *connection,
 	g_object_ref(dbus_connection);
 }
 
+//LCOV_EXCL_START
 /**
  * @brief Callback function called when the vService Channel D-Bus name is lost or connection has been closed.
  *
@@ -878,6 +881,7 @@ static void on_name_lost(GDBusConnection *connection,
 	/* Send SIGINT to main thread to stop File Manager process and cleanly close vService Channel */
 /*	kill(getpid(), SIGINT); */
 }
+//LCOV_EXCL_STOP
 
 int dbus_server_init()
 {

@@ -32,7 +32,7 @@
 
 /* if calling completion callback, it need to wait called message api in dbus-message-adaptor */
 
-
+// LCOV_EXCL_START
 void _get_service_name_by_message_context(message_adaptor_plugin_context_h context,
 						char **service_name)
 {
@@ -950,20 +950,6 @@ service_adaptor_internal_error_code_e service_adaptor_disconnect_message_plugin(
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
 
-message_adaptor_h service_adaptor_create_message()
-{
-	message_adaptor_h message_adaptor = message_adaptor_create(MESSAGE_PLUGIN_PATH);
-
-	if (NULL == message_adaptor) {
-		service_adaptor_error("Could not create message adaptor");
-		return NULL;
-	}
-
-	service_adaptor_debug("Message adaptor created");
-
-	return message_adaptor;
-}
-
 service_adaptor_internal_error_code_e service_adaptor_message_set_connection(message_adaptor_plugin_h plugin,
 						message_adaptor_plugin_context_h message_context,
 						message_connection_policy_e policy,
@@ -1013,20 +999,35 @@ service_adaptor_internal_error_code_e service_adaptor_message_set_connection(mes
 
 	return ret;
 }
+//LCOV_EXCL_STOP
+
+message_adaptor_h service_adaptor_create_message()
+{
+	message_adaptor_h message_adaptor = message_adaptor_create(MESSAGE_PLUGIN_PATH);
+
+	if (NULL == message_adaptor) {
+		service_adaptor_error("Could not create message adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
+	}
+
+	service_adaptor_debug("Message adaptor created");
+
+	return message_adaptor;
+}
 
 message_adaptor_listener_h service_adaptor_register_message_listener(message_adaptor_h message_adaptor)
 {
 	if (NULL == message_adaptor) {
-		service_adaptor_error("Could not create message adaptor");
-		return NULL;
+		service_adaptor_error("Could not create message adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	message_adaptor_listener_h message_listener =
 		(message_adaptor_listener_h) malloc(sizeof(message_adaptor_listener_t));
 
 	if ((void *) NULL == message_listener) {
-		service_adaptor_error("Could not create message listener");
-		return NULL;
+		service_adaptor_error("Could not create message listener"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	message_listener->client_echo_cb = service_adaptor_message_adaptor_client_echo_cb;

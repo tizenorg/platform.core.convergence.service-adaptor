@@ -38,6 +38,7 @@ static char __MESSAGE_ADAPTOR_ERROR_NONE[] = "0";
 static char __MESSAGE_ADAPTOR_ERROR_NOT_FOUND[] = "10";
 static char __MESSAGE_ADAPTOR_ERROR_CONNECTION[] = "601";
 
+//LCOV_EXCL_START
 void __get_create_chatroom_req_type(GVariant *parameters,
 						char **service_name,
 						int64_t *request_id,
@@ -2958,4 +2959,5 @@ service_adaptor_internal_error_code_e dbus_reply_message_channel_disconnected_ca
 
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
+//LCOV_EXCL_STOP
 

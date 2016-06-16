@@ -109,6 +109,7 @@ static client_data_s *__client_data_create(void)
 }
 */
 
+//LCOV_EXCL_START
 static void __client_data_free(void *data)
 {
 	if (NULL != data) {
@@ -160,7 +161,7 @@ static int __get_dir_path(const char *path, char **dir_path)
 
 	return 0;
 }
-
+//LCOV_EXCL_STOP
 
 /*************************************************
  *               Public function definition
@@ -184,6 +185,7 @@ void client_checker_deinit(void)
 	}
 }
 
+//LCOV_EXCL_START
 int client_checker_add_client(const char *service_handle_name, const char *cookie)
 {
 	if (NULL == g_clients) {
@@ -466,3 +468,4 @@ const char *clieht_checker_get_last_error(void)
 {
 	return last_error_message;
 }
+//LCOV_EXCL_STOP

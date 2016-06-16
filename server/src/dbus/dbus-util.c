@@ -27,6 +27,7 @@
 static cynara *_cynara;
 /* --] Tizen 3.0 Privilege check with Cynara */
 
+//LCOV_EXCL_START
 /**
  * Free string memory
  * @param data Data to be fried
@@ -70,7 +71,7 @@ char *ipc_g_variant_dup_string(GVariant *string)
 
 	return ret;
 }
-
+//LCOV_EXCL_STOP
 
 int sa_cynara_init()
 {
@@ -79,21 +80,21 @@ int sa_cynara_init()
 	size_t cache_size = 100;
 
 	if (CYNARA_API_SUCCESS != cynara_configuration_create(&p_conf)) {
-		service_adaptor_error("cynara_configuration_create() failed");
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("cynara_configuration_create() failed"); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 	if (CYNARA_API_SUCCESS != cynara_configuration_set_cache_size(p_conf, cache_size)) {
-		service_adaptor_error("cynara_configuration_set_cache_size() failed");
-		cynara_configuration_destroy(p_conf);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("cynara_configuration_set_cache_size() failed"); //LCOV_EXCL_LINE
+		cynara_configuration_destroy(p_conf); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 
 	ret = cynara_initialize(&_cynara, NULL);
 
 	if (CYNARA_API_SUCCESS != ret) {
-		service_adaptor_error("cynara_initialize() Fail(%d)", ret);
-		cynara_configuration_destroy(p_conf);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("cynara_initialize() Fail(%d)", ret); //LCOV_EXCL_LINE
+		cynara_configuration_destroy(p_conf); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
@@ -119,59 +120,59 @@ int sa_cynara_check(GDBusMethodInvocation *invocation, const char *privilege)
 
 	conn = g_dbus_method_invocation_get_connection(invocation);
 	if (NULL == conn) {
-		service_adaptor_error("g_dbus_method_invocation_get_connection() return NULL");
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("g_dbus_method_invocation_get_connection() return NULL"); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 
 	sender = g_dbus_method_invocation_get_sender(invocation);
 	if (NULL == sender) {
-		service_adaptor_error("g_dbus_method_invocation_get_sender() return NULL");
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("g_dbus_method_invocation_get_sender() return NULL"); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 
 	ret = cynara_creds_gdbus_get_client(conn, sender, CLIENT_METHOD_SMACK, &client);
 	if (CYNARA_API_SUCCESS != ret) {
-		service_adaptor_error("cynara_creds_dbus_get_client() Fail(%d)", ret);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("cynara_creds_dbus_get_client() Fail(%d)", ret); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 
 	ret = cynara_creds_gdbus_get_user(conn, sender, USER_METHOD_UID, &user);
 	if (CYNARA_API_SUCCESS != ret) {
-		service_adaptor_error("cynara_creds_dbus_get_user() Fail(%d)", ret);
-		free(client);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("cynara_creds_dbus_get_user() Fail(%d)", ret); //LCOV_EXCL_LINE
+		free(client); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 
 	ret = cynara_creds_gdbus_get_pid(conn, sender, &pid);
 	if (CYNARA_API_SUCCESS != ret) {
-		service_adaptor_error("cynara_creds_gdbus_get_pid() Fail(%d)", ret);
-		free(user);
-		free(client);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("cynara_creds_gdbus_get_pid() Fail(%d)", ret); //LCOV_EXCL_LINE
+		free(user); //LCOV_EXCL_LINE
+		free(client); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 
 	session = cynara_session_from_pid(pid);
 	if (NULL == session) {
-		service_adaptor_error("cynara_session_from_pid() return NULL");
-		free(user);
-		free(client);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("cynara_session_from_pid() return NULL"); //LCOV_EXCL_LINE
+		free(user); //LCOV_EXCL_LINE
+		free(client); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("privilege: %s, user: %s, client: %s", privilege, user, client);
 	ret = cynara_check(_cynara, client, session, user, privilege);
 	if (CYNARA_API_ACCESS_DENIED == ret) {
-		service_adaptor_error("Denied (%s)", privilege);
-		free(session);
-		free(user);
-		free(client);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_NOT_AUTHORIZED;
+		service_adaptor_error("Denied (%s)", privilege); //LCOV_EXCL_LINE
+		free(session); //LCOV_EXCL_LINE
+		free(user); //LCOV_EXCL_LINE
+		free(client); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_NOT_AUTHORIZED; //LCOV_EXCL_LINE
 	} else if (CYNARA_API_ACCESS_ALLOWED != ret) {
-		service_adaptor_error("cynara_check(%s) Fail(%d)", privilege, ret);
-		free(session);
-		free(user);
-		free(client);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL;
+		service_adaptor_error("cynara_check(%s) Fail(%d)", privilege, ret); //LCOV_EXCL_LINE
+		free(session); //LCOV_EXCL_LINE
+		free(user); //LCOV_EXCL_LINE
+		free(client); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_ADAPTOR_INTERNAL; //LCOV_EXCL_LINE
 	}
 
 	free(session);

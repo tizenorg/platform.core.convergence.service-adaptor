@@ -329,7 +329,7 @@ static void _remove_push_service_file(const char *service_file)
 /***********************************************************
  * Push adaptor callback
  ***********************************************************/
-
+//LCOV_EXCL_START
 void service_adaptor_push_adaptor_on_notification_received(push_adaptor_notification_data_h notification,
 						void *user_data)
 {
@@ -573,13 +573,14 @@ service_adaptor_internal_error_code_e service_adaptor_reconnect_push_plugin(serv
 	service_adaptor_info("Reconnected push plugin");
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
+//LCOV_EXCL_STOP
 
 push_adaptor_h service_adaptor_create_push()
 {
 	push_adaptor_h push_adaptor = push_adaptor_create(PUSH_PLUGIN_PATH);
 
-	if ((void *) NULL == push_adaptor) {
-		service_adaptor_error("Could not create push adaptor");
+	if ((void *) NULL == push_adaptor) { //LCOV_EXCL_LINE
+		service_adaptor_error("Could not create push adaptor"); //LCOV_EXCL_LINE
 		return NULL;
 	}
 
@@ -612,16 +613,16 @@ void service_adaptor_destroy_push(push_adaptor_h push_handle)
 push_adaptor_listener_h service_adaptor_register_push_listener(push_adaptor_h push_adaptor)
 {
 	if ((void *) NULL == push_adaptor) {
-		service_adaptor_error("Could not create push adaptor");
-		return NULL;
+		service_adaptor_error("Could not create push adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	push_adaptor_listener_h push_listener =
 			(push_adaptor_listener_h) malloc(sizeof(push_adaptor_listener_t));
 
 	if ((void *) NULL == push_listener) {
-		service_adaptor_error("Could not create push listener");
-		return NULL;
+		service_adaptor_error("Could not create push listener"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	push_listener->_on_notification_received = service_adaptor_push_adaptor_on_notification_received;
@@ -632,6 +633,7 @@ push_adaptor_listener_h service_adaptor_register_push_listener(push_adaptor_h pu
 	return push_listener;
 }
 
+//LCOV_EXCL_START
 service_adaptor_internal_error_code_e service_adaptor_push_register(const char *service_file, char **error_msg)
 {
 	service_adaptor_debug("<Start> %s", __FUNCTION__);
@@ -733,6 +735,7 @@ static void push_data_dbus_activate_callback(const char *app_id,
 	}
 	service_adaptor_debug("<End> %s", __FUNCTION__);
 }
+//LCOV_EXCL_STOP
 
 service_adaptor_internal_error_code_e service_adaptor_ref_enabled_push_services(push_activate_h **services, int *services_len)
 {

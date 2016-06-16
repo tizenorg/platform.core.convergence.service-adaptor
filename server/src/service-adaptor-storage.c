@@ -32,6 +32,8 @@
  * Storage adaptor callback
  ***********************************************************/
 /* private feature */
+
+//LCOV_EXCL_START
 void service_adaptor_storage_adaptor_download_file_async_cb(void *download_request_id,
 						char *download_file_local_path,
 						storage_adaptor_error_code_h error,
@@ -260,14 +262,15 @@ service_adaptor_internal_error_code_e service_adaptor_disconnect_storage_plugin(
 
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
+//LCOV_EXCL_STOP
 
 storage_adaptor_h service_adaptor_create_storage()
 {
 	storage_adaptor_h storage_adaptor = storage_adaptor_create(STORAGE_PLUGIN_PATH);
 
 	if (NULL == storage_adaptor) {
-		service_adaptor_error("Could not create storage adaptor");
-		return NULL;
+		service_adaptor_error("Could not create storage adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("Storage adaptor created");
@@ -278,16 +281,16 @@ storage_adaptor_h service_adaptor_create_storage()
 storage_adaptor_listener_h service_adaptor_register_storage_listener(storage_adaptor_h storage_adaptor)
 {
 	if (NULL == storage_adaptor) {
-		service_adaptor_error("Could not create storage adaptor");
-		return NULL;
+		service_adaptor_error("Could not create storage adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	storage_adaptor_listener_h storage_listener =
 		(storage_adaptor_listener_h) malloc(sizeof(storage_adaptor_listener_t));
 
 	if ((void *) NULL == storage_listener) {
-		service_adaptor_error("Could not create storage listener");
-		return NULL;
+		service_adaptor_error("Could not create storage listener"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	/* private feature */

@@ -74,7 +74,7 @@ int service_file_unload(service_file_h service_file);
 /*************************************************
  *               Public function definition
  *************************************************/
-
+//LCOV_EXCL_START
 int service_file_get_list(service_file_directory_e directory, char ***file_names, int *files_len)
 {
 	service_adaptor_debug("<Start> %s", __FUNCTION__);
@@ -220,5 +220,5 @@ int service_file_unload(service_file_h service_file)
 	service_adaptor_debug("<End> %s", __FUNCTION__);
 	return 0;
 }
-
+//LCOV_EXCL_STOP
 

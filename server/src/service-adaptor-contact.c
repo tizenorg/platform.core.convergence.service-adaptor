@@ -26,6 +26,7 @@
 
 /*#define CONTACT_PLUGIN_PATH	"/usr/lib/contact-adaptor/plugins"*/
 
+//LCOV_EXCL_START
 contact_adaptor_h service_adaptor_get_contact_adaptor(service_adaptor_h service_adaptor)
 {
 	service_adaptor_debug("Get contact adaptor");
@@ -125,14 +126,15 @@ service_adaptor_internal_error_code_e service_adaptor_disconnect_contact_plugin(
 
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
+//LCOV_EXCL_STOP
 
 contact_adaptor_h service_adaptor_create_contact()
 {
 	contact_adaptor_h contact_adaptor = contact_adaptor_create(CONTACT_PLUGIN_PATH);
 
 	if (NULL == contact_adaptor) {
-		service_adaptor_error("Could not create contact adaptor");
-		return NULL;
+		service_adaptor_error("Could not create contact adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("Contact adaptor created");
@@ -143,8 +145,8 @@ contact_adaptor_h service_adaptor_create_contact()
 contact_adaptor_listener_h service_adaptor_register_contact_listener(contact_adaptor_h contact_adaptor)
 {
 	if ((void *) NULL == contact_adaptor) {
-		service_adaptor_error("Could not create contact adaptor");
-		return NULL;
+		service_adaptor_error("Could not create contact adaptor"); //LCOV_EXCL_LINE
+		return NULL; //LCOV_EXCL_LINE
 	}
 
 	contact_adaptor_listener_h contact_listener =

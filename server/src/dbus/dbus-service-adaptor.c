@@ -38,6 +38,7 @@
 
 #define RET_MSG_LEN	2048
 
+//LCOV_EXCL_START
 void service_adaptor_method_call(GDBusConnection *connection,
 						const gchar *sender,
 						const gchar *object_path,
@@ -282,4 +283,5 @@ FUNC_START();
 FUNC_END();
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
+//LCOV_EXCL_STOP
 

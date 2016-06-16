@@ -37,9 +37,6 @@
 #include "service-adaptor-type.h"
 #include "service-adaptor-log.h"
 
-void blank(char *s, ...) {}
-void _blank() {}
-
 #ifdef DEBUG_PLUGIN_OBSERVER_FLAG
 #define _service_adaptor_debug		service_adaptor_debug
 #define _service_adaptor_debug_func	service_adaptor_debug_func
@@ -66,6 +63,11 @@ struct package_checker_context_s {
 	bool auth_defined;
 	bool storage_defined;
 };
+
+//LCOV_EXCL_START
+
+void blank(char *s, ...) {}
+void _blank() {}
 
 bool __service_adaptor_app_meta_iterator_cb(const char *_key,
 						const char *value,
@@ -282,4 +284,5 @@ service_adaptor_scan_all_packages_async(service_adaptor_h _service_adaptor)
 	pthread_create(&runnable, NULL, _scanner_runnable, (void *)_service_adaptor);
 	return 0;	/*TODO */
 }
+//LCOV_EXCL_STOP
 

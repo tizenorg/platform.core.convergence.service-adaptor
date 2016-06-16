@@ -103,6 +103,7 @@ service_adaptor_h service_adaptor_get_handle()
 	return g_service_adaptor;
 }
 
+//LCOV_EXCL_START
 void debug_service_context(GList *service_list)
 {
 #ifdef SERVICE_ADAPTOR_DEBUG_CONTEXT
@@ -146,6 +147,7 @@ static void __glog_handler_cb(const gchar *log_domain,
 	service_adaptor_error("============================================================");
 	service_adaptor_error("============================================================");
 }
+//LCOV_EXCL_STOP
 
 static void glog_handler_init()
 {
@@ -153,6 +155,7 @@ static void glog_handler_init()
 			(int)g_log_set_handler("GLib", G_LOG_LEVEL_CRITICAL, __glog_handler_cb, NULL));
 }
 
+//LCOV_EXCL_START
 service_adaptor_service_context_h service_adaptor_get_service_context(service_adaptor_h service_adaptor,
 						const char *service_name)
 {
@@ -585,7 +588,7 @@ FUNC_START();
 FUNC_END();
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
-
+//LCOV_EXCL_STOP
 
 service_adaptor_internal_error_code_e service_adaptor_start(service_adaptor_h service_adaptor)
 {
@@ -593,15 +596,15 @@ FUNC_START();
 	service_adaptor_debug("Service Adaptor: Start");
 
 	if (NULL == service_adaptor) {
-		service_adaptor_error("Invalid argument");
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_INVALID_ARGUMENT;
+		service_adaptor_error("Invalid argument"); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_INVALID_ARGUMENT; //LCOV_EXCL_LINE
 	}
 
 	int ret = auth_adaptor_start(service_adaptor->auth_handle);
 
 	if (AUTH_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_error("Could not start auth adaptor");
-		service_adaptor_info("Auth-adaptor is mandatory");
+		service_adaptor_error("Could not start auth adaptor"); //LCOV_EXCL_LINE
+		service_adaptor_info("Auth-adaptor is mandatory"); //LCOV_EXCL_LINE
 /*		return SERVICE_ADAPTOR_INTERNAL_ERROR_LAUNCH; */
 	}
 
@@ -610,7 +613,7 @@ FUNC_START();
 	ret = contact_adaptor_start(service_adaptor->contact_handle);
 
 	if (CONTACT_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_warning("Could not start contact adaptor");
+		service_adaptor_warning("Could not start contact adaptor"); //LCOV_EXCL_LINE
 /*		return SERVICE_ADAPTOR_INTERNAL_ERROR_LAUNCH; */
 	}
 
@@ -619,7 +622,7 @@ FUNC_START();
 	ret = message_adaptor_start(service_adaptor->message_handle);
 
 	if (MESSAGE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_warning("Could not start message adaptor");
+		service_adaptor_warning("Could not start message adaptor"); //LCOV_EXCL_LINE
 /*		return SERVICE_ADAPTOR_INTERNAL_ERROR_LAUNCH; */
 	}
 
@@ -628,7 +631,7 @@ FUNC_START();
 	ret = shop_adaptor_start(service_adaptor->shop_handle);
 
 	if (SHOP_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_warning("Could not start shop adaptor");
+		service_adaptor_warning("Could not start shop adaptor"); //LCOV_EXCL_LINE
 /*		return SERVICE_ADAPTOR_INTERNAL_ERROR_LAUNCH; */
 	}
 
@@ -637,7 +640,7 @@ FUNC_START();
 	ret = storage_adaptor_start(service_adaptor->storage_handle);
 
 	if (STORAGE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_warning("Could not start storage adaptor");
+		service_adaptor_warning("Could not start storage adaptor"); //LCOV_EXCL_LINE
 /*		return SERVICE_ADAPTOR_INTERNAL_ERROR_LAUNCH; */
 	}
 
@@ -646,7 +649,7 @@ FUNC_START();
 	ret = push_adaptor_start(service_adaptor->push_handle);
 
 	if (PUSH_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_warning("Could not start push adaptor");
+		service_adaptor_warning("Could not start push adaptor"); //LCOV_EXCL_LINE
 /*		return SERVICE_ADAPTOR_INTERNAL_ERROR_LAUNCH; */
 	}
 
@@ -673,8 +676,8 @@ FUNC_START();
 	service_adaptor_debug("Service Adaptor: Stop");
 
 	if (NULL == service_adaptor) {
-		service_adaptor_error("Invalid argument");
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_INVALID_ARGUMENT;
+		service_adaptor_error("Invalid argument"); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_INVALID_ARGUMENT; //LCOV_EXCL_LINE
 	}
 
 	if (0 <= service_adaptor->started) {
@@ -715,51 +718,62 @@ FUNC_START();
 	auth_adaptor_h auth_handle = service_adaptor_create_auth();
 
 	if (NULL == auth_handle) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create auth adaptor");
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	contact_adaptor_h contact_handle = service_adaptor_create_contact();
 
 	if (NULL == contact_handle) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create contact adaptor");
 		auth_adaptor_destroy(auth_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	message_adaptor_h message_handle = service_adaptor_create_message();
 
 	if (NULL == message_handle) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create message adaptor");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	shop_adaptor_h shop_handle = service_adaptor_create_shop();
 
 	if (NULL == shop_handle) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create shop adaptor");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
 		message_adaptor_destroy(message_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	storage_adaptor_h storage_handle = service_adaptor_create_storage();
 
 	if (NULL == storage_handle) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create storage adaptor");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
 		message_adaptor_destroy(message_handle);
 		shop_adaptor_destroy(shop_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	push_adaptor_h push_handle = service_adaptor_create_push();
 
 	if (NULL == push_handle) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create push adaptor");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
@@ -767,12 +781,14 @@ FUNC_START();
 		shop_adaptor_destroy(shop_handle);
 		storage_adaptor_destroy(storage_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	/* register listener of adaptor */
 	auth_adaptor_listener_h auth_listener = service_adaptor_register_auth_listener(auth_handle);
 
 	if (NULL == auth_listener) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create auth listener");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
@@ -781,11 +797,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	contact_adaptor_listener_h contact_listener = service_adaptor_register_contact_listener(contact_handle);
 
 	if (NULL == contact_listener) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create contact listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 
@@ -796,11 +814,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	message_adaptor_listener_h message_listener = service_adaptor_register_message_listener(message_handle);
 
 	if (NULL == message_listener) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create message listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -812,11 +832,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	shop_adaptor_listener_h shop_listener = service_adaptor_register_shop_listener(shop_handle);
 
 	if (NULL == shop_listener) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create shop listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -829,11 +851,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	storage_adaptor_listener_h storage_listener = service_adaptor_register_storage_listener(storage_handle);
 
 	if (NULL == storage_listener) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create storage listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -847,11 +871,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	push_adaptor_listener_h push_listener = service_adaptor_register_push_listener(push_handle);
 
 	if (NULL == push_listener) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create push listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -866,12 +892,14 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 	/* create Service Adaptor */
 	service_adaptor_h service_adaptor = (service_adaptor_h) g_malloc0(sizeof(service_adaptor_s));
 
 	if (NULL == service_adaptor) {
+		//LCOV_EXCL_START
 		service_adaptor_error("Could not create service adaptor");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -887,6 +915,7 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
+		//LCOV_EXCL_STOP
 	}
 
 FUNC_STEP();
@@ -926,7 +955,7 @@ FUNC_START();
 	service_adaptor_info("Deinit client checker");
 
 	if ((void *) NULL == service_adaptor) {
-		service_adaptor_debug("Invalid argument");
+		service_adaptor_debug("Invalid argument"); //LCOV_EXCL_LINE
 		return;
 	}
 
@@ -937,8 +966,8 @@ FUNC_START();
 
 	/* 2) destroy service list */
 	if (NULL != service_adaptor->service_list) {
-		g_list_free(service_adaptor->service_list);
-		service_adaptor->service_list = NULL;
+		g_list_free(service_adaptor->service_list); //LCOV_EXCL_LINE
+		service_adaptor->service_list = NULL; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("Service adaptor destroyed: service list");
@@ -1005,8 +1034,8 @@ FUNC_START();
 	service_adaptor_h service_adaptor = service_adaptor_create();
 
 	if (NULL == service_adaptor) {
-		service_adaptor_error("Could not create Service Adaptor");
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_CREATE;
+		service_adaptor_error("Could not create Service Adaptor"); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_CREATE; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("Service Adaptor: created");
@@ -1015,8 +1044,8 @@ FUNC_START();
 	ret = service_adaptor_start(service_adaptor);
 
 	if (SERVICE_ADAPTOR_INTERNAL_ERROR_NONE != ret) {
-		service_adaptor_error("Could not load Adaptors: %d", ret);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_START;
+		service_adaptor_error("Could not load Adaptors: %d", ret); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_START; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("Service Adaptor: started");
@@ -1030,8 +1059,8 @@ FUNC_START();
 	ret = dbus_ipc_server_layer_init();
 
 	if (SERVICE_ADAPTOR_INTERNAL_ERROR_NONE != ret) {
-		service_adaptor_error("Could not init D-Bus IPC server: %d", ret);
-		return SERVICE_ADAPTOR_INTERNAL_ERROR_DBUS;
+		service_adaptor_error("Could not init D-Bus IPC server: %d", ret); //LCOV_EXCL_LINE
+		return SERVICE_ADAPTOR_INTERNAL_ERROR_DBUS; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_debug("Service Adaptor: init D-Bus");
@@ -1055,8 +1084,8 @@ void service_adaptor_deinit()
 	service_adaptor_debug("Service Adaptor: Deinitialize");
 
 	if (NULL == g_service_adaptor) {
-		service_adaptor_error("Invalid argument");
-		return;
+		service_adaptor_error("Invalid argument"); //LCOV_EXCL_LINE
+		return; //LCOV_EXCL_LINE
 	}
 
 	service_adaptor_h service_adaptor = g_service_adaptor;
@@ -1065,6 +1094,7 @@ void service_adaptor_deinit()
 	service_adaptor_debug("Service Adaptor: Deinitialized");
 }
 
+//LCOV_EXCL_START
 /**
  * @brief main signal function
  *
@@ -1236,7 +1266,7 @@ FUNC_START();
 FUNC_END();
 	return ret;
 }
-
+//LCOV_EXCL_STOP
 
 /**
  * @brief main function
@@ -1264,8 +1294,8 @@ int main(int argc, char *argv[])
 	ret = service_adaptor_init();
 
 	if (SERVICE_ADAPTOR_INTERNAL_ERROR_NONE != ret) {
-		service_adaptor_error("Service Adaptor initialize error: %d\n", ret);
-		return -1;
+		service_adaptor_error("Service Adaptor initialize error: %d\n", ret); //LCOV_EXCL_LINE
+		return -1; //LCOV_EXCL_LINE
 	}
 
 	/* installing signal handlers */
@@ -1336,6 +1366,8 @@ static __thread int h_count = 0;
 static __thread struct timeval tv;
 
 #endif
+
+//LCOV_EXCL_START
 void SERVICE_ADAPTOR_API_TIME_CHECK_START()
 {
 #ifdef SERVICE_ADAPTOR_DEBUG_TIME_CHECK
@@ -1449,4 +1481,4 @@ void SERVICE_ADAPTOR_API_TIME_CHECK_TOTAL_REPORT(const char *service_name)
 	service_adaptor_debug_func("[TIMECHECK]================================================");
 #endif
 }
-
+//LCOV_EXCL_STOP
