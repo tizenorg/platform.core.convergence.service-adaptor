@@ -329,7 +329,7 @@ static void _remove_push_service_file(const char *service_file)
 /***********************************************************
  * Push adaptor callback
  ***********************************************************/
-//LCOV_EXCL_START
+/* LCOV_EXCL_START */
 void service_adaptor_push_adaptor_on_notification_received(push_adaptor_notification_data_h notification,
 						void *user_data)
 {
@@ -463,19 +463,6 @@ service_adaptor_internal_error_code_e service_adaptor_connect_push_plugin(servic
 		snprintf(ret_msg, 2048, "push plugin connect failed [%d]", (int)__LINE__);
 		return SERVICE_ADAPTOR_INTERNAL_ERROR_CREATE;
 	}
-/*
-	// Set server info
-	int ret = 0;
-	push_adaptor_error_code_h error = NULL;
-	ret = push_adaptor_set_server_info(plugin, push_context, service->server_info, NULL, &error, NULL);
-	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_warning("Could not set push plugin server information: %d", ret);
-		if (NULL != error) {
-			service_adaptor_warning("[%lld] %s", error->code, error->msg);
-		}
-		push_adaptor_destroy_error_code(&error);
-	}
-*/
 	push_adaptor_error_code_h error = NULL;
 	SERVICE_ADAPTOR_API_TIME_CHECK_PAUSE();
 	SERVICE_ADAPTOR_PLUGIN_API_TIME_CHECK_START(SA_TIME_CHECK_FLAG_PUSH);
@@ -573,15 +560,15 @@ service_adaptor_internal_error_code_e service_adaptor_reconnect_push_plugin(serv
 	service_adaptor_info("Reconnected push plugin");
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
-//LCOV_EXCL_STOP
+/* LCOV_EXCL_STOP */
 
 push_adaptor_h service_adaptor_create_push()
 {
 	push_adaptor_h push_adaptor = push_adaptor_create(PUSH_PLUGIN_PATH);
 
-	if ((void *) NULL == push_adaptor) { //LCOV_EXCL_LINE
-		service_adaptor_error("Could not create push adaptor"); //LCOV_EXCL_LINE
-		return NULL;
+	if ((void *) NULL == push_adaptor) { /* LCOV_EXCL_LINE */
+		service_adaptor_error("Could not create push adaptor"); /* LCOV_EXCL_LINE */
+		return NULL; /* LCOV_EXCL_LINE */
 	}
 
 	service_adaptor_debug("Push adaptor created");
@@ -593,6 +580,7 @@ push_adaptor_h service_adaptor_create_push()
 	return push_adaptor;
 }
 
+/* LCOV_EXCL_START */
 void service_adaptor_destroy_push(push_adaptor_h push_handle)
 {
 	if ((void *) NULL == push_handle) {
@@ -608,21 +596,21 @@ void service_adaptor_destroy_push(push_adaptor_h push_handle)
 	_unload_all_push_service_file();
 #endif
 }
-
+/* LCOV_EXCL_STOP */
 
 push_adaptor_listener_h service_adaptor_register_push_listener(push_adaptor_h push_adaptor)
 {
 	if ((void *) NULL == push_adaptor) {
-		service_adaptor_error("Could not create push adaptor"); //LCOV_EXCL_LINE
-		return NULL; //LCOV_EXCL_LINE
+		service_adaptor_error("Could not create push adaptor"); /* LCOV_EXCL_LINE */
+		return NULL; /* LCOV_EXCL_LINE */
 	}
 
 	push_adaptor_listener_h push_listener =
 			(push_adaptor_listener_h) malloc(sizeof(push_adaptor_listener_t));
 
 	if ((void *) NULL == push_listener) {
-		service_adaptor_error("Could not create push listener"); //LCOV_EXCL_LINE
-		return NULL; //LCOV_EXCL_LINE
+		service_adaptor_error("Could not create push listener"); /* LCOV_EXCL_LINE */
+		return NULL; /* LCOV_EXCL_LINE */
 	}
 
 	push_listener->_on_notification_received = service_adaptor_push_adaptor_on_notification_received;
@@ -633,7 +621,7 @@ push_adaptor_listener_h service_adaptor_register_push_listener(push_adaptor_h pu
 	return push_listener;
 }
 
-//LCOV_EXCL_START
+/* LCOV_EXCL_START */
 service_adaptor_internal_error_code_e service_adaptor_push_register(const char *service_file, char **error_msg)
 {
 	service_adaptor_debug("<Start> %s", __FUNCTION__);
@@ -735,7 +723,7 @@ static void push_data_dbus_activate_callback(const char *app_id,
 	}
 	service_adaptor_debug("<End> %s", __FUNCTION__);
 }
-//LCOV_EXCL_STOP
+/* LCOV_EXCL_STOP */
 
 service_adaptor_internal_error_code_e service_adaptor_ref_enabled_push_services(push_activate_h **services, int *services_len)
 {

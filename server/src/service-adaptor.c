@@ -103,7 +103,7 @@ service_adaptor_h service_adaptor_get_handle()
 	return g_service_adaptor;
 }
 
-//LCOV_EXCL_START
+/* LCOV_EXCL_START */
 void debug_service_context(GList *service_list)
 {
 #ifdef SERVICE_ADAPTOR_DEBUG_CONTEXT
@@ -147,7 +147,7 @@ static void __glog_handler_cb(const gchar *log_domain,
 	service_adaptor_error("============================================================");
 	service_adaptor_error("============================================================");
 }
-//LCOV_EXCL_STOP
+/* LCOV_EXCL_STOP */
 
 static void glog_handler_init()
 {
@@ -155,7 +155,7 @@ static void glog_handler_init()
 			(int)g_log_set_handler("GLib", G_LOG_LEVEL_CRITICAL, __glog_handler_cb, NULL));
 }
 
-//LCOV_EXCL_START
+/* LCOV_EXCL_START */
 service_adaptor_service_context_h service_adaptor_get_service_context(service_adaptor_h service_adaptor,
 						const char *service_name)
 {
@@ -588,7 +588,7 @@ FUNC_START();
 FUNC_END();
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
 }
-//LCOV_EXCL_STOP
+/* LCOV_EXCL_STOP */
 
 service_adaptor_internal_error_code_e service_adaptor_start(service_adaptor_h service_adaptor)
 {
@@ -685,6 +685,7 @@ FUNC_START();
 		return SERVICE_ADAPTOR_INTERNAL_ERROR_START;
 	}
 
+/* LCOV_EXCL_START */
 FUNC_STEP();
 	int ret = auth_adaptor_stop(service_adaptor->auth_handle);
 	ret += contact_adaptor_stop(service_adaptor->contact_handle);
@@ -704,6 +705,7 @@ FUNC_STEP();
 
 FUNC_END();
 	return SERVICE_ADAPTOR_INTERNAL_ERROR_NONE;
+/* LCOV_EXCL_STOP */
 }
 
 /**************************************************************************
@@ -718,62 +720,62 @@ FUNC_START();
 	auth_adaptor_h auth_handle = service_adaptor_create_auth();
 
 	if (NULL == auth_handle) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create auth adaptor");
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	contact_adaptor_h contact_handle = service_adaptor_create_contact();
 
 	if (NULL == contact_handle) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create contact adaptor");
 		auth_adaptor_destroy(auth_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	message_adaptor_h message_handle = service_adaptor_create_message();
 
 	if (NULL == message_handle) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create message adaptor");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	shop_adaptor_h shop_handle = service_adaptor_create_shop();
 
 	if (NULL == shop_handle) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create shop adaptor");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
 		message_adaptor_destroy(message_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	storage_adaptor_h storage_handle = service_adaptor_create_storage();
 
 	if (NULL == storage_handle) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create storage adaptor");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
 		message_adaptor_destroy(message_handle);
 		shop_adaptor_destroy(shop_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	push_adaptor_h push_handle = service_adaptor_create_push();
 
 	if (NULL == push_handle) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create push adaptor");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
@@ -781,14 +783,14 @@ FUNC_START();
 		shop_adaptor_destroy(shop_handle);
 		storage_adaptor_destroy(storage_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	/* register listener of adaptor */
 	auth_adaptor_listener_h auth_listener = service_adaptor_register_auth_listener(auth_handle);
 
 	if (NULL == auth_listener) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create auth listener");
 		auth_adaptor_destroy(auth_handle);
 		contact_adaptor_destroy(contact_handle);
@@ -797,13 +799,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	contact_adaptor_listener_h contact_listener = service_adaptor_register_contact_listener(contact_handle);
 
 	if (NULL == contact_listener) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create contact listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 
@@ -814,13 +816,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	message_adaptor_listener_h message_listener = service_adaptor_register_message_listener(message_handle);
 
 	if (NULL == message_listener) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create message listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -832,13 +834,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	shop_adaptor_listener_h shop_listener = service_adaptor_register_shop_listener(shop_handle);
 
 	if (NULL == shop_listener) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create shop listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -851,13 +853,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	storage_adaptor_listener_h storage_listener = service_adaptor_register_storage_listener(storage_handle);
 
 	if (NULL == storage_listener) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create storage listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -871,13 +873,13 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	push_adaptor_listener_h push_listener = service_adaptor_register_push_listener(push_handle);
 
 	if (NULL == push_listener) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create push listener");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -892,14 +894,14 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	/* create Service Adaptor */
 	service_adaptor_h service_adaptor = (service_adaptor_h) g_malloc0(sizeof(service_adaptor_s));
 
 	if (NULL == service_adaptor) {
-		//LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		service_adaptor_error("Could not create service adaptor");
 		auth_adaptor_unregister_listener(auth_handle, auth_listener);
 		contact_adaptor_unregister_listener(contact_handle, contact_listener);
@@ -915,7 +917,7 @@ FUNC_START();
 		storage_adaptor_destroy(storage_handle);
 		push_adaptor_destroy(push_handle);
 		return NULL;
-		//LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 FUNC_STEP();
@@ -996,6 +998,7 @@ FUNC_START();
 
 	service_adaptor_debug_func("### Preload service len : %d", svc_len);
 	if (SERVICE_ADAPTOR_INTERNAL_ERROR_NONE == ret) {
+	/* LCOV_EXCL_START */
 		for (int i = 0; i < svc_len; i++) {
 			service_adaptor_context_info_s new_context_info;
 			__init_context_info_s(new_context_info);
@@ -1010,6 +1013,7 @@ FUNC_START();
 			service_adaptor_debug_func("### Preload service : ret(%d) service_name(%s)", ret, service_name);
 		}
 		free(services);
+	/* LCOV_EXCL_STOP */
 	}
 
 FUNC_END();
@@ -1094,7 +1098,7 @@ void service_adaptor_deinit()
 	service_adaptor_debug("Service Adaptor: Deinitialized");
 }
 
-//LCOV_EXCL_START
+/* LCOV_EXCL_START */
 /**
  * @brief main signal function
  *
@@ -1266,7 +1270,7 @@ FUNC_START();
 FUNC_END();
 	return ret;
 }
-//LCOV_EXCL_STOP
+/* LCOV_EXCL_STOP */
 
 /**
  * @brief main function
@@ -1367,7 +1371,7 @@ static __thread struct timeval tv;
 
 #endif
 
-//LCOV_EXCL_START
+/* LCOV_EXCL_START */
 void SERVICE_ADAPTOR_API_TIME_CHECK_START()
 {
 #ifdef SERVICE_ADAPTOR_DEBUG_TIME_CHECK
@@ -1481,4 +1485,4 @@ void SERVICE_ADAPTOR_API_TIME_CHECK_TOTAL_REPORT(const char *service_name)
 	service_adaptor_debug_func("[TIMECHECK]================================================");
 #endif
 }
-//LCOV_EXCL_STOP
+/* LCOV_EXCL_STOP */

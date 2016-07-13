@@ -135,12 +135,12 @@ void __get_file_info_s_type(GVariant *call_result_struct,
 	int idx1 = 0, idx2 = 0, idx3 = 0;
 	_file_info = service_storage_create_file_info();
 	if (NULL == _file_info) {
-		*file_info = NULL;
+		*file_info = NULL; /* LCOV_EXCL_LINE */
 
-		for (size_t j = 0; j < service_adaptor_file_info_s_type_length; j++) {
-			g_variant_unref(res_info_struct[j]);
+		for (size_t j = 0; j < service_adaptor_file_info_s_type_length; j++) { /* LCOV_EXCL_LINE */
+			g_variant_unref(res_info_struct[j]); /* LCOV_EXCL_LINE */
 		}
-		return;
+		return; /* LCOV_EXCL_LINE */
 	}
 
 	_file_info->plugin_name			= ipc_g_variant_dup_string(res_info_struct[idx1++]);
@@ -235,7 +235,7 @@ void __get_get_file_list_res_type(GVariant *in_parameters,
 		idx++;
 		*file_info_list_len = g_variant_get_uint32(res_info_struct[idx++]);
 	} else {
-		*file_info_list_len = 0U;
+		*file_info_list_len = 0U; /* LCOV_EXCL_LINE */
 	}
 
 	for (size_t j = 0; j < service_adaptor_get_file_list_res_s_type_length; j++) {
@@ -281,17 +281,17 @@ void on_storage_signal(GDBusProxy *proxy,
 		service_adaptor_task_h task = _queue_get_task(file_uid);
 
 		if (NULL == task) {
-			sac_warning("Callback task get failed");
-			return;
+			sac_warning("Callback task get failed"); /* LCOV_EXCL_LINE */
+			return; /* LCOV_EXCL_LINE */
 		} else if (NULL == task->handle) {
-			sac_warning("Callback task->handle get failed");
-			return;
+			sac_warning("Callback task->handle get failed"); /* LCOV_EXCL_LINE */
+			return; /* LCOV_EXCL_LINE */
 		} else {
 			service_storage_task_h storage_task = (service_storage_task_h) task->handle;
 
 			if (NULL != storage_task->progress_callback) {
-				sac_debug("Call progress callback[%lld] (%llu/%llu byte)", file_uid, progress_size, total_size);
-				storage_task->progress_callback(progress_size, total_size, storage_task->progress_user_data);
+				sac_debug("Call progress callback[%lld] (%llu/%llu byte)", file_uid, progress_size, total_size); /* LCOV_EXCL_LINE */
+				storage_task->progress_callback(progress_size, total_size, storage_task->progress_user_data); /* LCOV_EXCL_LINE */
 			}
 		}
 	} else if (0 == g_strcmp0(signal_name, DBUS_STORAGE_FILE_TRANSFER_STATE_CHANGED_SIGNAL)) {
@@ -313,10 +313,10 @@ void on_storage_signal(GDBusProxy *proxy,
 			_state = SERVICE_STORAGE_TASK_CANCELED;
 			break;
 		case SERVICE_ADAPTOR_FILE_TRANSFER_STATE_FAILED:
-			_state = SERVICE_STORAGE_TASK_FAILED;
-			break;
+			_state = SERVICE_STORAGE_TASK_FAILED; /* LCOV_EXCL_LINE */
+			break; /* LCOV_EXCL_LINE */
 		default:
-			return;
+			return; /* LCOV_EXCL_LINE */
 		}
 
 		GVariant *call_result[2];
@@ -331,17 +331,17 @@ void on_storage_signal(GDBusProxy *proxy,
 		service_adaptor_task_h task = _queue_get_task(file_uid);
 
 		if (NULL == task) {
-			sac_warning("Callback task get failed");
-			return;
+			sac_warning("Callback task get failed"); /* LCOV_EXCL_LINE */
+			return; /* LCOV_EXCL_LINE */
 		} else if (NULL == task->handle) {
-			sac_warning("Callback task->handle get failed");
-			return;
+			sac_warning("Callback task->handle get failed"); /* LCOV_EXCL_LINE */
+			return; /* LCOV_EXCL_LINE */
 		} else {
 			service_storage_task_h storage_task = (service_storage_task_h) task->handle;
 
 			if (NULL != storage_task->state_callback) {
-				sac_debug("Call state callback[%lld] (%d state)", file_uid, _state);
-				storage_task->state_callback(_state, storage_task->state_user_data);
+				sac_debug("Call state callback[%lld] (%d state)", file_uid, _state); /* LCOV_EXCL_LINE */
+				storage_task->state_callback(_state, storage_task->state_user_data); /* LCOV_EXCL_LINE */
 			}
 		}
 	}
@@ -682,9 +682,9 @@ int _dbus_get_privilege_check_result(const char *service_name,
 	ipc_check_proxy(sac_interface_proxy);
 
 	if ((NULL == service_name) || (NULL == privilege_name)) {
-		error->code = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-		error->msg = strdup("Invalid Param");
-		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
+		error->code = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER; /* LCOV_EXCL_LINE */
+		error->msg = strdup("Invalid Param"); /* LCOV_EXCL_LINE */
+		return SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER; /* LCOV_EXCL_LINE */
 	}
 
 	GVariant *request = g_variant_new("(" private_service_adaptor_privilege_check_req_s_type ")", __safe_add_string(service_name), __safe_add_string(privilege_name));

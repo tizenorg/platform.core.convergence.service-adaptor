@@ -30,8 +30,8 @@ int _dbus_client_layer_init()
 	int ret = _dbus_client_service_adaptor_init();
 
 	if (0 != ret) {
-		_dbus_client_service_adaptor_deinit();
-		return ret;
+		_dbus_client_service_adaptor_deinit(); /* LCOV_EXCL_LINE */
+		return ret; /* LCOV_EXCL_LINE */
 	}
 
 	return 0;

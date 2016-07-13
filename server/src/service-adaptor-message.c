@@ -32,7 +32,7 @@
 
 /* if calling completion callback, it need to wait called message api in dbus-message-adaptor */
 
-// LCOV_EXCL_START
+/* LCOV_EXCL_START */
 void _get_service_name_by_message_context(message_adaptor_plugin_context_h context,
 						char **service_name)
 {
@@ -999,7 +999,7 @@ service_adaptor_internal_error_code_e service_adaptor_message_set_connection(mes
 
 	return ret;
 }
-//LCOV_EXCL_STOP
+/* LCOV_EXCL_STOP */
 
 message_adaptor_h service_adaptor_create_message()
 {
