@@ -74,12 +74,12 @@ service_storage_file_h service_storage_create_file_info(void)
 	_cloud_meta = (service_storage_cloud_meta_s *) calloc(1, sizeof(service_storage_cloud_meta_s));
 
 	if ((NULL == _file_info) || (NULL == _media_meta) || (NULL == _cloud_meta)) {
-		free(_file_info);
-		free(_media_meta);
-		free(_cloud_meta);
+		free(_file_info); /* LCOV_EXCL_LINE */
+		free(_media_meta); /* LCOV_EXCL_LINE */
+		free(_cloud_meta); /* LCOV_EXCL_LINE */
 
-		FUNC_STOP();
-		return NULL;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return NULL; /* LCOV_EXCL_LINE */
 	}
 
 	_media_meta->mime_type		= NULL;
@@ -133,13 +133,13 @@ int service_storage_unref_file_info(service_storage_file_h *file_info)
 {
 	FUNC_START();
 	if (NULL == file_info) {
-		FUNC_STOP();
-		return 1;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return 1; /* LCOV_EXCL_LINE */
 	}
 
 	if (NULL == *file_info) {
-		FUNC_STOP();
-		return 0;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return 0; /* LCOV_EXCL_LINE */
 	}
 	service_storage_file_h _file_info = *file_info;
 
@@ -207,25 +207,25 @@ int service_storage_create_upload_task(service_plugin_h plugin,
 		int privilege_ret = 0;
 		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
 		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
-			sac_error("Privilege check error (ret : %d)", privilege_ret);
-			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
+			sac_error("Privilege check error (ret : %d)", privilege_ret); /* LCOV_EXCL_LINE */
+			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED; /* LCOV_EXCL_LINE */
 		}
 	}
 
 	service_storage_task_h _task = (service_storage_task_h) calloc(1, sizeof(service_storage_task_t));
 	if (NULL == _task) {
-		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
-		service_adaptor_set_last_result(ret, "Memory allocation failed");
-		return ret;
+		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
+		service_adaptor_set_last_result(ret, "Memory allocation failed"); /* LCOV_EXCL_LINE */
+		return ret; /* LCOV_EXCL_LINE */
 	}
 
 	long long int task_id = 0;
 	ret = _dbus_open_upload_file(plugin->service_handle_name, file_path, upload_path, &task_id, &error);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
-		free(_task);
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
+		free(_task); /* LCOV_EXCL_LINE */
 	} else {
 		_task->service_handle_name = strdup(plugin->service_handle_name);
 		_task->task_id = task_id;
@@ -279,25 +279,25 @@ int service_storage_create_download_task(service_plugin_h plugin,
 		int privilege_ret = 0;
 		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
 		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
-			sac_error("Privilege check error (ret : %d)", privilege_ret);
-			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
+			sac_error("Privilege check error (ret : %d)", privilege_ret); /* LCOV_EXCL_LINE */
+			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED; /* LCOV_EXCL_LINE */
 		}
 	}
 
 	service_storage_task_h _task = (service_storage_task_h) calloc(1, sizeof(service_storage_task_t));
 	if (NULL == _task) {
-		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
-		service_adaptor_set_last_result(ret, "Memory allocation failed");
-		return ret;
+		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
+		service_adaptor_set_last_result(ret, "Memory allocation failed"); /* LCOV_EXCL_LINE */
+		return ret; /* LCOV_EXCL_LINE */
 	}
 
 	long long int task_id = 0;
 	ret = _dbus_open_download_file(plugin->service_handle_name, storage_path, download_path, &task_id, &error);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
-		free(_task);
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
+		free(_task); /* LCOV_EXCL_LINE */
 	} else {
 		_task->service_handle_name = strdup(plugin->service_handle_name);
 		_task->task_id = task_id;
@@ -350,29 +350,29 @@ int service_storage_create_download_thumbnail_task(service_plugin_h plugin,
 		int privilege_ret = 0;
 		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
 		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
-			sac_error("Privilege check error (ret : %d)", privilege_ret);
-			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
+			sac_error("Privilege check error (ret : %d)", privilege_ret); /* LCOV_EXCL_LINE */
+			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED; /* LCOV_EXCL_LINE */
 		}
 	}
 
 	service_storage_task_h _task = (service_storage_task_h) calloc(1, sizeof(service_storage_task_t));
 	int *t_size = (int *)calloc(1, sizeof(int));
 	if ((NULL == _task) || (NULL == t_size)) {
-		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
-		service_adaptor_set_last_result(ret, "Memory allocation failed");
-		free(_task);
-		free(t_size);
-		return ret;
+		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
+		service_adaptor_set_last_result(ret, "Memory allocation failed"); /* LCOV_EXCL_LINE */
+		free(_task); /* LCOV_EXCL_LINE */
+		free(t_size); /* LCOV_EXCL_LINE */
+		return ret; /* LCOV_EXCL_LINE */
 	}
 
 	long long int task_id = 0;
 	ret = _dbus_open_download_thumbnail(plugin->service_handle_name, storage_path, download_path, thumbnail_size, &task_id, &error);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
-		free(_task);
-		free(t_size);
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
+		free(_task); /* LCOV_EXCL_LINE */
+		free(t_size); /* LCOV_EXCL_LINE */
 	} else {
 		_task->service_handle_name = strdup(plugin->service_handle_name);
 		_task->task_id = task_id;
@@ -417,8 +417,8 @@ int service_storage_destroy_task(service_storage_task_h task)
 	ret = _dbus_close_file_task(task->service_handle_name, task->task_id, &error);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
 	}
 
 	service_adaptor_task_h callback_task = NULL;
@@ -471,16 +471,16 @@ int service_storage_start_task(service_storage_task_h task)
 	break;
 
 	default:
-		sac_info("Invalid async task");
-		ret = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-		error.code = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-		error.msg = strdup("Invalid async task operation");
-	break;
+		sac_info("Invalid async task"); /* LCOV_EXCL_LINE */
+		ret = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER; /* LCOV_EXCL_LINE */
+		error.code = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER; /* LCOV_EXCL_LINE */
+		error.msg = strdup("Invalid async task operation"); /* LCOV_EXCL_LINE */
+		break; /* LCOV_EXCL_LINE */
 	}
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
 	}
 
 	sac_api_end(ret);
@@ -518,16 +518,16 @@ int service_storage_cancel_task(service_storage_task_h task)
 	break;
 
 	default:
-		sac_info("Invalid async task");
-		ret = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-		error.code = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER;
-		error.msg = strdup("Invalid async task operation");
-	break;
+		sac_info("Invalid async task"); /* LCOV_EXCL_LINE */
+		ret = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER; /* LCOV_EXCL_LINE */
+		error.code = SERVICE_ADAPTOR_ERROR_INVALID_PARAMETER; /* LCOV_EXCL_LINE */
+		error.msg = strdup("Invalid async task operation"); /* LCOV_EXCL_LINE */
+		break; /* LCOV_EXCL_LINE */
 	}
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
 	}
 
 	sac_api_end(ret);
@@ -630,21 +630,21 @@ void *_get_file_list_runnable(void *_data)
 	ret = _dbus_get_file_list(_params->plugin->service_handle_name, _params->path, &files, &files_len, NULL, &error);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
-		if ((NULL != files) && (0 < files_len)) {
-			int i;
-			for (i = 0; i < files_len; i++) {
-				service_storage_unref_file_info(&files[i]);
-			}
-			free(files);
-			files = NULL;
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
+		if ((NULL != files) && (0 < files_len)) { /* LCOV_EXCL_LINE */
+			int i; /* LCOV_EXCL_LINE */
+			for (i = 0; i < files_len; i++) { /* LCOV_EXCL_LINE */
+				service_storage_unref_file_info(&files[i]); /* LCOV_EXCL_LINE */
+			} /* LCOV_EXCL_LINE */
+			free(files); /* LCOV_EXCL_LINE */
+			files = NULL; /* LCOV_EXCL_LINE */
 		}
 	} else {
 		if (0 < files_len) {
 			file_list = (service_storage_file_list_h) calloc(1, sizeof(struct _service_storage_file_list_s));
 			if (NULL == file_list) {
-				sac_error("Critical : Memory allocation failed");
+				sac_error("Critical : Memory allocation failed"); /* LCOV_EXCL_LINE */
 				ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
 			} else {
 				file_list->list = files;
@@ -694,8 +694,8 @@ int service_storage_get_file_list(service_plugin_h plugin,
 		error.msg = NULL;
 		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
 		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
-			sac_error("Privilege check error (ret : %d)", privilege_ret);
-			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
+			sac_error("Privilege check error (ret : %d)", privilege_ret); /* LCOV_EXCL_LINE */
+			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED; /* LCOV_EXCL_LINE */
 		}
 	}
 
@@ -703,8 +703,8 @@ int service_storage_get_file_list(service_plugin_h plugin,
 	params = (struct __async_wrapper_context *) calloc(1, sizeof(struct __async_wrapper_context));
 
 	if (NULL == params) {
-		sac_warning("Memory allocation failed");
-		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
+		sac_warning("Memory allocation failed"); /* LCOV_EXCL_LINE */
+		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 	} else {
 		params->plugin = plugin;
 		params->path = strdup(dir_path);
@@ -716,10 +716,10 @@ int service_storage_get_file_list(service_plugin_h plugin,
 		thread_ret = pthread_create(&get_list_thread, NULL, _get_file_list_runnable, (void *)params);
 
 		if (thread_ret) {
-			sac_warning("Thread create failed");
-			ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
-			free(params->path);
-			free(params);
+			sac_warning("Thread create failed"); /* LCOV_EXCL_LINE */
+			ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
+			free(params->path); /* LCOV_EXCL_LINE */
+			free(params); /* LCOV_EXCL_LINE */
 		}
 	}
 
@@ -740,15 +740,15 @@ int service_storage_file_list_clone(service_storage_file_list_h src_list,
 	service_storage_file_list_h _list = NULL;
 	_list = (service_storage_file_list_h) calloc(1, sizeof(struct _service_storage_file_list_s));
 	if (NULL == _list) {
-		FUNC_STOP();
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 	}
 	_list->length = src_list->length;
 	_list->list = (service_storage_file_h *) calloc(_list->length, sizeof(struct _service_storage_file_s *));
 	if (NULL == _list->list) {
-		free(_list);
-		FUNC_STOP();
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
+		free(_list); /* LCOV_EXCL_LINE */
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 	}
 
 	int i = 0;
@@ -799,8 +799,8 @@ int service_storage_file_clone(service_storage_file_h src_file,
 	service_storage_file_h new_file = service_storage_create_file_info();
 
 	if (NULL == new_file) {
-		FUNC_STOP();
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 	}
 
 	if (NULL != src->media_meta) {
@@ -1023,8 +1023,8 @@ void *_remove_runnable(void *_data)
 	ret = _dbus_remove_file(_params->plugin->service_handle_name, _params->path, NULL, &error);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
 	}
 
 	((service_storage_result_cb)_params->callback)(ret, _params->user_data);
@@ -1061,8 +1061,8 @@ int service_storage_remove(service_plugin_h plugin,
 		error.msg = NULL;
 		privilege_ret = _dbus_get_privilege_check_result(plugin->service_handle_name, TIZEN_PRIVILEGE_NAME_INTERNET, NULL, &error);
 		if (SERVICE_ADAPTOR_ERROR_NONE != privilege_ret) {
-			sac_error("Privilege check error (ret : %d)", privilege_ret);
-			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED;
+			sac_error("Privilege check error (ret : %d)", privilege_ret); /* LCOV_EXCL_LINE */
+			return SERVICE_ADAPTOR_ERROR_PERMISSION_DENIED; /* LCOV_EXCL_LINE */
 		}
 	}
 
@@ -1070,8 +1070,8 @@ int service_storage_remove(service_plugin_h plugin,
 	params = (struct __async_wrapper_context *) calloc(1, sizeof(struct __async_wrapper_context));
 
 	if (NULL == params) {
-		sac_warning("Memory allocation failed");
-		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
+		sac_warning("Memory allocation failed"); /* LCOV_EXCL_LINE */
+		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 	} else {
 		params->plugin = plugin;
 		params->path = strdup(remove_path);
@@ -1083,10 +1083,10 @@ int service_storage_remove(service_plugin_h plugin,
 		thread_ret = pthread_create(&remove_thread, NULL, _remove_runnable, (void *)params);
 
 		if (thread_ret) {
-			sac_warning("Thread create failed");
-			ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
-			free(params->path);
-			free(params);
+			sac_warning("Thread create failed"); /* LCOV_EXCL_LINE */
+			ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
+			free(params->path); /* LCOV_EXCL_LINE */
+			free(params); /* LCOV_EXCL_LINE */
 		}
 	}
 

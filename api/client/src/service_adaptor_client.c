@@ -108,10 +108,10 @@ int _queue_add_task(int64_t _id,
 	service_adaptor_task_h task = (service_adaptor_task_h) g_malloc0(sizeof(service_adaptor_task_s));
 
 	if (NULL == task) {
-		// LCOV_EXCL_START
+		/* LCOV_EXCL_START */
 		FUNC_STOP();
 		return -1;
-		// LCOV_EXCL_STOP
+		/* LCOV_EXCL_STOP */
 	}
 
 	task->id = _id;
@@ -188,37 +188,7 @@ void _queue_clear_task()
 	g_service_adaptor_task_queue = NULL;
 }
 
-/**     @brief  Adds Task in Queue
- *      @return int
- *      @remarks :
- */
- /*
-int _signal_queue_add_task(int64_t _id,
-						uint32_t _callback,
-						void *_handle,
-						void *user_data)
-{
-	FUNC_START();
-
-	service_adaptor_task_h task = (service_adaptor_task_h) g_malloc0(sizeof(service_adaptor_task_s));
-
-	if (NULL == task) {
-		FUNC_STOP();
-		return -1;
-	}
-
-	task->id = _id;
-	task->callback = _callback;
-	task->handle = _handle;
-	task->user_data = user_data;
-
-	g_service_adaptor_signal_queue = g_list_append(g_service_adaptor_signal_queue, task);
-
-	FUNC_END();
-	return 0;
-}
-*/
-
+/* LCOV_EXCL_START */
 /**     @brief  Adds Task in Queue
  *      @return service_adaptor_task_h
  *      @remarks :
@@ -240,36 +210,7 @@ service_adaptor_task_h _signal_queue_get_task(int64_t _id)
 	FUNC_END();
 	return target;
 }
-
-/**     @brief  Adds Task in Queue
- *      @return int
- *      @remarks :
- */
- /*
-int _signal_queue_del_task(service_adaptor_task_h _task)
-{
-	FUNC_START();
-	service_adaptor_task_h target = NULL;
-
-	for (GList *list = g_list_first(g_service_adaptor_signal_queue); list != NULL; list = g_list_next(list)) {
-		service_adaptor_task_h data = (service_adaptor_task_h) list->data;
-
-		if ((NULL != data) && (_task == data)) {
-			target = data;
-			break;
-		}
-	}
-
-	if (NULL != target) {
-		g_service_adaptor_signal_queue = g_list_remove(g_service_adaptor_signal_queue, target);
-		g_free(target);
-		target = NULL;
-	}
-
-	FUNC_END();
-	return 0;
-}
-*/
+/* LCOV_EXCL_STOP */
 
 /**     @brief  Clears Task in Queue
  *      @return void
@@ -279,26 +220,11 @@ void _signal_queue_clear_task()
 {
 	FUNC_START();
 	if (NULL != g_service_adaptor_signal_queue) {
-		g_list_free(g_service_adaptor_signal_queue);
+		g_list_free(g_service_adaptor_signal_queue); /* LCOV_EXCL_LINE */
 	}
 	g_service_adaptor_signal_queue = NULL;
 	FUNC_END();
 }
-
-/*
-int service_adaptor_check_handle_validate(service_adaptor_h handle)
-{
-	if ((NULL == handle) || (NULL == g_service_adaptor)) {
-		sac_error("The handle is invalid <user(%p) adaptor(%p)>", handle, g_service_adaptor);
-		return -1;
-	} else if (handle != g_service_adaptor) {
-		sac_error("The handle is invalid <user(%p) adaptor(%p)>", handle, g_service_adaptor);
-		return -2;
-	} else {
-		return 0;
-	}
-}
-*/
 
 void _service_adaptor_set_last_result(int code, const char *message)
 {
@@ -337,8 +263,8 @@ int service_adaptor_get_last_error_message(char **message)
 	} else if (0 >= strlen(last_error_message)) {
 		ret = SERVICE_ADAPTOR_ERROR_NO_DATA;
 	} else {
-		*message = strdup(last_error_message);
-		ret = SERVICE_ADAPTOR_ERROR_NONE;
+		*message = strdup(last_error_message); /* LCOV_EXCL_LINE */
+		ret = SERVICE_ADAPTOR_ERROR_NONE; /* LCOV_EXCL_LINE */
 	}
 
 	FUNC_END();
@@ -368,31 +294,18 @@ int service_adaptor_create(service_adaptor_h *handle)
 	}
 
 	if (0 < connections_counter) {
-		g_mutex_unlock(&connections_counter_mutex);
-
-		return SERVICE_ADAPTOR_ERROR_NOT_SUPPORTED;
+		g_mutex_unlock(&connections_counter_mutex); /* LCOV_EXCL_LINE */
+		return SERVICE_ADAPTOR_ERROR_NOT_SUPPORTED; /* LCOV_EXCL_LINE */
 	}
 
 	service = (service_adaptor_h) calloc(1, sizeof(service_adaptor_s));
 
 	if (NULL == service) {
-		service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_UNKNOWN, "Memory allocation failed");
-		g_mutex_unlock(&connections_counter_mutex);
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
+		service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_UNKNOWN, "Memory allocation failed"); /* LCOV_EXCL_LINE */
+		g_mutex_unlock(&connections_counter_mutex); /* LCOV_EXCL_LINE */
+		return SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 	}
-/*
-	int trd = 0;
-	char fingerprint[50] = {0, };
-	snprintf(fingerprint, 50, "%s/%d", SERVICE_ADAPTOR_START_KEY_PATH, getpid());
-	sac_debug("Trigger open : %s", fingerprint);
-	trd = open(fingerprint, O_WRONLY|O_CREAT, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
-	if (0 > trd) {
-		sac_error("Trigger open failed (%d)", trd);
-		free(service);
-		g_mutex_unlock(&connections_counter_mutex);
-		return SERVICE_ADAPTOR_ERROR_INVALID_STATE;
-	}
-*/
+
 	int dbus_ret = _dbus_client_layer_init();
 
 	if (0 == dbus_ret) {
@@ -405,28 +318,18 @@ int service_adaptor_create(service_adaptor_h *handle)
 	ret = _dbus_connect_service_adaptor(&error);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(service);
-/*
-		close(trd);
-		remove(fingerprint);
-*/
-		g_mutex_unlock(&connections_counter_mutex);
-		free(error.msg);
-		return ret;
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(service); /* LCOV_EXCL_LINE */
+		g_mutex_unlock(&connections_counter_mutex); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
+		return ret; /* LCOV_EXCL_LINE */
 	}
 
 	service->on_signal = NULL;
 
-/*	service->plugins = NULL; */
-/*	service->plugin_count = 0; */
-
 	*handle = service;
 	g_service_adaptor = service;
-/*
-	close(trd);
-	remove(fingerprint);
-*/
+
 	g_mutex_unlock(&connections_counter_mutex);
 
 	sac_api_end(ret);
@@ -450,12 +353,12 @@ int service_adaptor_destroy(service_adaptor_h handle)
 	g_mutex_lock(&connections_counter_mutex);
 
 	if (0 >= connections_counter) {
-		connections_counter = 0;
-		g_service_adaptor = NULL;
-		g_mutex_unlock(&connections_counter_mutex);
+		connections_counter = 0; /* LCOV_EXCL_LINE */
+		g_service_adaptor = NULL; /* LCOV_EXCL_LINE */
+		g_mutex_unlock(&connections_counter_mutex); /* LCOV_EXCL_LINE */
 
-		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
-		return ret;
+		ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
+		return ret; /* LCOV_EXCL_LINE */
 	}
 
 	if (NULL != handle) {
@@ -496,8 +399,8 @@ int service_adaptor_foreach_plugin(service_adaptor_h handle,
 	ret = _dbus_get_plugin_list(&plugin_uris, &plugins_len, &error);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
 	} else if ((NULL != plugin_uris) && (0 < plugins_len)) {
 		int i;
 		bool is_continue = true;
@@ -539,10 +442,10 @@ int service_adaptor_create_plugin(service_adaptor_h handle,
 
 			*plugin = _plugin;
 		} else {
-			free(_plugin);
-			free(_plugin_uri);
-			sac_error("Critical : Memory allocation failed.");
-			ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
+			free(_plugin); /* LCOV_EXCL_LINE */
+			free(_plugin_uri); /* LCOV_EXCL_LINE */
+			sac_error("Critical : Memory allocation failed."); /* LCOV_EXCL_LINE */
+			ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 		}
 	}
 
@@ -627,22 +530,6 @@ int service_plugin_get_property(service_plugin_h handle,
 	} else {
 		*value = strdup((char *) property);
 	}
-/*
-	GHashTableIter iter;
-	gpointer iter_key;
-	gpointer iter_value;
-	g_hash_table_iter_init(&iter, (GHashTable *)(handle->optional_property));
-	while (g_hash_table_iter_next(&iter, &iter_key, &iter_value)) {
-		if (NULL != iter_key) {
-			if (0 == strcmp((char *)iter_key, key)) {
-				ret = SERVICE_ADAPTOR_ERROR_NONE;
-				*value = strdup((char *)iter_value);
-				break;
-			}
-		}
-	}
-*/
-
 	sac_api_end(ret);
 	return ret;
 }
@@ -666,20 +553,20 @@ int service_plugin_start(service_plugin_h handle,
 	app_ret = app_get_id(&tizen_app_id);
 
 	if (app_ret || (NULL == tizen_app_id)) {
-		char executable_path[1000];
-		int executable_path_len = 0;
-		executable_path_len = readlink("/proc/self/exe", executable_path, 1000);
-		tizen_app_id = strndup(executable_path, executable_path_len);
-		type = strdup("etc");
-		handle->app_type = CLIENT_APP_TYPE_ETC;
+		char executable_path[1000]; /* LCOV_EXCL_LINE */
+		int executable_path_len = 0; /* LCOV_EXCL_LINE */
+		executable_path_len = readlink("/proc/self/exe", executable_path, 1000); /* LCOV_EXCL_LINE */
+		tizen_app_id = strndup(executable_path, executable_path_len); /* LCOV_EXCL_LINE */
+		type = strdup("etc"); /* LCOV_EXCL_LINE */
+		handle->app_type = CLIENT_APP_TYPE_ETC; /* LCOV_EXCL_LINE */
 	} else {
 		type = strdup("app");
 		handle->app_type = CLIENT_APP_TYPE_APPLICATION;
 	}
 
 	if (NULL == tizen_app_id) {
-		free(type);
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
+		free(type); /* LCOV_EXCL_LINE */
+		return SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 	}
 
 	service_handle_name = g_strconcat(tizen_app_id, "?type=", type, "&plugin=", handle->plugin_uri, NULL);
@@ -688,24 +575,13 @@ int service_plugin_start(service_plugin_h handle,
 	free(type);
 
 	if (NULL == service_handle_name) {
-		sac_error("handle name get failed");
-		service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_UNKNOWN, "handle name get failed");
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
+		sac_error("handle name get failed"); /* LCOV_EXCL_LINE */
+		service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_UNKNOWN, "handle name get failed"); /* LCOV_EXCL_LINE */
+		return SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 	}
 
 	/* TODO replace to real cookie */
 	snprintf(security_cookie, SECURITY_SERVER_COOKIE_BUFFER_SIZE, "%020d", (int)getpid());
-/*
-	int sec_ret = security_server_request_cookie(security_cookie, SECURITY_SERVER_COOKIE_BUFFER_SIZE);
-	sac_debug_func("security_cookie : %s (%d)", security_cookie, sec_ret);
-
-	if (('\0' == security_cookie[0]) || sec_ret) {
-		sac_error("cookie get failed");
-		service_adaptor_set_last_result(SERVICE_ADAPTOR_ERROR_UNKNOWN, "security cookie get failed");
-		free(service_handle_name);
-		return SERVICE_ADAPTOR_ERROR_UNKNOWN;
-	}
-*/
 
 	handle->service_handle_name = service_handle_name;
 	sac_info("handle name :%s", handle->service_handle_name);
@@ -717,8 +593,8 @@ int service_plugin_start(service_plugin_h handle,
 	ret = _dbus_start_service(handle, service_flag, security_cookie, &error);
 
 	if (SERVICE_ADAPTOR_ERROR_NONE != ret) {
-		service_adaptor_set_last_result(error.code, error.msg);
-		free(error.msg);
+		service_adaptor_set_last_result(error.code, error.msg); /* LCOV_EXCL_LINE */
+		free(error.msg); /* LCOV_EXCL_LINE */
 	}
 
 	sac_api_end(ret);

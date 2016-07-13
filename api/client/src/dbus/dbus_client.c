@@ -205,17 +205,17 @@ static int __dbus_connection_init(dbus_service_adaptor_client_thread_data_s *thr
 	GError *error = NULL;
 
 	if ((NULL != connection) || (sac_interface_proxy)) {
-		FUNC_STOP();
-		return -1;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return -1; /* LCOV_EXCL_LINE */
 	}
 
 	connection = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
 
 	if (NULL == connection) {
-		g_error_free(error);
+		g_error_free(error); /* LCOV_EXCL_LINE */
 
-		FUNC_STOP();
-		return -1;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return -1; /* LCOV_EXCL_LINE */
 	} else {
 		sac_interface_proxy = g_dbus_proxy_new_sync(connection,
 				G_DBUS_PROXY_FLAGS_NONE,
@@ -227,13 +227,13 @@ static int __dbus_connection_init(dbus_service_adaptor_client_thread_data_s *thr
 				&error);
 
 		if (NULL == sac_interface_proxy) {
-			g_error_free(error);
+			g_error_free(error); /* LCOV_EXCL_LINE */
 
-			g_object_unref(connection);
-			connection = NULL;
+			g_object_unref(connection); /* LCOV_EXCL_LINE */
+			connection = NULL; /* LCOV_EXCL_LINE */
 
-			FUNC_STOP();
-			return -1;
+			FUNC_STOP(); /* LCOV_EXCL_LINE */
+			return -1; /* LCOV_EXCL_LINE */
 		}
 	}
 
@@ -246,14 +246,14 @@ static int __dbus_connection_init(dbus_service_adaptor_client_thread_data_s *thr
 			NULL);
 
 	if (0 == watcher_id) {
-		g_object_unref(sac_interface_proxy);
-		sac_interface_proxy = NULL;
+		g_object_unref(sac_interface_proxy); /* LCOV_EXCL_LINE */
+		sac_interface_proxy = NULL; /* LCOV_EXCL_LINE */
 
-		g_object_unref(connection);
-		connection = NULL;
+		g_object_unref(connection); /* LCOV_EXCL_LINE */
+		connection = NULL; /* LCOV_EXCL_LINE */
 
-		FUNC_STOP();
-		return -1;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return -1; /* LCOV_EXCL_LINE */
 	}
 
 	int res = g_signal_connect(sac_interface_proxy,
@@ -262,17 +262,17 @@ static int __dbus_connection_init(dbus_service_adaptor_client_thread_data_s *thr
 			NULL);
 
 	if (0 == res) {
-		g_object_unref(sac_interface_proxy);
-		sac_interface_proxy = NULL;
+		g_object_unref(sac_interface_proxy); /* LCOV_EXCL_LINE */
+		sac_interface_proxy = NULL; /* LCOV_EXCL_LINE */
 
-		g_object_unref(connection);
-		connection = NULL;
+		g_object_unref(connection); /* LCOV_EXCL_LINE */
+		connection = NULL; /* LCOV_EXCL_LINE */
 
-		g_bus_unwatch_name(watcher_id);
-		watcher_id = 0;
+		g_bus_unwatch_name(watcher_id); /* LCOV_EXCL_LINE */
+		watcher_id = 0; /* LCOV_EXCL_LINE */
 
-		FUNC_STOP();
-		return -1;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return -1; /* LCOV_EXCL_LINE */
 	}
 
 	FUNC_END();
@@ -332,7 +332,6 @@ static void on_name_vanished(GDBusConnection *connection,
 	}
 	FUNC_END();
 }
-//LCOV_EXCL_STOP
 
 static void _service_signal_emitter(void *data)
 {
@@ -353,6 +352,7 @@ static void _service_signal_emitter(void *data)
 	g_thread_unref(g_thread_self());
 	FUNC_END();
 }
+//LCOV_EXCL_STOP
 
 static void on_signal(GDBusProxy *proxy,
 						gchar *sender_name,
@@ -394,16 +394,16 @@ int _dbus_client_service_adaptor_init()
 
 	if (NULL != dbusClientThread) {
 		/* D-Bus client thread is already running */
-		FUNC_STOP();
-		return -1;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return -1; /* LCOV_EXCL_LINE */
 	}
 
 	dbus_service_adaptor_client_thread_data_s *thread_data =
 			(dbus_service_adaptor_client_thread_data_s *) calloc(1, sizeof(dbus_service_adaptor_client_thread_data_s));
 
 	if (NULL == thread_data) {
-		FUNC_STOP();
-		return -1;
+		FUNC_STOP(); /* LCOV_EXCL_LINE */
+		return -1; /* LCOV_EXCL_LINE */
 	}
 
 	g_mutex_init(&thread_data->connection_mutex);
@@ -417,10 +417,10 @@ int _dbus_client_service_adaptor_init()
 	while (!thread_data->connection_cond_signaled) {
 		if (!g_cond_wait_until(&thread_data->connection_cond, &thread_data->connection_mutex, timeout)) {
 			/* timeout */
-			g_mutex_unlock(&thread_data->connection_mutex);
+			g_mutex_unlock(&thread_data->connection_mutex); /* LCOV_EXCL_LINE */
 
-			FUNC_STOP();
-			return -1;
+			FUNC_STOP(); /* LCOV_EXCL_LINE */
+			return -1; /* LCOV_EXCL_LINE */
 		}
 	}
 	g_mutex_unlock(&thread_data->connection_mutex);
@@ -451,47 +451,20 @@ void _dbus_client_service_adaptor_deinit()
 	}
 
 	if (NULL != dbusClientMainLoop) {
-		g_main_loop_unref(dbusClientMainLoop);
-		dbusClientMainLoop = NULL;
+		g_main_loop_unref(dbusClientMainLoop); /* LCOV_EXCL_LINE */
+		dbusClientMainLoop = NULL; /* LCOV_EXCL_LINE */
 	}
 
 	if (NULL != dbusClientMainContext) {
-		g_main_context_pop_thread_default(dbusClientMainContext);
-		g_main_context_unref(dbusClientMainContext);
-		dbusClientMainContext = NULL;
+		g_main_context_pop_thread_default(dbusClientMainContext); /* LCOV_EXCL_LINE */
+		g_main_context_unref(dbusClientMainContext); /* LCOV_EXCL_LINE */
+		dbusClientMainContext = NULL; /* LCOV_EXCL_LINE */
 	}
 
 	_queue_clear_task();
 	_signal_queue_clear_task();
 	FUNC_END();
 }
-
-/**
- * Adds string into variant builder
- * @param builder Builder
- * @param data String to be added
- */
-/*
-void __safe_g_variant_builder_add_string(GVariantBuilder *builder,
-						const char *data)
-{
-	if (NULL == data) {
-		g_variant_builder_add(builder, "s", "");
-	} else {
-		g_variant_builder_add(builder, "s", data);
-	}
-}
-
-void __safe_g_variant_builder_add_array_string(GVariantBuilder *builder,
-						const char *data)
-{
-	if (NULL == data) {
-		g_variant_builder_add(builder, "(s)", "");
-	} else {
-		g_variant_builder_add(builder, "(s)", data);
-	}
-}
-*/
 
 char *ipc_g_variant_dup_string(GVariant *string)
 {
@@ -538,18 +511,18 @@ int _dbus_connect_service_adaptor(service_adaptor_error_s *error)
 			&g_error);
 
 	if (NULL == call_result) {
-		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
+		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
+		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
 
-		if (NULL != g_error) {
-			error->msg = __SAFE_STRDUP(g_error->message);
-			g_error_free(g_error);
+		if (NULL != g_error) { /* LCOV_EXCL_LINE */
+			error->msg = __SAFE_STRDUP(g_error->message); /* LCOV_EXCL_LINE */
+			g_error_free(g_error); /* LCOV_EXCL_LINE */
 		}
 	} else {
 		if (FALSE == g_variant_is_of_type(call_result, G_VARIANT_TYPE("(ts)"))) {
-			error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-			error->msg = strdup("D-Bus return type error");
-			ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
+			error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
+			error->msg = strdup("D-Bus return type error"); /* LCOV_EXCL_LINE */
+			ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
 		} else {
 			GVariant *call_result_struct[2];
 			call_result_struct[0] = g_variant_get_child_value(call_result, 0);
@@ -558,9 +531,9 @@ int _dbus_connect_service_adaptor(service_adaptor_error_s *error)
 			uint64_t remote_call_result = g_variant_get_uint64(call_result_struct[0]);
 
 			if (SERVICE_ADAPTOR_ERROR_NONE != remote_call_result) {
-				error->code = remote_call_result;
-				error->msg = ipc_g_variant_dup_string(call_result_struct[1]);
-				ret = SERVICE_ADAPTOR_ERROR_PLUGIN_FAILED;
+				error->code = remote_call_result; /* LCOV_EXCL_LINE */
+				error->msg = ipc_g_variant_dup_string(call_result_struct[1]); /* LCOV_EXCL_LINE */
+				ret = SERVICE_ADAPTOR_ERROR_PLUGIN_FAILED; /* LCOV_EXCL_LINE */
 			}
 
 			g_variant_unref(call_result_struct[0]);
@@ -599,18 +572,18 @@ int _dbus_get_plugin_list(plugin_entry_t ***plugin_list,
 			&g_error);
 
 	if (NULL == call_result) {
-		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
+		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
+		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
 
-		if (NULL != g_error) {
-			error->msg = __SAFE_STRDUP(g_error->message);
-			g_error_free(g_error);
+		if (NULL != g_error) { /* LCOV_EXCL_LINE */
+			error->msg = __SAFE_STRDUP(g_error->message); /* LCOV_EXCL_LINE */
+			g_error_free(g_error); /* LCOV_EXCL_LINE */
 		}
 	} else {
 		if (FALSE == g_variant_is_of_type(call_result, G_VARIANT_TYPE(MAKE_RETURN_TYPE(plugin_list_type)))) {
-			error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-			error->msg = strdup("D-Bus return type error");
-			ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
+			error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
+			error->msg = strdup("D-Bus return type error"); /* LCOV_EXCL_LINE */
+			ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
 		} else {
 			GVariant *call_result_struct[3];
 			call_result_struct[0] = g_variant_get_child_value(call_result, 0);
@@ -620,9 +593,9 @@ int _dbus_get_plugin_list(plugin_entry_t ***plugin_list,
 			uint64_t remote_call_result = g_variant_get_uint64(call_result_struct[1]);
 
 			if (SERVICE_ADAPTOR_ERROR_NONE != remote_call_result) {
-				error->code = remote_call_result;
-				error->msg = ipc_g_variant_dup_string(call_result_struct[2]);
-				ret = SERVICE_ADAPTOR_ERROR_PLUGIN_FAILED;
+				error->code = remote_call_result; /* LCOV_EXCL_LINE */
+				error->msg = ipc_g_variant_dup_string(call_result_struct[2]); /* LCOV_EXCL_LINE */
+				ret = SERVICE_ADAPTOR_ERROR_PLUGIN_FAILED; /* LCOV_EXCL_LINE */
 			} else {
 				gsize list_count = g_variant_n_children(call_result_struct[0]);
 
@@ -651,8 +624,8 @@ int _dbus_get_plugin_list(plugin_entry_t ***plugin_list,
 					}
 					*plugin_list = plugins;
 				} else {
-					*plugins_len = (unsigned int) 0;
-					ret = SERVICE_ADAPTOR_ERROR_UNKNOWN;
+					*plugins_len = (unsigned int) 0; /* LCOV_EXCL_LINE */
+					ret = SERVICE_ADAPTOR_ERROR_UNKNOWN; /* LCOV_EXCL_LINE */
 				}
 			}
 
@@ -722,18 +695,18 @@ int _dbus_start_service(service_plugin_h plugin,
 	g_variant_builder_unref(builder_in);
 
 	if (NULL == call_result) {
-		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
+		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
+		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
 
-		if (NULL != g_error) {
-			error->msg = __SAFE_STRDUP(g_error->message);
-			g_error_free(g_error);
+		if (NULL != g_error) { /* LCOV_EXCL_LINE */
+			error->msg = __SAFE_STRDUP(g_error->message); /* LCOV_EXCL_LINE */
+			g_error_free(g_error); /* LCOV_EXCL_LINE */
 		}
 	} else {
 		if (FALSE == g_variant_is_of_type(call_result, G_VARIANT_TYPE("(ts)"))) {
-			error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
-			error->msg = strdup("D-Bus return type error");
-			ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
+			error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
+			error->msg = strdup("D-Bus return type error"); /* LCOV_EXCL_LINE */
+			ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
 		} else {
 			GVariant *call_result_struct[2];
 			call_result_struct[0] = g_variant_get_child_value(call_result, 0);
@@ -742,9 +715,9 @@ int _dbus_start_service(service_plugin_h plugin,
 			uint64_t remote_call_result = g_variant_get_uint64(call_result_struct[0]);
 
 			if (SERVICE_ADAPTOR_ERROR_NONE != remote_call_result) {
-				error->code = remote_call_result;
-				error->msg = ipc_g_variant_dup_string(call_result_struct[1]);
-				ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
+				error->code = remote_call_result; /* LCOV_EXCL_LINE */
+				error->msg = ipc_g_variant_dup_string(call_result_struct[1]); /* LCOV_EXCL_LINE */
+				ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE; /* LCOV_EXCL_LINE */
 			}
 
 			g_variant_unref(call_result_struct[0]);

@@ -109,18 +109,18 @@ int _ipc_get_simple_result(GVariant *call_result, GError *g_error, service_adapt
 	int ret = SERVICE_ADAPTOR_ERROR_NONE;
 
 	if (NULL == call_result) {
+		// LCOV_EXCL_START
 		error->code = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
 		ret = SERVICE_ADAPTOR_ERROR_IPC_UNSTABLE;
 		if (NULL != g_error) {
-			// LCOV_EXCL_START
 			sac_error("G_IO_ERROR DEBUG (%d)", (int)(g_error->code));
 			if (g_error->code == G_IO_ERROR_TIMED_OUT) {
 				ret = SERVICE_ADAPTOR_ERROR_TIMED_OUT;
 			}
 			error->msg = __SAFE_STRDUP(g_error->message);
 			g_error_free(g_error);
-			// LCOV_EXCL_STOP
 		}
+		// LCOV_EXCL_STOP
 	} else {
 		if (FALSE == g_variant_is_of_type(call_result, G_VARIANT_TYPE("(ts)"))) {
 			// LCOV_EXCL_START
